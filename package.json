@@ -1,6 +1,11 @@
 {
 	"name": "chalk-up",
 	"version": "0.1.0",
+	"description": "",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/chalkTec/chalk-up.git"
+	},
 	"dependencies": {
 		"newrelic": "~1.4.0",
 		"gzippo": "~0.2.0",
