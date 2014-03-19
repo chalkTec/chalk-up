@@ -304,8 +304,17 @@ module.exports = function (grunt) {
 						cwd: '.tmp/images',
 						dest: '<%= yeoman.dist %>/images',
 						src: ['generated/*']
-					}
-				]
+					},
+					// HEROKU STUFF
+					{
+						expand: true,
+						flatten: true,
+						dest: '<%= yeoman.dist %>',
+						src: [
+							'app/heroku/*',
+							'package.json'
+						]
+					}]
 			},
 			styles: {
 				expand: true,
