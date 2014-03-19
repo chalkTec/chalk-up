@@ -317,7 +317,8 @@ module.exports = function (grunt) {
 							'app/heroku/*',
 							'package.json'
 						]
-					}]
+					}
+				]
 			},
 			styles: {
 				expand: true,
@@ -438,6 +439,13 @@ module.exports = function (grunt) {
 		'rev',
 		'usemin',
 		'htmlmin'
+	]);
+
+	grunt.registerTask('deploy', [
+		'newer:jshint',
+		'test',
+		'build',
+		'buildcontrol:heroku'
 	]);
 
 	grunt.registerTask('default', [
