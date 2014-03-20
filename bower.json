@@ -11,7 +11,8 @@
 		"moment": "~2.5.1",
 		"angular-moment": "~0.6.2",
 		"leaflet-dist": "~0.7.2",
-		"angulartics": "git://github.com/luisfarzati/angulartics.git#49fb0684feef4f675a214e0fc9ddf04d8ff987d1"
+		"angulartics": "git://github.com/luisfarzati/angulartics.git#49fb0684feef4f675a214e0fc9ddf04d8ff987d1",
+		"lodash": "~2.4.1"
 	},
 	"devDependencies": {
 		"angular-mocks": "~1.2.0",

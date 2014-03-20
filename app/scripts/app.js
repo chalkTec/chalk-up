@@ -6,7 +6,8 @@ angular.module('chalkUpApp', [
 	'angularSpinner',
 	'angularMoment',
 	'angulartics',
-	'angulartics.google.analytics'
+	'angulartics.google.analytics',
+	'imageMap'
 ]);
 
 angular.module('chalkUpApp')
