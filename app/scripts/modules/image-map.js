@@ -87,6 +87,10 @@ angular.module('imageMap')
 			});
 		};
 
+		config.hasSelected = function () {
+			return !_.isUndefined(config.getSelected());
+		};
+
 		config.getSelected = function () {
 			return _selectedMarker;
 		};
@@ -189,6 +193,10 @@ angular.module('imageMap')
 		var layerGroups;
 		var layerControl;
 
+		function getLeafletMarker(imageMapMarker) {
+			return markerIdToLeafletMarker[imageMapMarker.id];
+		}
+
 		function removeMarkerGroups(map) {
 			if (!_.isUndefined(layerGroups)) {
 				_.each(layerGroups, function (layerGroup) {
@@ -235,6 +243,20 @@ angular.module('imageMap')
 			});
 
 			layerControl = L.control.layers(undefined, layerGroups).addTo(map);
+
+			// unselect marker if we hide the layer where the active marker was on
+			map.on('overlayremove', function (e) {
+				$rootScope.$apply(function () {
+					if (imageMapService.hasSelected()) {
+						var selectedLeafletMarker = getLeafletMarker(imageMapService.getSelected());
+						var removedLayerGroup = e.layer;
+
+						if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
+							imageMapService.unselect();
+						}
+					}
+				});
+			});
 		}
 
 		config.drawMarkerGroups = function (map, image, markerGroups) {
@@ -249,11 +271,6 @@ angular.module('imageMap')
 
 			addMarkerGroups(map, image, markerGroups);
 		};
-
-
-		function getLeafletMarker(imageMapMarker) {
-			return markerIdToLeafletMarker[imageMapMarker.id];
-		}
 
 		config.unmarkSelected = function (marker) {
 			if (_.isUndefined(marker)) {
@@ -283,9 +300,7 @@ angular.module('imageMap')
 
 		return {
 			restrict: 'A',
-			scope: {
-				height: '@'
-			},
+			scope: {},
 			controller: function ($scope, $element, mapOverlay, mapMarkers) {
 				// SETUP MAP
 				map = L.map($element[0], {
@@ -325,13 +340,14 @@ angular.module('imageMap')
 
 				// click handler for each marker is set in mapMarkers.drawMarkerGroups()
 
-				map.on('click', function (event) {
+				map.on('click', function () {
 					$scope.$apply(function () {
 						imageMapService.unselect();
 					});
 				});
 
 				var selected;
+				mapMarkers.markSelected(imageMapService.getSelected());
 				imageMapService.onSelect($scope, function (marker) {
 					mapMarkers.unmarkSelected(selected);
 					mapMarkers.markSelected(marker);

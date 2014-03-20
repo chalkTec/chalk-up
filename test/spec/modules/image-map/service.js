@@ -71,6 +71,7 @@ describe('Service: imageMapService', function () {
 
 		expect(selectionUpdateHandler).toHaveBeenCalledWith(markers[0]);
 
+		expect(service.hasSelected()).toBeTruthy();
 		expect(service.getSelected()).toBe(markers[0]);
 	});
 });
