@@ -11,15 +11,16 @@ angular.module('imageMap')
 	.factory('imageMapService', function ($rootScope) {
 		var config = {};
 
+		// IMAGE
+
 		var IMAGE_UPDATE_EVENT = 'imageMap:imageUpdate';
-		var SELECTION_EVENT = 'imageMap:select';
 
 		// the currently displayed image
-		var image;
+		var _image;
 
-		config.updateImage = function (img) {
-			image = img;
-			$rootScope.$broadcast(IMAGE_UPDATE_EVENT, {image: image});
+		config.updateImage = function (image) {
+			_image = image;
+			$rootScope.$broadcast(IMAGE_UPDATE_EVENT, {image: _image});
 		};
 
 		config.onImageUpdate = function ($scope, handler) {
@@ -29,13 +30,40 @@ angular.module('imageMap')
 		};
 
 		config.getImage = function () {
-			return image;
+			return _image;
 		};
 
-		var selectedMarker;
+		// MARKERS
+
+		var MARKERS_EVENT = 'imageMap:markers';
+
+		// the currently active markers
+		var _markers;
+
+		config.updateMarkers = function (markers) {
+			_markers = markers;
+			$rootScope.$broadcast(MARKERS_EVENT, {markers: markers});
+		};
+
+		config.onMarkersUpdate = function ($scope, handler) {
+			$scope.$on(MARKERS_EVENT, function (event, args) {
+				handler(args.markers);
+			});
+		};
+
+		config.getMarkers = function () {
+			return _markers;
+		};
+
+
+		// SELECTED MARKER
+
+		var SELECTION_EVENT = 'imageMap:select';
+
+		var _selectedMarker;
 
 		config.select = function (marker) {
-			selectedMarker = marker;
+			_selectedMarker = marker;
 			$rootScope.$broadcast(SELECTION_EVENT, {marker: marker});
 		};
 
@@ -132,6 +160,54 @@ angular.module('imageMap')
 		return config;
 	});
 
+angular.module('imageMap')
+	.factory('mapMarkers', function (mapProjection) {
+		var config = {};
+
+		var layerGroup;
+
+		function removeMarkers(map) {
+			if (!_.isUndefined(layerGroup)) {
+				map.removeLayer(layerGroup);
+			}
+		}
+
+		function imageMapMarkerToLeafletMarker(imageMapMarker, projection) {
+			var latLng = projection.imagePointToLatLng([imageMapMarker.x, imageMapMarker.y]);
+			var options = {
+				riseOnHover: true
+			};
+
+			return L.marker(latLng, options);
+		}
+
+		function addMarkers(map, image, markers) {
+			var projection = mapProjection.calculate(map, image);
+
+			var leafletMarkers = _.map(markers, function(marker) {
+				return imageMapMarkerToLeafletMarker(marker, projection);
+			});
+
+			layerGroup = L.layerGroup(leafletMarkers);
+			map.addLayer(layerGroup);
+		}
+
+		config.drawMarkers = function (map, image, markers) {
+			// we need an image to draw markers on it
+			if (_.isUndefined(image) || _.isUndefined(markers)) {
+				removeMarkers(map);
+				return;
+			}
+
+			// remove old markers
+			removeMarkers(map);
+
+			addMarkers(map, image, markers);
+		};
+
+		return config;
+	});
+
 
 angular.module('imageMap')
 	.directive('imageMap', function ($rootScope, imageMapService) {
@@ -142,7 +218,7 @@ angular.module('imageMap')
 			scope: {
 				height: '@'
 			},
-			controller: function ($scope, $element, mapOverlay) {
+			controller: function ($scope, $element, mapOverlay, mapMarkers) {
 				// SETUP MAP
 				map = L.map($element[0], {
 					maxZoom: 3,
@@ -152,11 +228,20 @@ angular.module('imageMap')
 				});
 				map.setView([0, 0], 0);
 
+
 				// IMAGE OVERLAY
 				mapOverlay.drawImageOverlay(map, imageMapService.getImage());
 
 				imageMapService.onImageUpdate($scope, function (img) {
 					mapOverlay.drawImageOverlay(map, img);
+				});
+
+
+				// MARKERS
+				mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers());
+
+				imageMapService.onMarkersUpdate($scope, function (markers) {
+					mapMarkers.drawMarkers(map, imageMapService.getImage(), markers);
 				});
 
 

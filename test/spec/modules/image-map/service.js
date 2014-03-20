@@ -34,21 +34,33 @@ describe('Service: imageMapService', function () {
 		}
 	];
 
-	it('should call the draw handler when updated or redrawn', function () {
-		var updateHandler = jasmine.createSpy('imageUpdateHandler');
+	it('should call the image update handler when updated or redrawn', function () {
+		var handler = jasmine.createSpy('imageUpdateHandler');
 
-		service.onImageUpdate(scope, updateHandler);
+		service.onImageUpdate(scope, handler);
 		service.updateImage(image);
 
-		expect(updateHandler).toHaveBeenCalledWith(image);
+		expect(handler).toHaveBeenCalledWith(image);
+
+		expect(service.getImage()).toBe(image);
+	});
+
+	it('should call the markers update handler when updated or redrawn', function () {
+		var handler = jasmine.createSpy('markersUpdateHandler');
+
+		service.onMarkersUpdate(scope, handler);
+		service.updateMarkers(markers);
+
+		expect(handler).toHaveBeenCalledWith(markers);
+		expect(service.getMarkers()).toBe(markers);
 	});
 
 	it('should call the update selection handler when marker selection occurs', function () {
-		var updateSelectionHandler = jasmine.createSpy('updateSelectionHandler');
+		var handler = jasmine.createSpy('updateSelectionHandler');
 
-		service.onSelect(scope, updateSelectionHandler);
+		service.onSelect(scope, handler);
 		service.select(markers[0]);
 
-		expect(updateSelectionHandler).toHaveBeenCalledWith(markers[0]);
+		expect(handler).toHaveBeenCalledWith(markers[0]);
 	});
 });
