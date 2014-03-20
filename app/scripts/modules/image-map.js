@@ -6,26 +6,22 @@ angular.module('imageMap')
 	.factory('imageMapService', function ($rootScope) {
 		var config = {};
 
-		var DRAW_EVENT = 'imageMap:draw';
+		var IMAGE_UPDATE_EVENT = 'imageMap:imageUpdate';
 		var SELECTION_EVENT = 'imageMap:select';
 
-		var lastImageMap = undefined;
+		// the currently displayed image
+		var image = undefined;
 
-		config.update = function (imageMap) {
-			lastImageMap = imageMap;
-			$rootScope.$broadcast(DRAW_EVENT, {imageMap: imageMap});
+		config.updateImage = function (img) {
+			image = img;
+			$rootScope.$broadcast(IMAGE_UPDATE_EVENT, {image: image});
 		};
 
-		config.redraw = function () {
-			$rootScope.$broadcast(DRAW_EVENT, {imageMap: lastImageMap});
-		};
-
-		config.onDraw = function ($scope, handler) {
-			$scope.$on(DRAW_EVENT, function (event, args) {
-				handler(args.imageMap);
+		config.onImageUpdate = function ($scope, handler) {
+			$scope.$on(IMAGE_UPDATE_EVENT, function (event, args) {
+				handler(args.image);
 			});
 		};
-
 
 		var selectedMarker = undefined;
 

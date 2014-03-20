@@ -11,45 +11,44 @@ describe('Service: imageMapService', function () {
 		service = imageMapService;
 		scope = $rootScope.$new();
 	}));
-	var imageMap = {
-		image: {
-			url: 'test.jpg',
-			width: '1000',
-			height: '500'
-		},
-		markers: [
-			{
-				id: 1,
-				icon: {},
-				x: 300,
-				y: 499
-			},
-			{
-				id: 2,
-				icon: {},
-				x: 700,
-				y: 150
-			}
-		]
+	var image = {
+		url: 'test.jpg',
+		width: '1000',
+		height: '500'
 	};
 
+	var div = angular.element('<div></div>');
+
+	var markers = [
+		{
+			id: 1,
+			icon: {},
+			x: 300,
+			y: 499
+		},
+		{
+			id: 2,
+			icon: {},
+			x: 700,
+			y: 150
+		}
+	];
+
 	it('should call the draw handler when updated or redrawn', function () {
-		var updateHandler = jasmine.createSpy('updateHandler');
+		var updateHandler = jasmine.createSpy('imageUpdateHandler');
 
-		service.onDraw(scope, updateHandler);
-		service.update(imageMap);
-		service.redraw();
+		service.onImageUpdate(scope, updateHandler);
+		service.updateImage(image);
 
-		expect(updateHandler.calls.count()).toBe(2);
-		expect(updateHandler).toHaveBeenCalledWith(imageMap);
+		expect(updateHandler).toHaveBeenCalledWith(image);
 	});
 
 	it('should call the update selection handler when marker selection occurs', function () {
 		var updateSelectionHandler = jasmine.createSpy('updateSelectionHandler');
 
 		service.onSelect(scope, updateSelectionHandler);
-		service.select(imageMap.markers[0]);
+		service.select(markers[0]);
 
-		expect(updateSelectionHandler).toHaveBeenCalledWith(imageMap.markers[0]);
+		expect(updateSelectionHandler).toHaveBeenCalledWith(markers[0]);
 	});
 });
