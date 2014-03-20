@@ -10,6 +10,11 @@ angular.module('chalkUpApp')
 			.state('start', {
 				url: '/',
 				templateUrl: 'views/start.html'
+			})
+			.state('gym', {
+				url: '/gym?id',
+				templateUrl: 'views/gym.html',
+				controller: 'GymCtrl'
 			});
 
 
