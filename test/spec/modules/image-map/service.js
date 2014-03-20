@@ -19,7 +19,7 @@ describe('Service: imageMapService', function () {
 		selectionUpdateHandler = jasmine.createSpy('selectionUpdateHandler');
 
 		service.onImageUpdate(scope, imageUpdateHandler);
-		service.onMarkersUpdate(scope, markersUpdateHandler);
+		service.onMarkerGroupsUpdate(scope, markersUpdateHandler);
 		service.onSelect(scope, selectionUpdateHandler);
 	}));
 
@@ -53,16 +53,16 @@ describe('Service: imageMapService', function () {
 		expect(markersUpdateHandler).toHaveBeenCalledWith(undefined);
 
 		expect(service.getImage()).toBe(image);
-		expect(service.getMarkers()).toBe(undefined);
+		expect(service.getMarkerGroups()).toBe(undefined);
 	});
 
 	it('should call the markers and selection update handler when markers are updated', function () {
-		service.updateMarkers(markers);
+		service.updateMarkerGroups(markers);
 
 		expect(markersUpdateHandler).toHaveBeenCalledWith(markers);
 		expect(selectionUpdateHandler).toHaveBeenCalledWith(undefined);
 
-		expect(service.getMarkers()).toBe(markers);
+		expect(service.getMarkerGroups()).toBe(markers);
 		expect(service.getSelected()).toBe(undefined);
 	});
 

@@ -19,11 +19,11 @@ angular.module('imageMap')
 		var _image;
 
 		config.updateImage = function (image) {
+			// updating image implicitly removes markers
+			config.removeMarkerGroups();
+
 			_image = image;
 			$rootScope.$broadcast(IMAGE_UPDATE_EVENT, {image: _image});
-
-			// updating image implicitly removes markers
-			config.removeMarkers();
 		};
 
 		config.onImageUpdate = function ($scope, handler) {
@@ -41,28 +41,28 @@ angular.module('imageMap')
 		var MARKERS_EVENT = 'imageMap:markers';
 
 		// the currently active markers
-		var _markers;
+		var _markerGroups;
 
-		config.removeMarkers = function () {
-			config.updateMarkers(undefined);
+		config.removeMarkerGroups = function () {
+			config.updateMarkerGroups(undefined);
 		};
 
-		config.updateMarkers = function (markers) {
-			_markers = markers;
-			$rootScope.$broadcast(MARKERS_EVENT, {markers: markers});
-
+		config.updateMarkerGroups = function (markerGroups) {
 			// updating markers implicitly unselects
 			config.unselect();
+
+			_markerGroups = markerGroups;
+			$rootScope.$broadcast(MARKERS_EVENT, {markerGroups: markerGroups});
 		};
 
-		config.onMarkersUpdate = function ($scope, handler) {
+		config.onMarkerGroupsUpdate = function ($scope, handler) {
 			$scope.$on(MARKERS_EVENT, function (event, args) {
-				handler(args.markers);
+				handler(args.markerGroups);
 			});
 		};
 
-		config.getMarkers = function () {
-			return _markers;
+		config.getMarkerGroups = function () {
+			return _markerGroups;
 		};
 
 
@@ -179,19 +179,25 @@ angular.module('imageMap')
 		return config;
 	});
 
+
 angular.module('imageMap')
 	.factory('mapMarkers', function ($rootScope, mapProjection, imageMapService) {
 		var config = {};
 
 		var markerIdToLeafletMarker;
 
-		var layerGroup;
+		var layerGroups;
+		var layerControl;
 
-		function removeMarkers(map) {
-			if (!_.isUndefined(layerGroup)) {
-				map.removeLayer(layerGroup);
-				layerGroup = undefined;
+		function removeMarkerGroups(map) {
+			if (!_.isUndefined(layerGroups)) {
+				_.each(layerGroups, function (layerGroup) {
+					map.removeLayer(layerGroup);
+				});
+				layerGroups = undefined;
 				markerIdToLeafletMarker = undefined;
+				layerControl.removeFrom(map);
+				layerControl = undefined;
 			}
 		}
 
@@ -212,32 +218,38 @@ angular.module('imageMap')
 			return marker;
 		}
 
-		function addMarkers(map, image, markers) {
+		function addMarkerGroups(map, image, markerGroups) {
 			var projection = mapProjection.calculate(map, image);
 
 			markerIdToLeafletMarker = {};
-			var leafletMarkers = _.map(markers, function (marker) {
-				var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection);
-				markerIdToLeafletMarker[marker.id] = leafletMarker;
-				return  leafletMarker;
+			layerGroups = {};
+			_.each(markerGroups, function (markerGroup, name) {
+				var leafletMarkers = _.map(markerGroup, function (marker) {
+					var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection);
+					markerIdToLeafletMarker[marker.id] = leafletMarker;
+					return leafletMarker;
+				});
+				var layerGroup = L.layerGroup(leafletMarkers);
+				layerGroups[name] = layerGroup;
+				map.addLayer(layerGroup);
 			});
 
-			layerGroup = L.layerGroup(leafletMarkers);
-			map.addLayer(layerGroup);
+			layerControl = L.control.layers(undefined, layerGroups).addTo(map);
 		}
 
-		config.drawMarkers = function (map, image, markers) {
+		config.drawMarkerGroups = function (map, image, markerGroups) {
 			// we need an image to draw markers on it
-			if (_.isUndefined(image) || _.isUndefined(markers)) {
-				removeMarkers(map);
+			if (_.isUndefined(image) || _.isUndefined(markerGroups)) {
+				removeMarkerGroups(map);
 				return;
 			}
 
 			// remove old markers
-			removeMarkers(map);
+			removeMarkerGroups(map);
 
-			addMarkers(map, image, markers);
+			addMarkerGroups(map, image, markerGroups);
 		};
+
 
 		function getLeafletMarker(imageMapMarker) {
 			return markerIdToLeafletMarker[imageMapMarker.id];
@@ -294,10 +306,10 @@ angular.module('imageMap')
 
 
 				// MARKERS
-				mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers());
+				mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
 
-				imageMapService.onMarkersUpdate($scope, function (markers) {
-					mapMarkers.drawMarkers(map, imageMapService.getImage(), markers);
+				imageMapService.onMarkerGroupsUpdate($scope, function (markers) {
+					mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), markers);
 				});
 
 
@@ -311,7 +323,7 @@ angular.module('imageMap')
 
 				// SELECT MARKER
 
-				// click handler for each marker is set in mapMarkers.drawMarkers()
+				// click handler for each marker is set in mapMarkers.drawMarkerGroups()
 
 				map.on('click', function (event) {
 					$scope.$apply(function () {
