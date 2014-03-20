@@ -7,6 +7,7 @@ angular.module('imageMap')
 		var config = {};
 
 		var DRAW_EVENT = 'imageMap:draw';
+		var SELECTION_EVENT = 'imageMap:select';
 
 		var lastImageMap = undefined;
 
@@ -19,9 +20,23 @@ angular.module('imageMap')
 			$rootScope.$broadcast(DRAW_EVENT, {imageMap: lastImageMap});
 		};
 
-		config.onDraw = function($scope, handler) {
-			$scope.$on(DRAW_EVENT, function(event, args) {
+		config.onDraw = function ($scope, handler) {
+			$scope.$on(DRAW_EVENT, function (event, args) {
 				handler(args.imageMap);
+			});
+		};
+
+
+		var selectedMarker = undefined;
+
+		config.select = function (marker) {
+			selectedMarker = marker;
+			$rootScope.$broadcast(SELECTION_EVENT, {marker: marker});
+		};
+
+		config.onSelect = function ($scope, handler) {
+			$scope.$on(SELECTION_EVENT, function (event, args) {
+				handler(args.marker);
 			});
 		};
 

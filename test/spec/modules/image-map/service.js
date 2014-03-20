@@ -44,4 +44,12 @@ describe('Service: imageMapService', function () {
 		expect(updateHandler).toHaveBeenCalledWith(imageMap);
 	});
 
+	it('should call the update selection handler when marker selection occurs', function () {
+		var updateSelectionHandler = jasmine.createSpy('updateSelectionHandler');
+
+		service.onSelect(scope, updateSelectionHandler);
+		service.select(imageMap.markers[0]);
+
+		expect(updateSelectionHandler).toHaveBeenCalledWith(imageMap.markers[0]);
+	});
 });
