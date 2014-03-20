@@ -11,6 +11,18 @@ describe('Service: imageMapService', function () {
 		service = imageMapService;
 		scope = $rootScope.$new();
 	}));
+
+	var imageUpdateHandler, markersUpdateHandler, selectionUpdateHandler;
+	beforeEach(inject(function () {
+		imageUpdateHandler = jasmine.createSpy('imageUpdateHandler');
+		markersUpdateHandler = jasmine.createSpy('markersUpdateHandler');
+		selectionUpdateHandler = jasmine.createSpy('selectionUpdateHandler');
+
+		service.onImageUpdate(scope, imageUpdateHandler);
+		service.onMarkersUpdate(scope, markersUpdateHandler);
+		service.onSelect(scope, selectionUpdateHandler);
+	}));
+
 	var image = {
 		url: 'test.jpg',
 		width: '1000',
@@ -34,33 +46,31 @@ describe('Service: imageMapService', function () {
 		}
 	];
 
-	it('should call the image update handler when updated or redrawn', function () {
-		var handler = jasmine.createSpy('imageUpdateHandler');
-
-		service.onImageUpdate(scope, handler);
+	it('should call the image and markers update handler when image is updated', function () {
 		service.updateImage(image);
 
-		expect(handler).toHaveBeenCalledWith(image);
+		expect(imageUpdateHandler).toHaveBeenCalledWith(image);
+		expect(markersUpdateHandler).toHaveBeenCalledWith(undefined);
 
 		expect(service.getImage()).toBe(image);
+		expect(service.getMarkers()).toBe(undefined);
 	});
 
-	it('should call the markers update handler when updated or redrawn', function () {
-		var handler = jasmine.createSpy('markersUpdateHandler');
-
-		service.onMarkersUpdate(scope, handler);
+	it('should call the markers and selection update handler when markers are updated', function () {
 		service.updateMarkers(markers);
 
-		expect(handler).toHaveBeenCalledWith(markers);
+		expect(markersUpdateHandler).toHaveBeenCalledWith(markers);
+		expect(selectionUpdateHandler).toHaveBeenCalledWith(undefined);
+
 		expect(service.getMarkers()).toBe(markers);
+		expect(service.getSelected()).toBe(undefined);
 	});
 
-	it('should call the update selection handler when marker selection occurs', function () {
-		var handler = jasmine.createSpy('updateSelectionHandler');
-
-		service.onSelect(scope, handler);
+	it('should call the update selection handler when selection is updated', function () {
 		service.select(markers[0]);
 
-		expect(handler).toHaveBeenCalledWith(markers[0]);
+		expect(selectionUpdateHandler).toHaveBeenCalledWith(markers[0]);
+
+		expect(service.getSelected()).toBe(markers[0]);
 	});
 });

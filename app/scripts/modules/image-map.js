@@ -21,6 +21,9 @@ angular.module('imageMap')
 		config.updateImage = function (image) {
 			_image = image;
 			$rootScope.$broadcast(IMAGE_UPDATE_EVENT, {image: _image});
+
+			// updating image implicitly removes markers
+			config.removeMarkers();
 		};
 
 		config.onImageUpdate = function ($scope, handler) {
@@ -40,9 +43,16 @@ angular.module('imageMap')
 		// the currently active markers
 		var _markers;
 
+		config.removeMarkers = function () {
+			config.updateMarkers(undefined);
+		};
+
 		config.updateMarkers = function (markers) {
 			_markers = markers;
 			$rootScope.$broadcast(MARKERS_EVENT, {markers: markers});
+
+			// updating markers implicitly unselects
+			config.unselect();
 		};
 
 		config.onMarkersUpdate = function ($scope, handler) {
@@ -62,6 +72,10 @@ angular.module('imageMap')
 
 		var _selectedMarker;
 
+		config.unselect = function () {
+			config.select(undefined);
+		};
+
 		config.select = function (marker) {
 			_selectedMarker = marker;
 			$rootScope.$broadcast(SELECTION_EVENT, {marker: marker});
@@ -72,6 +86,11 @@ angular.module('imageMap')
 				handler(args.marker);
 			});
 		};
+
+		config.getSelected = function () {
+			return _selectedMarker;
+		};
+
 
 		return config;
 	});
@@ -161,14 +180,18 @@ angular.module('imageMap')
 	});
 
 angular.module('imageMap')
-	.factory('mapMarkers', function (mapProjection) {
+	.factory('mapMarkers', function ($rootScope, mapProjection, imageMapService) {
 		var config = {};
+
+		var markerIdToLeafletMarker;
 
 		var layerGroup;
 
 		function removeMarkers(map) {
 			if (!_.isUndefined(layerGroup)) {
 				map.removeLayer(layerGroup);
+				layerGroup = undefined;
+				markerIdToLeafletMarker = undefined;
 			}
 		}
 
@@ -178,14 +201,25 @@ angular.module('imageMap')
 				riseOnHover: true
 			};
 
-			return L.marker(latLng, options);
+			var marker = L.marker(latLng, options);
+
+			marker.on('click', function () {
+				$rootScope.$apply(function () {
+					imageMapService.select(imageMapMarker);
+				});
+			});
+
+			return marker;
 		}
 
 		function addMarkers(map, image, markers) {
 			var projection = mapProjection.calculate(map, image);
 
-			var leafletMarkers = _.map(markers, function(marker) {
-				return imageMapMarkerToLeafletMarker(marker, projection);
+			markerIdToLeafletMarker = {};
+			var leafletMarkers = _.map(markers, function (marker) {
+				var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection);
+				markerIdToLeafletMarker[marker.id] = leafletMarker;
+				return  leafletMarker;
 			});
 
 			layerGroup = L.layerGroup(leafletMarkers);
@@ -203,6 +237,28 @@ angular.module('imageMap')
 			removeMarkers(map);
 
 			addMarkers(map, image, markers);
+		};
+
+		function getLeafletMarker(imageMapMarker) {
+			return markerIdToLeafletMarker[imageMapMarker.id];
+		}
+
+		config.unmarkSelected = function (marker) {
+			if (_.isUndefined(marker)) {
+				return;
+			}
+
+			var leafletMarker = getLeafletMarker(marker);
+			$(leafletMarker._icon).removeClass('selected');
+		};
+
+		config.markSelected = function (marker) {
+			if (_.isUndefined(marker)) {
+				return;
+			}
+
+			var leafletMarker = getLeafletMarker(marker);
+			$(leafletMarker._icon).addClass('selected');
 		};
 
 		return config;
@@ -250,6 +306,24 @@ angular.module('imageMap')
 					$scope.$apply(function () {
 						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
 					});
+				});
+
+
+				// SELECT MARKER
+
+				// click handler for each marker is set in mapMarkers.drawMarkers()
+
+				map.on('click', function (event) {
+					$scope.$apply(function () {
+						imageMapService.unselect();
+					});
+				});
+
+				var selected;
+				imageMapService.onSelect($scope, function (marker) {
+					mapMarkers.unmarkSelected(selected);
+					mapMarkers.markSelected(marker);
+					selected = marker;
 				});
 			}
 		};
