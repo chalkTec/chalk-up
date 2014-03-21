@@ -7,7 +7,7 @@ angular.module('chalkUpApp', [
 	'angularMoment',
 	'angulartics',
 	'angulartics.google.analytics',
-	'imageMap'
+	'gymMap'
 ]);
 
 angular.module('chalkUpApp')
