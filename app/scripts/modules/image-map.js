@@ -199,13 +199,21 @@ angular.module('imageMap')
 
 		function removeMarkerGroups(map) {
 			if (!_.isUndefined(layerGroups)) {
+				layerControl.removeFrom(map);
+				// TODO: remove this as soon as the following pull request ended up in leaflet-dist
+				// https://github.com/jack-kerouac/Leaflet/commit/59a8c00a1850103f4fba8561961282eb21b29e7d
+				map
+					.off('layeradd', layerControl._onLayerChange, layerControl)
+					.off('layerremove', layerControl._onLayerChange, layerControl);
+
+				layerControl = undefined;
+
 				_.each(layerGroups, function (layerGroup) {
 					map.removeLayer(layerGroup);
 				});
+
 				layerGroups = undefined;
 				markerIdToLeafletMarker = undefined;
-				layerControl.removeFrom(map);
-				layerControl = undefined;
 			}
 		}
 
@@ -239,24 +247,10 @@ angular.module('imageMap')
 				});
 				var layerGroup = L.layerGroup(leafletMarkers);
 				layerGroups[name] = layerGroup;
-				map.addLayer(layerGroup);
+				layerGroup.addTo(map);
 			});
 
 			layerControl = L.control.layers(undefined, layerGroups).addTo(map);
-
-			// unselect marker if we hide the layer where the active marker was on
-			map.on('overlayremove', function (e) {
-				$rootScope.$apply(function () {
-					if (imageMapService.hasSelected()) {
-						var selectedLeafletMarker = getLeafletMarker(imageMapService.getSelected());
-						var removedLayerGroup = e.layer;
-
-						if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
-							imageMapService.unselect();
-						}
-					}
-				});
-			});
 		}
 
 		config.drawMarkerGroups = function (map, image, markerGroups) {
@@ -332,6 +326,7 @@ angular.module('imageMap')
 				map.on('resize', function () {
 					$scope.$apply(function () {
 						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
+						mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
 					});
 				});
 
@@ -352,6 +347,21 @@ angular.module('imageMap')
 					mapMarkers.unmarkSelected(selected);
 					mapMarkers.markSelected(marker);
 					selected = marker;
+				});
+
+
+				// unselect marker if we hide the layer where the active marker was on
+				map.on('overlayremove', function (e) {
+					$rootScope.$apply(function () {
+						if (imageMapService.hasSelected()) {
+							var selectedLeafletMarker = getLeafletMarker(imageMapService.getSelected());
+							var removedLayerGroup = e.layer;
+
+							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
+								imageMapService.unselect();
+							}
+						}
+					});
 				});
 			}
 		};
