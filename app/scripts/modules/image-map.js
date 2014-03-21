@@ -180,6 +180,10 @@ angular.module('imageMap')
 			addOverlay(map, image);
 		};
 
+		config.destroy = function(map) {
+			removeOverlay(map);
+		};
+
 		return config;
 	});
 
@@ -284,6 +288,11 @@ angular.module('imageMap')
 			$(leafletMarker._icon).addClass('selected');
 		};
 
+		config.destroy = function(map) {
+			removeMarkerGroups(map);
+		};
+
+
 		return config;
 	});
 
@@ -362,6 +371,14 @@ angular.module('imageMap')
 							}
 						}
 					});
+				});
+
+
+				$scope.$on('$destroy', function() {
+					mapMarkers.destroy(map);
+					mapOverlay.destroy(map);
+					map.remove();
+					map = undefined;
 				});
 			}
 		};
