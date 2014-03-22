@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gymMap', ['imageMap', 'cuColor']);
+angular.module('gymMap', ['restangular', 'imageMap', 'cuColor']);
 
 
 angular.module('gymMap')
