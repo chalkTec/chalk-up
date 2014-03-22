@@ -9,7 +9,8 @@ angular.module('chalkUpApp')
 		$stateProvider
 			.state('start', {
 				url: '/',
-				templateUrl: 'views/start.html'
+				templateUrl: 'views/start.html',
+				controller: 'StartCtrl'
 			})
 			.state('gym', {
 				url: '/gym?id',
