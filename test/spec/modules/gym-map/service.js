@@ -79,7 +79,7 @@ describe('Service: gymMapService', function () {
 		}
 	];
 
-	it('should transform a list of boulders into groups of markers', function () {
+	xit('should transform a list of boulders into groups of markers', function () {
 		var markerGroups = service.markerGroupsForBoulders(boulders);
 
 		expect(_.keys(markerGroups)).toContain('rot');
