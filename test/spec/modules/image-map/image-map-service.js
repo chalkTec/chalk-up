@@ -12,17 +12,17 @@ describe('Service: imageMapService', function () {
 		scope = $rootScope.$new();
 	}));
 
-	var imageUpdateHandler, markersUpdateHandler, selectionUpdateHandler, unselectionUpdateHandler;
+	var imageUpdateHandler, markersUpdateHandler, selectionChangeHandler, unselectionHandler;
 	beforeEach(function () {
 		imageUpdateHandler = jasmine.createSpy('imageUpdateHandler');
 		markersUpdateHandler = jasmine.createSpy('markersUpdateHandler');
-		selectionUpdateHandler = jasmine.createSpy('selectionUpdateHandler');
-		unselectionUpdateHandler = jasmine.createSpy('unselectionUpdateHandler');
+		selectionChangeHandler = jasmine.createSpy('selectionChangeHandler');
+		unselectionHandler = jasmine.createSpy('unselectionHandler');
 
 		service.onImageUpdate(scope, imageUpdateHandler);
 		service.onMarkerGroupsUpdate(scope, markersUpdateHandler);
-		service.onSelect(scope, selectionUpdateHandler);
-		service.onUnselect(scope, unselectionUpdateHandler);
+		service.onSelectionChange(scope, selectionChangeHandler);
+		service.onUnselect(scope, unselectionHandler);
 	});
 
 	var image = {
@@ -62,8 +62,8 @@ describe('Service: imageMapService', function () {
 		service.updateMarkerGroups(markers);
 
 		expect(markersUpdateHandler).toHaveBeenCalledWith(markers);
-		expect(selectionUpdateHandler).not.toHaveBeenCalled();
-		expect(unselectionUpdateHandler).not.toHaveBeenCalled();
+		expect(selectionChangeHandler).toHaveBeenCalledWith(undefined);
+		expect(unselectionHandler).not.toHaveBeenCalled();
 
 		expect(service.getMarkerGroups()).toBe(markers);
 		expect(service.getSelected()).toBe(undefined);
@@ -75,26 +75,26 @@ describe('Service: imageMapService', function () {
 
 		service.select(markers[0]);
 
-		expect(selectionUpdateHandler).toHaveBeenCalledWith(markers[0]);
-		expect(unselectionUpdateHandler).not.toHaveBeenCalled();
+		expect(selectionChangeHandler).toHaveBeenCalledWith(markers[0]);
+		expect(unselectionHandler).not.toHaveBeenCalled();
 		expect(service.hasSelected()).toBeTruthy();
 		expect(service.getSelected()).toBe(markers[0]);
-		selectionUpdateHandler.calls.reset();
-		unselectionUpdateHandler.calls.reset();
+		selectionChangeHandler.calls.reset();
+		unselectionHandler.calls.reset();
 
 		service.select(markers[1]);
 
-		expect(selectionUpdateHandler).toHaveBeenCalledWith(markers[1]);
-		expect(unselectionUpdateHandler).toHaveBeenCalledWith(markers[0]);
+		expect(selectionChangeHandler).toHaveBeenCalledWith(markers[1]);
+		expect(unselectionHandler).toHaveBeenCalledWith(markers[0]);
 		expect(service.hasSelected()).toBeTruthy();
 		expect(service.getSelected()).toBe(markers[1]);
-		selectionUpdateHandler.calls.reset();
-		unselectionUpdateHandler.calls.reset();
+		selectionChangeHandler.calls.reset();
+		unselectionHandler.calls.reset();
 
 		service.clearSelection();
 
-		expect(selectionUpdateHandler).not.toHaveBeenCalled();
-		expect(unselectionUpdateHandler).toHaveBeenCalledWith(markers[1]);
+		expect(selectionChangeHandler).toHaveBeenCalledWith(undefined);
+		expect(unselectionHandler).toHaveBeenCalledWith(markers[1]);
 		expect(service.hasSelected()).toBeFalsy();
 		expect(service.getSelected()).toBe(undefined);
 	});

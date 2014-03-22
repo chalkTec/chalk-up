@@ -75,26 +75,31 @@ angular.module('imageMap')
 		var _selectedMarker;
 
 		config.clearSelection = function () {
-			config.select(undefined);
+			internalSelect(undefined);
 		};
 
-		config.select = function (marker) {
+		function internalSelect(marker) {
 			var previousSelected = _selectedMarker;
 			_selectedMarker = marker;
 			if (!_.isUndefined(previousSelected)) {
 				$rootScope.$broadcast(UNSELECTION_EVENT, {marker: previousSelected});
 			}
-			if (!_.isUndefined(_selectedMarker)) {
-				$rootScope.$broadcast(SELECTION_EVENT, {marker: _selectedMarker});
-			}
+
+			$rootScope.$broadcast(SELECTION_EVENT, {marker: _selectedMarker});
+		}
+
+		config.select = function (marker) {
+			internalSelect(marker);
 		};
 
-		config.onSelect = function ($scope, handler) {
+		/* installs a handler that is called when the selection changes (to another marker or to undefined) */
+		config.onSelectionChange = function ($scope, handler) {
 			$scope.$on(SELECTION_EVENT, function (event, args) {
 				handler(args.marker);
 			});
 		};
 
+		/* installs a handler that is called when a marker is unselected */
 		config.onUnselect = function ($scope, handler) {
 			$scope.$on(UNSELECTION_EVENT, function (event, args) {
 				handler(args.marker);
@@ -356,11 +361,13 @@ angular.module('imageMap')
 					});
 				});
 
-				if(imageMapService.hasSelected()) {
+				if (imageMapService.hasSelected()) {
 					mapMarkers.markSelected(imageMapService.getSelected());
 				}
-				imageMapService.onSelect($scope, function (marker) {
-					mapMarkers.markSelected(marker);
+				imageMapService.onSelectionChange($scope, function (marker) {
+					if (!_.isUndefined(marker)) {
+						mapMarkers.markSelected(marker);
+					}
 				});
 				imageMapService.onUnselect($scope, function (marker) {
 					mapMarkers.unmarkSelected(marker);
