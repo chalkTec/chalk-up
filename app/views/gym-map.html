@@ -1,3 +1,9 @@
 <div class="map" image-map style="height: 100%;"></div>
 
-<p>{{selected}}</p>
+<p>SELECTED: {{selected.id}}</p>
+
+<ul>
+	<li ng-repeat="boulder in boulders" ng-click="select(boulder)">{{boulder.id}}</li>
+</ul>
+
+

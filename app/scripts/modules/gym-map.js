@@ -162,12 +162,17 @@ angular.module('gymMap')
 
 					bouldersGet.then(function (boulders) {
 						gymMapService.updateBoulders(boulders);
+						$scope.boulders = boulders;
 					});
 				});
 
 				gymMapService.onSelectionChange($scope, function (boulder) {
 					$scope.selected = boulder;
 				});
+
+				$scope.select = function(boulder) {
+					gymMapService.select(boulder);
+				}
 			}
 		};
 	});
