@@ -172,7 +172,7 @@ angular.module('gymMap')
 
 				$scope.select = function(boulder) {
 					gymMapService.select(boulder);
-				}
+				};
 			}
 		};
 	});

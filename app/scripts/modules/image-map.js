@@ -415,7 +415,7 @@ angular.module('imageMap')
 				map.on('overlayremove', function (e) {
 					$rootScope.$apply(function () {
 						if (imageMapService.hasSelected()) {
-							var selectedLeafletMarker = getLeafletMarker(imageMapService.getSelected());
+							var selectedLeafletMarker = mapMarkers.getLeafletMarker(imageMapService.getSelected());
 							var removedLayerGroup = e.layer;
 
 							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
