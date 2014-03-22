@@ -4,7 +4,7 @@ angular.module('gymMap', ['imageMap']);
 
 
 angular.module('gymMap')
-	.factory('gymMapService', function (imageMapService) {
+	.factory('gymMapService', function ($rootScope, imageMapService) {
 		var config = {};
 
 
@@ -45,12 +45,12 @@ angular.module('gymMap')
 		}
 
 		function markerGroupsForBoulders(boulders) {
-			var bouldersGroup = _.groupBy(boulders, function(boulder) {
+			var bouldersGroup = _.groupBy(boulders, function (boulder) {
 				return boulder.color.germanName;
 			});
 
 			var markersGroup = {};
-			_.each(bouldersGroup, function(boulders, color) {
+			_.each(bouldersGroup, function (boulders, color) {
 				markersGroup[color] = _.map(boulders, markerForBoulder);
 			});
 
@@ -66,15 +66,79 @@ angular.module('gymMap')
 			imageMapService.removeMarkerGroups();
 		};
 
+
+		var bouldersForMarker;
+
+		function boulderForMarker(marker) {
+			return bouldersForMarker[marker.id];
+		}
+
+		var onImageMarkerSelectHandler;
 		config.updateBoulders = function (boulders) {
 			_boulders = boulders;
 
-			var markers = markerGroupsForBoulders(boulders);
-			imageMapService.updateMarkerGroups(markers);
+			var markerGroups = markerGroupsForBoulders(boulders);
+			imageMapService.updateMarkerGroups(markerGroups);
+
+			bouldersForMarker = _.indexBy(boulders, 'id');
+
+			if (!_.isUndefined(onImageMarkerSelectHandler)) {
+				// unregister handler
+				onImageMarkerSelectHandler();
+			}
+			onImageMarkerSelectHandler = imageMapService.onSelectionChange($rootScope, function (marker) {
+				// internally select the boulder (without propagating it to image map)
+				if (_.isUndefined(marker)) {
+					internalSelect(undefined);
+				}
+				else {
+					internalSelect(boulderForMarker(marker));
+				}
+			});
 		};
 
 		config.getBoulders = function () {
 			return _boulders;
+		};
+
+
+		// SELECTED BOULDER
+
+		var SELECTION_EVENT = 'gymMap:select';
+
+		var _selectedBoulder;
+
+		config.clearSelection = function () {
+			imageMapService.clearSelection();
+
+			internalSelect(undefined);
+		};
+
+		function internalSelect(boulder) {
+			_selectedBoulder = boulder;
+			$rootScope.$broadcast(SELECTION_EVENT, {boulder: _selectedBoulder});
+		}
+
+		/* must not be invoked with undefined */
+		config.select = function (boulder) {
+			imageMapService.select(markerForBoulder(boulder));
+
+			internalSelect(boulder);
+		};
+
+		/* installs a handler that is called when the selection changes (to another boulder or to undefined) */
+		config.onSelectionChange = function ($scope, handler) {
+			$scope.$on(SELECTION_EVENT, function (event, args) {
+				handler(args.boulder);
+			});
+		};
+
+		config.hasSelected = function () {
+			return !_.isUndefined(config.getSelected());
+		};
+
+		config.getSelected = function () {
+			return _selectedBoulder;
 		};
 
 		return config;
@@ -93,12 +157,16 @@ angular.module('gymMap')
 				var gym = Restangular.one('gyms', $scope.gymId);
 				var bouldersGet = gym.all('boulders').getList();
 
-				gym.get().then(function(gym) {
+				gym.get().then(function (gym) {
 					gymMapService.updateGym(gym);
 
-					bouldersGet.then(function(boulders) {
+					bouldersGet.then(function (boulders) {
 						gymMapService.updateBoulders(boulders);
 					});
+				});
+
+				gymMapService.onSelectionChange($scope, function (boulder) {
+					$scope.selected = boulder;
 				});
 			}
 		};

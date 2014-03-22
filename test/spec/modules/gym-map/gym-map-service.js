@@ -14,7 +14,7 @@ describe('Service: gymMapService', function () {
 	}));
 
 
-	describe('updating the gym', function() {
+	describe('updating the gym', function () {
 		var gym = {
 			"id": 2,
 			"name": "Heavens Gate",
@@ -31,7 +31,7 @@ describe('Service: gymMapService', function () {
 			]
 		};
 
-		it('should update the image map', function() {
+		it('should update the image map', function () {
 			spyOn(service, 'removeBoulders');
 			spyOn(imageMap, 'updateImage');
 
@@ -47,75 +47,76 @@ describe('Service: gymMapService', function () {
 		});
 	});
 
-
-	describe('updating the boulders', function() {
-		var boulders = [
-			{
+	var boulder = {
+		"id": 1,
+		"color": {
+			"name": "BLUE",
+			"germanName": "blau",
+			"englishName": "blue",
+			"primary": "rgb(61, 61, 255)"
+		},
+		"location": {
+			"floorPlan": {
 				"id": 1,
-				"color": {
-					"name": "BLUE",
-					"germanName": "blau",
-					"englishName": "blue",
-					"primary": "rgb(61, 61, 255)"
-				},
-				"location": {
-					"floorPlan": {
-						"id": 1,
-						"img": {
-							"widthInPx": 2000,
-							"heightInPx": 1393,
-							"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
-						}
-					},
-					"x": 0.1,
-					"y": 0.2
+				"img": {
+					"widthInPx": 2000,
+					"heightInPx": 1393,
+					"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
 				}
 			},
-			{
-				"id": 2,
-				"color": {
-					"name": "BLUE",
-					"germanName": "blau",
-					"englishName": "blue",
-					"primary": "rgb(61, 61, 255)"
-				},
-				"location": {
-					"floorPlan": {
-						"id": 1,
-						"img": {
-							"widthInPx": 2000,
-							"heightInPx": 1393,
-							"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
-						}
-					},
-					"x": 0.3,
-					"y": 0.4
-				}
-			},
-			{
-				"id": 3,
-				"color": {
-					"name": "RED",
-					"germanName": "rot",
-					"englishName": "red",
-					"primary": "rgb(255, 0, 0)"
-				},
-				"location": {
-					"floorPlan": {
-						"id": 1,
-						"img": {
-							"widthInPx": 2000,
-							"heightInPx": 1393,
-							"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
-						}
-					},
-					"x": 0.5,
-					"y": 0.6
-				}
-			}
-		];
+			"x": 0.1,
+			"y": 0.2
+		}
+	};
 
-		it('should update the image map markers', function() {
+	var boulders = [
+		boulder,
+		{
+			"id": 2,
+			"color": {
+				"name": "BLUE",
+				"germanName": "blau",
+				"englishName": "blue",
+				"primary": "rgb(61, 61, 255)"
+			},
+			"location": {
+				"floorPlan": {
+					"id": 1,
+					"img": {
+						"widthInPx": 2000,
+						"heightInPx": 1393,
+						"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
+					}
+				},
+				"x": 0.3,
+				"y": 0.4
+			}
+		},
+		{
+			"id": 3,
+			"color": {
+				"name": "RED",
+				"germanName": "rot",
+				"englishName": "red",
+				"primary": "rgb(255, 0, 0)"
+			},
+			"location": {
+				"floorPlan": {
+					"id": 1,
+					"img": {
+						"widthInPx": 2000,
+						"heightInPx": 1393,
+						"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
+					}
+				},
+				"x": 0.5,
+				"y": 0.6
+			}
+		}
+	];
+
+	describe('updating the boulders', function () {
+		it('should update the image map markers', function () {
 			spyOn(imageMap, 'updateMarkerGroups');
 
 			service.updateBoulders(boulders);
@@ -145,6 +146,70 @@ describe('Service: gymMapService', function () {
 				x: 2000 * 0.3,
 				y: 1393 * 0.4
 			}));
+		});
+	});
+
+	describe('selecting a boulder', function () {
+		beforeEach(function () {
+			service.updateBoulders([boulder]);
+		});
+
+		it('should select the corresponding image marker', function () {
+			spyOn(imageMap, 'select');
+
+			service.select(boulder);
+
+			expect(imageMap.select).toHaveBeenCalledWith(jasmine.objectContaining({
+				id: boulder.id
+			}));
+		});
+	});
+
+
+	describe('clearing the boulder selection', function () {
+		beforeEach(function () {
+			service.updateBoulders([boulder]);
+		});
+
+		it('should clear the marker selection', function () {
+			spyOn(imageMap, 'clearSelection');
+
+			service.clearSelection();
+
+			expect(imageMap.clearSelection).toHaveBeenCalled();
+		});
+	});
+
+
+	describe('selecting an image marker', function () {
+		beforeEach(function () {
+			service.updateBoulders([boulder]);
+		});
+
+		it('should select the corresponding boulder', function () {
+			var handler = jasmine.createSpy('boulderSelectionHandler');
+			service.onSelectionChange(scope, handler);
+
+			var marker = { id: boulder.id };
+			imageMap.select(marker);
+
+			expect(handler).toHaveBeenCalledWith(boulder);
+		});
+	});
+
+	describe('clearing the image marker selection', function () {
+		beforeEach(function () {
+			service.updateBoulders([boulder]);
+			service.select(boulder);
+		});
+
+		it('should unselect the selected boulder', function () {
+			var handler = jasmine.createSpy('boulderSelectionHandler');
+			service.onSelectionChange(scope, handler);
+
+			imageMap.clearSelection();
+
+			expect(handler).toHaveBeenCalledWith(undefined);
 		});
 	});
 
