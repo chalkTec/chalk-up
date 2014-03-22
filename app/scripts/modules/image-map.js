@@ -245,6 +245,9 @@ angular.module('imageMap')
 			var options = {
 				riseOnHover: true
 			};
+			if (imageMapMarker.icon) {
+				options.icon = imageMapMarker.icon;
+			}
 
 			var marker = L.marker(latLng, options);
 

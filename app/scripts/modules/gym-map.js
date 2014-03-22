@@ -1,10 +1,13 @@
 'use strict';
 
-angular.module('gymMap', ['imageMap']);
+angular.module('gymMap', ['imageMap', 'cuColor']);
 
 
 angular.module('gymMap')
-	.factory('gymMapService', function ($rootScope, imageMapService) {
+	.constant('GRADIENT_ANGLE', 45);
+
+angular.module('gymMap')
+	.factory('gymMapService', function ($rootScope, imageMapService, cuColorService, GRADIENT_ANGLE) {
 		var config = {};
 
 
@@ -35,12 +38,34 @@ angular.module('gymMap')
 
 		// BOULDERS
 
+		L.BoulderIcon = L.DivIcon.extend({
+			options: {
+				className: 'boulder-icon',
+				iconSize: undefined,    // set with CSS (assignment to undefined is required!)
+				iconAnchor: undefined,   // set with CSS (assignment to undefined is required!)
+				color: { primary: 'black' }
+			},
+			createIcon: function (oldIcon) {
+				var div = L.DivIcon.prototype.createIcon.call(this, oldIcon);
+				var color = this.options.color;
+
+				var css = cuColorService.getCss(color, GRADIENT_ANGLE);
+				$(div).css(css);
+				return div;
+			}
+		});
+
+		L.boulderIcon = function (color) {
+			return new L.BoulderIcon({color: color});
+		};
+
 		function markerForBoulder(boulder) {
 			var l = boulder.location;
 			return {
 				id: boulder.id,
 				x: l.x * l.floorPlan.img.widthInPx,
-				y: l.y * l.floorPlan.img.heightInPx
+				y: l.y * l.floorPlan.img.heightInPx,
+				icon: L.boulderIcon(boulder.color)
 			};
 		}
 
@@ -170,7 +195,7 @@ angular.module('gymMap')
 					$scope.selected = boulder;
 				});
 
-				$scope.select = function(boulder) {
+				$scope.select = function (boulder) {
 					gymMapService.select(boulder);
 				};
 			}
