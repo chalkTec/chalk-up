@@ -13,7 +13,7 @@ describe('Service: imageMapService', function () {
 	}));
 
 	var imageUpdateHandler, markersUpdateHandler, selectionUpdateHandler, unselectionUpdateHandler;
-	beforeEach(inject(function () {
+	beforeEach(function () {
 		imageUpdateHandler = jasmine.createSpy('imageUpdateHandler');
 		markersUpdateHandler = jasmine.createSpy('markersUpdateHandler');
 		selectionUpdateHandler = jasmine.createSpy('selectionUpdateHandler');
@@ -23,7 +23,7 @@ describe('Service: imageMapService', function () {
 		service.onMarkerGroupsUpdate(scope, markersUpdateHandler);
 		service.onSelect(scope, selectionUpdateHandler);
 		service.onUnselect(scope, unselectionUpdateHandler);
-	}));
+	});
 
 	var image = {
 		url: 'test.jpg',
