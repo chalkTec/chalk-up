@@ -2,6 +2,10 @@
 
 angular.module('imageMap', []);
 
+angular.module('imageMap')
+	.config(function() {
+		L.Icon.Default.imagePath = '/bower_components/leaflet-dist/images';
+	});
 
 angular.module('imageMap')
 	.constant('imageMapPadding', 10);
