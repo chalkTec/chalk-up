@@ -388,6 +388,20 @@ angular.module('imageMap')
 					});
 				});
 
+				// mark marker as selected when we add the layer where the selected marker is on
+				map.on('overlayadd', function (e) {
+					$rootScope.$apply(function () {
+						if (imageMapService.hasSelected()) {
+							var selectedLeafletMarker = mapMarkers.getLeafletMarker(imageMapService.getSelected());
+							var addedLayerGroup = e.layer;
+
+							if (addedLayerGroup.hasLayer(selectedLeafletMarker)) {
+								mapMarkers.markSelected(imageMapService.getSelected());
+							}
+						}
+					});
+				});
+
 
 				$scope.$on('$destroy', function () {
 					mapMarkers.destroy(map);
