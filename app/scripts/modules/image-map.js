@@ -48,8 +48,8 @@ angular.module('imageMap')
 		};
 
 		config.updateMarkerGroups = function (markerGroups) {
-			// updating markers implicitly unselects
-			config.unselect();
+			// updating markers implicitly clears selection
+			config.clearSelection();
 
 			_markerGroups = markerGroups;
 			$rootScope.$broadcast(MARKERS_EVENT, {markerGroups: markerGroups});
@@ -69,20 +69,34 @@ angular.module('imageMap')
 		// SELECTED MARKER
 
 		var SELECTION_EVENT = 'imageMap:select';
+		var UNSELECTION_EVENT = 'imageMap:unselect';
+
 
 		var _selectedMarker;
 
-		config.unselect = function () {
+		config.clearSelection = function () {
 			config.select(undefined);
 		};
 
 		config.select = function (marker) {
+			var previousSelected = _selectedMarker;
 			_selectedMarker = marker;
-			$rootScope.$broadcast(SELECTION_EVENT, {marker: marker});
+			if (!_.isUndefined(previousSelected)) {
+				$rootScope.$broadcast(UNSELECTION_EVENT, {marker: previousSelected});
+			}
+			if (!_.isUndefined(_selectedMarker)) {
+				$rootScope.$broadcast(SELECTION_EVENT, {marker: _selectedMarker});
+			}
 		};
 
 		config.onSelect = function ($scope, handler) {
 			$scope.$on(SELECTION_EVENT, function (event, args) {
+				handler(args.marker);
+			});
+		};
+
+		config.onUnselect = function ($scope, handler) {
+			$scope.$on(UNSELECTION_EVENT, function (event, args) {
 				handler(args.marker);
 			});
 		};
@@ -180,7 +194,7 @@ angular.module('imageMap')
 			addOverlay(map, image);
 		};
 
-		config.destroy = function(map) {
+		config.destroy = function (map) {
 			removeOverlay(map);
 		};
 
@@ -197,7 +211,7 @@ angular.module('imageMap')
 		var layerGroups;
 		var layerControl;
 
-		config.getLeafletMarker = function(imageMapMarker) {
+		config.getLeafletMarker = function (imageMapMarker) {
 			return markerIdToLeafletMarker[imageMapMarker.id];
 		};
 
@@ -271,24 +285,16 @@ angular.module('imageMap')
 		};
 
 		config.unmarkSelected = function (marker) {
-			if (_.isUndefined(marker)) {
-				return;
-			}
-
 			var leafletMarker = config.getLeafletMarker(marker);
 			$(leafletMarker._icon).removeClass('selected');
 		};
 
 		config.markSelected = function (marker) {
-			if (_.isUndefined(marker)) {
-				return;
-			}
-
 			var leafletMarker = config.getLeafletMarker(marker);
 			$(leafletMarker._icon).addClass('selected');
 		};
 
-		config.destroy = function(map) {
+		config.destroy = function (map) {
 			removeMarkerGroups(map);
 		};
 
@@ -346,20 +352,22 @@ angular.module('imageMap')
 
 				map.on('click', function () {
 					$scope.$apply(function () {
-						imageMapService.unselect();
+						imageMapService.clearSelection();
 					});
 				});
 
-				var selected;
-				mapMarkers.markSelected(imageMapService.getSelected());
+				if(imageMapService.hasSelected()) {
+					mapMarkers.markSelected(imageMapService.getSelected());
+				}
 				imageMapService.onSelect($scope, function (marker) {
-					mapMarkers.unmarkSelected(selected);
 					mapMarkers.markSelected(marker);
-					selected = marker;
+				});
+				imageMapService.onUnselect($scope, function (marker) {
+					mapMarkers.unmarkSelected(marker);
 				});
 
 
-				// unselect marker if we hide the layer where the active marker was on
+				// clearSelection marker if we hide the layer where the active marker was on
 				map.on('overlayremove', function (e) {
 					$rootScope.$apply(function () {
 						if (imageMapService.hasSelected()) {
@@ -367,14 +375,14 @@ angular.module('imageMap')
 							var removedLayerGroup = e.layer;
 
 							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
-								imageMapService.unselect();
+								imageMapService.clearSelection();
 							}
 						}
 					});
 				});
 
 
-				$scope.$on('$destroy', function() {
+				$scope.$on('$destroy', function () {
 					mapMarkers.destroy(map);
 					mapOverlay.destroy(map);
 					map.remove();
