@@ -409,6 +409,21 @@ angular.module('imageMap')
 					map.remove();
 					map = undefined;
 				});
+
+
+				// unselect marker if we hide the layer where the active marker was on
+				map.on('overlayremove', function (e) {
+					$rootScope.$apply(function () {
+						if (imageMapService.hasSelected()) {
+							var selectedLeafletMarker = getLeafletMarker(imageMapService.getSelected());
+							var removedLayerGroup = e.layer;
+
+							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
+								imageMapService.unselect();
+							}
+						}
+					});
+				});
 			}
 		};
 	});
