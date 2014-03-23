@@ -349,15 +349,6 @@ angular.module('imageMap')
 				});
 
 
-				// RESIZE MAP
-				map.on('resize', function () {
-					$scope.$apply(function () {
-						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
-						mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
-					});
-				});
-
-
 				// SELECT MARKER
 
 				// click handler for each marker is set in mapMarkers.drawMarkerGroups()
@@ -428,6 +419,19 @@ angular.module('imageMap')
 							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
 								imageMapService.unselect();
 							}
+						}
+					});
+				});
+
+
+				// RESIZE MAP
+				map.on('resize', function () {
+					$scope.$apply(function () {
+						map.setView([0, 0], 0, { reset: true});
+						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
+						mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
+						if (imageMapService.hasSelected()) {
+							mapMarkers.markSelected(imageMapService.getSelected());
 						}
 					});
 				});
