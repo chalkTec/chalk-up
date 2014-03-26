@@ -1,3 +1,8 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800);
+@import "foundation/scss/normalize";
+@import "settings";
+@import "foundation/scss/foundation";
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
@@ -12,6 +17,7 @@
 
 body[state="iframe"] {
 	background-color: rgb(248, 248, 214);
+	padding: 20px;
 }
 
 

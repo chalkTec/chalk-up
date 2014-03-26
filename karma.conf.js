@@ -27,6 +27,9 @@ module.exports = function (config) {
 			'app/bower_components/leaflet-dist/leaflet.js',
 			'app/bower_components/jquery-waypoints/waypoints.js',
 			'app/bower_components/angulartics/src/angulartics.js',
+			'app/bower_components/fastclick/lib/fastclick.js',
+			'app/bower_components/jquery.cookie/jquery.cookie.js',
+			'app/bower_components/foundation/js/foundation.js',
 			'app/bower_components/angular-mocks/angular-mocks.js',
 			'app/bower_components/angular-scenario/angular-scenario.js',
 			// endbower

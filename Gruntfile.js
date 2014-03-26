@@ -150,7 +150,8 @@ module.exports = function (grunt) {
 		bowerInstall: {
 			app: {
 				src: '<%= yeoman.app %>/index.html',
-				ignorePath: '<%= yeoman.app %>/'
+				ignorePath: '<%= yeoman.app %>/',
+				exclude: ['foundation.css']
 			},
 			// took that from https://github.com/stephenplusplus/grunt-bower-install/issues/35
 			test: {
