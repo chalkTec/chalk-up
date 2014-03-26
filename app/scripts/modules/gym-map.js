@@ -171,7 +171,7 @@ angular.module('gymMap')
 
 
 angular.module('gymMap')
-	.directive('gymMap', function ($rootScope, gymMapService, imageMapService, Restangular) {
+	.directive('gymMap', function ($rootScope, Restangular, gymMapService, imageMapService, loadingIndicator) {
 		return {
 			restrict: 'A',
 			templateUrl: '/views/gym-map.html',
@@ -180,9 +180,13 @@ angular.module('gymMap')
 			},
 			controller: function ($scope, feedbackService) {
 				var gym = Restangular.one('gyms', $scope.gymId);
-				var routesGet = gym.all('routes').getList();
+				var gymGet = gym.get();
+				loadingIndicator.waitFor(gymGet);
 
-				gym.get().then(function (gym) {
+				var routesGet = gym.all('routes').getList();
+				loadingIndicator.waitFor(routesGet);
+
+				gymGet.then(function (gym) {
 					gymMapService.updateGym(gym);
 
 					routesGet.then(function (routes) {
