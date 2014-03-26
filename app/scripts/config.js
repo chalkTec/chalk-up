@@ -16,6 +16,10 @@ angular.module('chalkUpApp')
 				url: '/gym?id',
 				templateUrl: 'views/gym.html',
 				controller: 'GymCtrl'
+			})
+			.state('iframe', {
+				url: '/iframe',
+				templateUrl: 'views/iframe.html'
 			});
 
 
