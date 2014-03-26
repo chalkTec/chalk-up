@@ -328,7 +328,7 @@ angular.module('imageMap')
 					maxZoom: 3,
 					crs: L.CRS.Simple,
 					attributionControl: false,
-					zoomControl: false
+					zoomControl: true
 				});
 				map.setView([0, 0], 0);
 
