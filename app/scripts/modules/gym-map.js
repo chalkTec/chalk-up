@@ -187,7 +187,7 @@ angular.module('gymMap')
 
 					routesGet.then(function (routes) {
 						gymMapService.updateBoulders(routes);
-						$scope.boulders = routes;
+						$scope.routes = routes;
 					});
 				});
 
