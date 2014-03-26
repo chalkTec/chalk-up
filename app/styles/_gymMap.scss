@@ -1,27 +1,49 @@
+$boulder-icon-base-size: 20px;
+
+@function power ($x, $n) {
+	$ret: 1;
+
+	@for $i from 1 through $n {
+		$ret: $ret * $x;
+	}
+
+	@return $ret;
+}
+
+@mixin boulder-icon($size) {
+	width: $size;
+	height: $size;
+	margin-left: - $size / 2;
+	margin-top: - $size / 2;
+}
+
+$icon-grow-factor: 1.2;
+@for $i from 0 through 3 {
+	.zoom-#{$i} {
+		.boulder-icon {
+			$size: $boulder-icon-base-size * power($icon-grow-factor, $i);
+			@include boulder-icon($size);
+
+			&:hover, &.selected {
+				@include boulder-icon($size * 1.3);
+			}
+		}
+	}
+}
 
 .boulder-icon {
 	opacity: 0.9;
 	border-radius: 100px; /* something large */
 
-	width: 24px;
-	height: 24px;
-	margin-left: -12px;
-	margin-top: -12px;
-}
+	transition: width 200ms ease-in-out, height 200ms ease-in-out, margin-left 200ms ease-in-out, margin-top 200ms ease-in-out;
 
-// make icons bigger on touch screens!
-.touch .boulder-icon {
-	width: 36px;
-	height: 36px;
-	margin-left: -18px;
-	margin-top: -18px;
+	width: $boulder-icon-base-size;
+	height: $boulder-icon-base-size;
+	margin-left: - $boulder-icon-base-size / 2;
+	margin-top: - $boulder-icon-base-size / 2;
 }
 
 .boulder-icon:hover, .boulder-icon.selected {
-	width: 36px;
-	height: 36px;
-	margin-left: -18px;
-	margin-top: -18px;
 	-webkit-box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 1);
 	-moz-box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 1);
 	box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 1);

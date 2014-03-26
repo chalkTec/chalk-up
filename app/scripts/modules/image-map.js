@@ -400,6 +400,18 @@ angular.module('imageMap')
 					});
 				});
 
+				var setZoomClass = function () {
+					var $container = $(map.getContainer());
+					for (var i = 0; i < 15; i++) {
+						$container.removeClass('zoom-' + i);
+					}
+
+					$container.addClass('zoom-' + map.getZoom());
+				};
+				setZoomClass();
+				map.on('zoomend', function () {
+					$scope.$apply(setZoomClass);
+				});
 
 				// RESIZE MAP
 				map.on('resize', function () {
@@ -412,7 +424,6 @@ angular.module('imageMap')
 						}
 					});
 				});
-
 
 
 				$scope.$on('$destroy', function () {
