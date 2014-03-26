@@ -10,40 +10,6 @@
 }
 
 
-.boulder-icon {
-	opacity: 0.9;
-	border-radius: 100px; /* something large */
-
-	width: 24px;
-	height: 24px;
-	margin-left: -12px;
-	margin-top: -12px;
-}
-
-// make icons bigger on touch screens!
-.touch .boulder-icon {
-	width: 36px;
-	height: 36px;
-	margin-left: -18px;
-	margin-top: -18px;
-}
-
-.boulder-icon:hover, .boulder-icon.selected {
-	width: 36px;
-	height: 36px;
-	margin-left: -18px;
-	margin-top: -18px;
-	-webkit-box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 1);
-	-moz-box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 1);
-	box-shadow: 0px 0px 30px 0px rgba(50, 50, 50, 1);
-}
-
-.boulder-icon.selected {
-	opacity: 1.0;
-	z-index: 1000000 !important;
-}
-
-
 body[state="iframe"] {
 	background-color: rgb(248, 248, 214);
 }
