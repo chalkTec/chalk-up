@@ -1,5 +1,13 @@
 body[state="gym"] {
 	background-color: white;
+
+	*[ui-view] {
+		height: 100%;
+
+		*[gym-map] {
+			height: 100%;
+		}
+	}
 }
 
 @import "gymMap";
