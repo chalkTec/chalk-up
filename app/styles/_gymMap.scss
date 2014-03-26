@@ -141,6 +141,15 @@ section.route-table {
 		}
 	}
 
+	thead {
+		.number, .name, .date-created {
+			color: $nephritis;
+			text-decoration: underline;
+		}
+
+	}
+
+
 
 	$header-height: rem-calc(50px);
 	$row-height: rem-calc(40px);
