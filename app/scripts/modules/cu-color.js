@@ -18,9 +18,9 @@ angular.module('cuColor')
 			}
 			else if (color.hasOwnProperty('ternary')) {
 				// use text gradient for two colored boulders
-				var tripleGradient = color.primary + ' 33%, ' +
-					color.secondary + ' 33%, ' + color.secondary + ' 67%, ' +
-					color.ternary + ' 67%';
+				var tripleGradient = color.primary + ' 38%, ' +
+					color.secondary + ' 38%, ' + color.secondary + ' 62%, ' +
+					color.ternary + ' 62%';
 
 				return {
 					background: 'linear-gradient(' + angle + 'deg, ' + tripleGradient + ')'

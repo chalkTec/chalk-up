@@ -178,16 +178,16 @@ angular.module('gymMap')
 			scope: {
 				gymId: '='
 			},
-			controller: function ($scope) {
+			controller: function ($scope, feedbackService) {
 				var gym = Restangular.one('gyms', $scope.gymId);
-				var bouldersGet = gym.all('boulders').getList();
+				var routesGet = gym.all('routes').getList();
 
 				gym.get().then(function (gym) {
 					gymMapService.updateGym(gym);
 
-					bouldersGet.then(function (boulders) {
-						gymMapService.updateBoulders(boulders);
-						$scope.boulders = boulders;
+					routesGet.then(function (routes) {
+						gymMapService.updateBoulders(routes);
+						$scope.boulders = routes;
 					});
 				});
 
@@ -198,6 +198,8 @@ angular.module('gymMap')
 				$scope.select = function (boulder) {
 					gymMapService.select(boulder);
 				};
+
+				$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
 			}
 		};
 	});

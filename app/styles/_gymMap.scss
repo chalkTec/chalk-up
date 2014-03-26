@@ -39,6 +39,7 @@
 
 	section {
 		float: left;
+		position: relative;
 	}
 
 	$plan-width: 75%;
@@ -59,12 +60,47 @@
 	}
 }
 
-$top-background: #f5f5f5;
+$top-box-padding: rem-calc(10px);
+$top-box-background: #f5f5f5;
 section.plan, section.information-panel {
-	background: $top-background;
-	padding: rem-calc(10px);
+	background: $top-box-background;
+	padding: $top-box-padding;
 
 	*[image-map] {
 		background: white;
+	}
+}
+
+section.information-panel {
+	ul.attributes {
+		list-style: none;
+		margin: 0;
+	}
+
+	h1 {
+		font-size: 1.5em;
+	}
+
+	h2 {
+		font-size: 1em;
+		font-weight: 600;
+	}
+
+	.prompt {
+		font-style: italic;
+	}
+
+	.color-indicator {
+		display: inline-block;
+		width: rem-calc(20px);
+		height: rem-calc(20px);
+		border-radius: 100px;
+		border: 1px solid black;
+	}
+
+	.feedback {
+		position: absolute;
+		margin: 0;
+		bottom: $top-box-padding;
 	}
 }

@@ -2,8 +2,32 @@
 	<div image-map></div>
 </section>
 <section class="information-panel">
-	<h1>chalkUp!</h1>
-	Name: llll...
+	<h1><small>powered by</small> chalkUp!</h1>
+	<ul class="attributes" ng-show="selected">
+		<li ng-if="selected.number">
+			<h2>Nummer</h2>
+			<p>{{selected.number}}</p>
+		</li>
+		<li ng-if="selected.name">
+			<h2>Name</h2>
+			<p>{{selected.name}}</p>
+		</li>
+		<li>
+			<h2>Grad</h2>
+			<p ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</p>
+			<p ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</p>
+		</li>
+		<li>
+			<h2>geschraubt am</h2>
+			<p>{{selected.created | amDateFormat: 'LL' }}</p>
+		</li>
+		<li>
+			<h2>Farbe</h2>
+			<p><span class="color-indicator" cu-color="selected.color" angle="45"></span> {{selected.color.germanName}}</p>
+		</li>
+	</ul>
+	<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route aus.</p>
+	<p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
 </section>
 <section class="route-table">
 	routes
