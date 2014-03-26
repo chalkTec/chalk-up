@@ -29,7 +29,7 @@ angular.module('chalkUpApp')
 		$httpProvider.defaults.timeout = 10000;
 
 
-		var host = 'http://demo.chalkup.de';
+		var host = 'http://api.chalkup.de';
 
-		RestangularProvider.setBaseUrl(host + '/rest/v1');
+		RestangularProvider.setBaseUrl(host + '/rest');
 	});
