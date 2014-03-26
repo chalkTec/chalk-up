@@ -401,29 +401,6 @@ angular.module('imageMap')
 				});
 
 
-				$scope.$on('$destroy', function () {
-					mapMarkers.destroy(map);
-					mapOverlay.destroy(map);
-					map.remove();
-					map = undefined;
-				});
-
-
-				// unselect marker if we hide the layer where the active marker was on
-				map.on('overlayremove', function (e) {
-					$rootScope.$apply(function () {
-						if (imageMapService.hasSelected()) {
-							var selectedLeafletMarker = mapMarkers.getLeafletMarker(imageMapService.getSelected());
-							var removedLayerGroup = e.layer;
-
-							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
-								imageMapService.unselect();
-							}
-						}
-					});
-				});
-
-
 				// RESIZE MAP
 				map.on('resize', function () {
 					$scope.$apply(function () {
@@ -434,6 +411,15 @@ angular.module('imageMap')
 							mapMarkers.markSelected(imageMapService.getSelected());
 						}
 					});
+				});
+
+
+
+				$scope.$on('$destroy', function () {
+					mapMarkers.destroy(map);
+					mapOverlay.destroy(map);
+					map.remove();
+					map = undefined;
 				});
 			}
 		};
