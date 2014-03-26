@@ -22,6 +22,7 @@
 		"angular": false,
 		"$": false,
 		"_": false,
-		"L": false
+		"L": false,
+		"UserVoice": false
 	}
 }
