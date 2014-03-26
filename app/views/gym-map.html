@@ -1,5 +1,6 @@
 <section class="plan">
-	<div image-map></div>
+	<div image-map ng-show="gym"></div>
+	<p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden. Sorry.</p>
 </section>
 <section class="information-panel">
 	<h1>
@@ -42,7 +43,7 @@
 	<p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
 </section>
 <section class="route-table">
-	<table>
+	<table ng-show="routes">
 		<thead>
 		<tr>
 			<th class="number" ng-click="predicate = 'number'; reverse = !reverse">Nummer</th>
@@ -65,4 +66,5 @@
 		</tr>
 		</tbody>
 	</table>
+	<p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden. Sorry.</p>
 </section>

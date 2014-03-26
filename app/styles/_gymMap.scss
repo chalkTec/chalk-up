@@ -137,6 +137,14 @@ section.information-panel {
 	cursor: pointer;
 }
 
+.gym-load-error, .routes-load-error {
+	position: relative;
+	top: 10%;
+	width: 50%;
+	text-align: center;
+	margin: 0 auto;
+}
+
 section.route-table {
 
 	table {

@@ -182,12 +182,19 @@ angular.module('gymMap')
 				var gym = Restangular.one('gyms', $scope.gymId);
 				var gymGet = gym.get();
 				loadingIndicator.waitFor(gymGet);
+				gymGet.catch(function () {
+					$scope.gymLoadError = true;
+				});
 
 				var routesGet = gym.all('routes').getList();
 				loadingIndicator.waitFor(routesGet);
+				routesGet.catch(function () {
+					$scope.routesLoadError = true;
+				});
 
 				gymGet.then(function (gym) {
 					gymMapService.updateGym(gym);
+					$scope.gym = gym;
 
 					routesGet.then(function (routes) {
 						gymMapService.updateBoulders(routes);
