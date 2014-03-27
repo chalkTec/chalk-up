@@ -7,6 +7,7 @@ angular.module('chalkUpApp', [
 	'angularMoment',
 	'angulartics',
 	'angulartics.google.analytics',
+	'ngGrid',
 	'gymMap'
 ]);
 

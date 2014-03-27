@@ -30,6 +30,7 @@ module.exports = function (config) {
 			'app/bower_components/fastclick/lib/fastclick.js',
 			'app/bower_components/jquery.cookie/jquery.cookie.js',
 			'app/bower_components/foundation/js/foundation.js',
+			'app/bower_components/ng-grid/build/ng-grid.min.js',
 			'app/bower_components/angular-mocks/angular-mocks.js',
 			'app/bower_components/angular-scenario/angular-scenario.js',
 			// endbower

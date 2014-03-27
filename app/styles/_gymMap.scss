@@ -147,99 +147,40 @@ section.information-panel {
 
 section.route-table {
 
-	table {
-		margin: 0;
-		width: 100%;
+	.grid {
 		height: 100%;
-	}
+		font-size: 0.9em;
 
-	thead {
-		background: white;
-	}
-	tbody {
-		tr {
-			&:nth-child(odd) {
+		.ngVerticalBarVisible {
+			width: 0;
+		}
+
+		$header-height: 50px;	// also change in JS!
+		.ngHeaderContainer {
+			background: white;
+
+			.ngHeaderText {
+				height: $header-height;
+				line-height: $header-height;
+				vertical-align: middle;
+				padding: 0 0.5em;
+			}
+		}
+
+		.ngRow {
+			transition: background-color 200ms linear;
+
+			&.even {
 				background: #fafafa;
 			}
-			&:nth-child(even) {
+			&.odd {
 				background: white;
 			}
 
 			&.selected {
-				background: $emerald;
+				background: $emerald !important;
 			}
-
-			transition: background-color 200ms linear;
 		}
-	}
-
-	thead {
-		.number, .name, .date-set {
-			color: $nephritis;
-			text-decoration: underline;
-		}
-
-	}
-
-
-
-	$header-height: rem-calc(50px);
-	$row-height: rem-calc(40px);
-
-	table, thead, tbody, tr {
-		display: block;
-	}
-	th, td {
-		display: inline-block;
-	}
-
-	@mixin cell($height) {
-		height: $height;
-		text-align: left;
-		line-height: $height;
-		vertical-align: middle;
-		padding: 0 rem-calc(10px);
-	}
-
-	thead {
-		width: calc(100% - 16px);	// remove the scroll bar width
-		th {
-			@include cell($header-height);
-		}
-	}
-
-	tbody {
-		height: calc(100% - #{$header-height});
-		overflow-y: scroll;
-		overflow-x: hidden;
-
-		td {
-			@include cell($row-height);
-		}
-	}
-
-	tr {
-		td, th {
-			&.number {
-				width: 10%;
-			}
-			&.color {
-				width: 20%;
-			}
-			&.grade {
-				width: 20%;
-			}
-			&.name {
-				width: 30%;
-			}
-			&.date-set {
-				width: 20%;
-			}
-
-			float: left;	// float to prevent whitespace between ths/tds resulting in spacing
-		}
-
-		@include clearfix;
 	}
 
 }

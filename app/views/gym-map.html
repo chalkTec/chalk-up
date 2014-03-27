@@ -43,28 +43,7 @@
 	<p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
 </section>
 <section class="route-table">
-	<table ng-show="routes">
-		<thead>
-		<tr>
-			<th class="number" ng-click="predicate = 'number'; reverse = !reverse">Nummer</th>
-			<th class="color">Farbe</th>
-			<th class="grade">Grad</th>
-			<th class="name" ng-click="predicate = 'name'; reverse = !reverse">Name</th>
-			<th class="date-set" ng-click="predicate = 'dateCreated'; reverse = !reverse">Datum</th>
-		</tr>
-		</thead>
-		<tbody>
-		<tr ng-repeat="route in routes | orderBy:predicate:reverse" ng-click="select(route)" ng-class="{selected: selected == route}">
-			<td class="number">{{route.number}}</td>
-			<td class="color"><span class="color-indicator" cu-color="route.color" angle="45"></span> {{route.color.germanName}}</td>
-			<td class="grade">
-				<span ng-show="route.type == 'boulder'">{{route.initialGrade.readable}}</span>
-				<span ng-show="route.type == 'sport-route'">{{route.initialGrade.uiaa}}</span>
-			</td>
-			<td class="name">{{route.name}}</td>
-			<td class="date-set">{{route.dateSet | amDateFormat: 'LL'}}</td>
-		</tr>
-		</tbody>
-	</table>
+    <div class="grid" ng-grid="gridOptions" ng-hide="routesLoadError"></div>
+
 	<p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden. Sorry.</p>
 </section>

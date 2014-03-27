@@ -206,11 +206,82 @@ angular.module('gymMap')
 					$scope.selected = boulder;
 				});
 
-				$scope.select = function (boulder) {
-					gymMapService.select(boulder);
-				};
-
 				$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
+
+
+				gymMapService.onSelectionChange($scope, function (route) {
+					if (_.isUndefined(route)) {
+						$scope.gridOptions.selectAll(false);
+					}
+					else {
+						selectRow(route);
+					}
+				});
+
+				var doScroll = true;
+
+				function selectRow(route) {
+					var index = _.findIndex($scope.routes, function (r) {
+						return r === route;
+					});
+
+					$scope.gridOptions.selectItem(index, true);
+					var grid = $scope.gridOptions.ngGrid;
+					if (doScroll) {
+						$(grid.$viewport).animate({ scrollTop: grid.rowMap[index] * grid.config.rowHeight - 100 }, '300', 'swing');
+					}
+				}
+
+
+				// that is a bit a mess: ng-grid uses an array to communicate the currently selected item (due to its ability of multi-selection)
+				var selections = [];
+				$scope.$watchCollection(function () {
+					return selections;
+				}, function () {
+					if (selections.length !== 0) {
+						doScroll = false;
+						gymMapService.select(selections[0]);
+						doScroll = true;
+					}
+				});
+
+				$scope.gridOptions = {
+					data: 'routes',
+					multiSelect: false,
+					selectedItems: selections,
+					headerRowHeight: 50, // also set in CSS
+					rowHeight: 40,
+					columnDefs: [
+						{
+							field: 'number',
+							displayName: 'Nummer',
+							width: '10%'
+						},
+						{
+							field: 'color',
+							displayName: 'Farbe',
+							sortable: false,
+							cellTemplate: '<div class="ngCellText"><span class="color-indicator" cu-color="row.entity[col.field]" angle="45"></span> {{row.entity[col.field].germanName}}</div>',
+							width: '20%'
+						},
+						{
+							field: 'initialGrade',
+							displayName: 'Grad',
+							cellTemplate: '<div class="ngCellText">{{row.entity.type == "boulder" ? row.entity[col.field].readable : row.entity[col.field].grade.uiaa}}</div>',
+							width: '20%'
+						},
+						{
+							field: 'name',
+							displayName: 'Name',
+							width: '30%'
+						},
+						{
+							field: 'created',
+							displayName: 'Datum',
+							cellFilter: 'amDateFormat: "LL"'
+						}
+					]
+				};
 			}
 		};
 	});
