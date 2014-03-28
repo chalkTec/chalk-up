@@ -174,7 +174,7 @@ section.route-table {
 	}
 
 	thead {
-		.number, .name, .date-created {
+		.number, .name, .date-set {
 			color: $nephritis;
 			text-decoration: underline;
 		}
@@ -232,7 +232,7 @@ section.route-table {
 			&.name {
 				width: 30%;
 			}
-			&.date-created {
+			&.date-set {
 				width: 20%;
 			}
 

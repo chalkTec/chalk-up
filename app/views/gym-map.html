@@ -28,7 +28,7 @@
 		<li>
 			<h2>geschraubt am</h2>
 
-			<p>{{selected.created | amDateFormat: 'LL' }}</p>
+			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
 		</li>
 		<li>
 			<h2>Farbe</h2>
@@ -50,7 +50,7 @@
 			<th class="color">Farbe</th>
 			<th class="grade">Grad</th>
 			<th class="name" ng-click="predicate = 'name'; reverse = !reverse">Name</th>
-			<th class="date-created" ng-click="predicate = 'created'; reverse = !reverse">Datum</th>
+			<th class="date-set" ng-click="predicate = 'dateCreated'; reverse = !reverse">Datum</th>
 		</tr>
 		</thead>
 		<tbody>
@@ -62,7 +62,7 @@
 				<span ng-show="route.type == 'sport-route'">{{route.initialGrade.uiaa}}</span>
 			</td>
 			<td class="name">{{route.name}}</td>
-			<td class="date-created">{{route.created | amDateFormat: 'LL'}}</td>
+			<td class="date-set">{{route.dateSet | amDateFormat: 'LL'}}</td>
 		</tr>
 		</tbody>
 	</table>
