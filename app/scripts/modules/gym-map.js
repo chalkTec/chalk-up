@@ -275,7 +275,7 @@ angular.module('gymMap')
 							width: '30%'
 						},
 						{
-							field: 'created',
+							field: 'dateSet',
 							displayName: 'Datum',
 							cellFilter: 'amDateFormat: "LL"'
 						}
