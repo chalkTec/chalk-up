@@ -237,6 +237,10 @@ angular.module('gymMap')
 					}
 				});
 
+				var gradeSort = function(a, b) {
+					return a.value - b.value;
+				};
+
 				$scope.gridOptions = {
 					data: 'routes',
 					multiSelect: false,
@@ -257,8 +261,10 @@ angular.module('gymMap')
 							width: '20%'
 						},
 						{
-							field: 'initialGrade.uiaa',
+							field: 'initialGrade',
 							displayName: 'Grad',
+							sortFn: gradeSort,
+							cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text>{{row.getProperty(col.field).uiaa}}</span></div>',
 							width: '20%'
 						},
 						{
