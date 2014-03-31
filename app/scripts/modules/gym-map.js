@@ -264,7 +264,7 @@ angular.module('gymMap')
 							field: 'initialGrade',
 							displayName: 'Grad',
 							sortFn: gradeSort,
-							cellTemplate: '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text>{{row.getProperty(col.field).uiaa}}</span></div>',
+							cellFilter: 'grade: "uiaa"',
 							width: '20%'
 						},
 						{
