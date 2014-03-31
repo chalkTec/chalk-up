@@ -250,7 +250,7 @@ angular.module('gymMap')
 					multiSelect: false,
 					selectedItems: selections,
 					headerRowHeight: 50, // also set in CSS
-					rowHeight: 40,
+					rowHeight: 40, // also set in CSS
 					columnDefs: [
 						{
 							field: 'number',

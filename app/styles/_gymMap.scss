@@ -167,6 +167,7 @@ section.route-table {
 			}
 		}
 
+		$row-height: 40px;	// also change in JS!
 		.ngRow {
 			transition: background-color 200ms linear;
 
@@ -180,6 +181,13 @@ section.route-table {
 			&.selected {
 				background: $emerald !important;
 			}
+		}
+
+		.ngCellText {
+			// dont need to set height here, it is set via JS
+			padding: 0 0.5em;
+			line-height: $row-height;
+			vertical-align: middle;
 		}
 	}
 
