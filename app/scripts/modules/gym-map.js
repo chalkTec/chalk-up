@@ -69,17 +69,8 @@ angular.module('gymMap')
 			};
 		}
 
-		function markerGroupsForBoulders(boulders) {
-			var bouldersGroup = _.groupBy(boulders, function (boulder) {
-				return boulder.color.germanName;
-			});
-
-			var markersGroup = {};
-			_.each(bouldersGroup, function (boulders, color) {
-				markersGroup[color] = _.map(boulders, markerForBoulder);
-			});
-
-			return markersGroup;
+		function markersForBoulders(boulders) {
+			return _.map(boulders, markerForBoulder);
 		}
 
 		// the currently displayed boulders
@@ -88,7 +79,7 @@ angular.module('gymMap')
 		config.removeBoulders = function () {
 			_boulders = undefined;
 
-			imageMapService.removeMarkerGroups();
+			imageMapService.removeMarkers();
 		};
 
 
@@ -102,8 +93,8 @@ angular.module('gymMap')
 		config.updateBoulders = function (boulders) {
 			_boulders = boulders;
 
-			var markerGroups = markerGroupsForBoulders(boulders);
-			imageMapService.updateMarkerGroups(markerGroups);
+			var markers = markersForBoulders(boulders);
+			imageMapService.updateMarkers(markers);
 
 			bouldersForMarker = _.indexBy(boulders, 'id');
 

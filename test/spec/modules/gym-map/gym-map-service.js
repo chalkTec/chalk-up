@@ -117,34 +117,29 @@ describe('Service: gymMapService', function () {
 
 	describe('updating the boulders', function () {
 		it('should update the image map markers', function () {
-			spyOn(imageMap, 'updateMarkerGroups');
+			spyOn(imageMap, 'updateMarkers');
 
 			service.updateBoulders(boulders);
 
-			expect(imageMap.updateMarkerGroups).toHaveBeenCalled();
+			expect(imageMap.updateMarkers).toHaveBeenCalled();
 			// retrieve marker groups argument
-			var markerGroups = imageMap.updateMarkerGroups.calls.argsFor(0)[0];
+			var markers = imageMap.updateMarkers.calls.argsFor(0)[0];
 
-			expect(_.keys(markerGroups)).toContain('rot');
-			expect(_.keys(markerGroups)).toContain('blau');
-
-			expect(markerGroups['rot'].length).toBe(1);
-			expect(markerGroups['rot'][0]).toEqual(jasmine.objectContaining({
-				id: 3,
-				x: 2000 * 0.5,
-				y: 1393 * 0.6
-			}));
-
-			expect(markerGroups['blau'].length).toBe(2);
-			expect(markerGroups['blau']).toContain(jasmine.objectContaining({
+			expect(markers.length).toBe(3);
+			expect(markers).toContain(jasmine.objectContaining({
 				id: 1,
 				x: 2000 * 0.1,
 				y: 1393 * 0.2
 			}));
-			expect(markerGroups['blau']).toContain(jasmine.objectContaining({
+			expect(markers).toContain(jasmine.objectContaining({
 				id: 2,
 				x: 2000 * 0.3,
 				y: 1393 * 0.4
+			}));
+			expect(markers).toContain(jasmine.objectContaining({
+				id: 3,
+				x: 2000 * 0.5,
+				y: 1393 * 0.6
 			}));
 		});
 	});

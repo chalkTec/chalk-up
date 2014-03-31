@@ -3,7 +3,7 @@
 angular.module('imageMap', []);
 
 angular.module('imageMap')
-	.config(function() {
+	.config(function () {
 		L.Icon.Default.imagePath = '/bower_components/leaflet-dist/images';
 	});
 
@@ -24,7 +24,7 @@ angular.module('imageMap')
 
 		config.updateImage = function (image) {
 			// updating image implicitly removes markers
-			config.removeMarkerGroups();
+			config.removeMarkers();
 
 			_image = image;
 			$rootScope.$broadcast(IMAGE_UPDATE_EVENT, {image: _image});
@@ -45,28 +45,28 @@ angular.module('imageMap')
 		var MARKERS_EVENT = 'imageMap:markers';
 
 		// the currently active markers
-		var _markerGroups;
+		var _markers;
 
-		config.removeMarkerGroups = function () {
-			config.updateMarkerGroups(undefined);
+		config.removeMarkers = function () {
+			config.updateMarkers(undefined);
 		};
 
-		config.updateMarkerGroups = function (markerGroups) {
+		config.updateMarkers = function (markers) {
 			// updating markers implicitly clears selection
 			config.clearSelection();
 
-			_markerGroups = markerGroups;
-			$rootScope.$broadcast(MARKERS_EVENT, {markerGroups: markerGroups});
+			_markers = markers;
+			$rootScope.$broadcast(MARKERS_EVENT, {markers: markers});
 		};
 
-		config.onMarkerGroupsUpdate = function ($scope, handler) {
+		config.onMarkersUpdate = function ($scope, handler) {
 			$scope.$on(MARKERS_EVENT, function (event, args) {
-				handler(args.markerGroups);
+				handler(args.markers);
 			});
 		};
 
-		config.getMarkerGroups = function () {
-			return _markerGroups;
+		config.getMarkers = function () {
+			return _markers;
 		};
 
 
@@ -217,29 +217,19 @@ angular.module('imageMap')
 
 		var markerIdToLeafletMarker;
 
-		var layerGroups;
-		var layerControl;
+		var leafletMarkers;
 
 		config.getLeafletMarker = function (imageMapMarker) {
 			return markerIdToLeafletMarker[imageMapMarker.id];
 		};
 
-		function removeMarkerGroups(map) {
-			if (!_.isUndefined(layerGroups)) {
-				layerControl.removeFrom(map);
-				// TODO: remove this as soon as the following pull request ended up in leaflet-dist
-				// https://github.com/jack-kerouac/Leaflet/commit/59a8c00a1850103f4fba8561961282eb21b29e7d
-				map
-					.off('layeradd', layerControl._onLayerChange, layerControl)
-					.off('layerremove', layerControl._onLayerChange, layerControl);
-
-				layerControl = undefined;
-
-				_.each(layerGroups, function (layerGroup) {
-					map.removeLayer(layerGroup);
+		function removeMarkers(map) {
+			if (!_.isUndefined(leafletMarkers)) {
+				_.each(leafletMarkers, function (marker) {
+					map.removeLayer(marker);
 				});
 
-				layerGroups = undefined;
+				leafletMarkers = undefined;
 				markerIdToLeafletMarker = undefined;
 			}
 		}
@@ -264,36 +254,31 @@ angular.module('imageMap')
 			return marker;
 		}
 
-		function addMarkerGroups(map, image, markerGroups) {
+		function addMarkers(map, image, markers) {
 			var projection = mapProjection.calculate(map, image);
 
 			markerIdToLeafletMarker = {};
-			layerGroups = {};
-			_.each(markerGroups, function (markerGroup, name) {
-				var leafletMarkers = _.map(markerGroup, function (marker) {
-					var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection);
-					markerIdToLeafletMarker[marker.id] = leafletMarker;
-					return leafletMarker;
-				});
-				var layerGroup = L.layerGroup(leafletMarkers);
-				layerGroups[name] = layerGroup;
-				layerGroup.addTo(map);
+			leafletMarkers = [];
+			_.each(markers, function (marker) {
+				var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection);
+				leafletMarkers.push(leafletMarker);
+				leafletMarker.addTo(map);
+				markerIdToLeafletMarker[marker.id] = leafletMarker;
+				return leafletMarker;
 			});
-
-			layerControl = L.control.layers(undefined, layerGroups).addTo(map);
 		}
 
-		config.drawMarkerGroups = function (map, image, markerGroups) {
+		config.drawMarkers = function (map, image, markers) {
 			// we need an image to draw markers on it
-			if (_.isUndefined(image) || _.isUndefined(markerGroups)) {
-				removeMarkerGroups(map);
+			if (_.isUndefined(image) || _.isUndefined(markers)) {
+				removeMarkers(map);
 				return;
 			}
 
 			// remove old markers
-			removeMarkerGroups(map);
+			removeMarkers(map);
 
-			addMarkerGroups(map, image, markerGroups);
+			addMarkers(map, image, markers);
 		};
 
 		config.unmarkSelected = function (marker) {
@@ -307,7 +292,7 @@ angular.module('imageMap')
 		};
 
 		config.destroy = function (map) {
-			removeMarkerGroups(map);
+			removeMarkers(map);
 		};
 
 
@@ -342,16 +327,16 @@ angular.module('imageMap')
 
 
 				// MARKERS
-				mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
+				mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers());
 
-				imageMapService.onMarkerGroupsUpdate($scope, function (markers) {
-					mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), markers);
+				imageMapService.onMarkersUpdate($scope, function (markers) {
+					mapMarkers.drawMarkers(map, imageMapService.getImage(), markers);
 				});
 
 
 				// SELECT MARKER
 
-				// click handler for each marker is set in mapMarkers.drawMarkerGroups()
+				// click handler for each marker is set in mapMarkers.drawMarkers()
 
 				map.on('click', function () {
 					$scope.$apply(function () {
@@ -369,35 +354,6 @@ angular.module('imageMap')
 				});
 				imageMapService.onUnselect($scope, function (marker) {
 					mapMarkers.unmarkSelected(marker);
-				});
-
-
-				// clearSelection marker if we hide the layer where the active marker was on
-				map.on('overlayremove', function (e) {
-					$rootScope.$apply(function () {
-						if (imageMapService.hasSelected()) {
-							var selectedLeafletMarker = mapMarkers.getLeafletMarker(imageMapService.getSelected());
-							var removedLayerGroup = e.layer;
-
-							if (removedLayerGroup.hasLayer(selectedLeafletMarker)) {
-								imageMapService.clearSelection();
-							}
-						}
-					});
-				});
-
-				// mark marker as selected when we add the layer where the selected marker is on
-				map.on('overlayadd', function (e) {
-					$rootScope.$apply(function () {
-						if (imageMapService.hasSelected()) {
-							var selectedLeafletMarker = mapMarkers.getLeafletMarker(imageMapService.getSelected());
-							var addedLayerGroup = e.layer;
-
-							if (addedLayerGroup.hasLayer(selectedLeafletMarker)) {
-								mapMarkers.markSelected(imageMapService.getSelected());
-							}
-						}
-					});
 				});
 
 				var setZoomClass = function () {
@@ -418,7 +374,7 @@ angular.module('imageMap')
 					$scope.$apply(function () {
 						map.setView([0, 0], 0, { reset: true});
 						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
-						mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
+						mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers());
 						if (imageMapService.hasSelected()) {
 							mapMarkers.markSelected(imageMapService.getSelected());
 						}
