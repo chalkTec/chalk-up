@@ -1,49 +1,34 @@
 <section class="plan">
-	<div image-map ng-show="gym"></div>
-	<p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden. Sorry.</p>
+    <div image-map ng-show="gym"></div>
+    <p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden.
+        Sorry.</p>
 </section>
 <section class="information-panel">
-	<h1>
-		<small>powered by</small>
-		chalkUp!
-	</h1>
-	<ul class="attributes" ng-show="selected">
-		<li ng-if="selected.number">
-			<h2>Nummer</h2>
+    <div class="route-meta" ng-show="selected">
+        <h2>
+            <span class="color-indicator" cu-color="selected.color" angle="45"></span>
+            <span class="number" ng-if="selected.number">{{selected.number}}: </span>
+            <span class="name" ng-if="selected.name">{{selected.name}}</span>
+        </h2>
+        <p class="grade">
+            <span ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</span>
+            <span ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</span>
+        </p>
+        <p class="description" ng-show="selected.description">{{selected.description}}</p>
+        <h2>geschraubt am</h2>
 
-			<p>{{selected.number}}</p>
-		</li>
-		<li ng-if="selected.name">
-			<h2>Name</h2>
+        <p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
+    </div>
+    <p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
+        aus.</p>
 
-			<p>{{selected.name}}</p>
-		</li>
-		<li>
-			<h2>Grad</h2>
+    <p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
 
-			<p ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</p>
-
-			<p ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</p>
-		</li>
-		<li>
-			<h2>geschraubt am</h2>
-
-			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
-		</li>
-		<li>
-			<h2>Farbe</h2>
-
-			<p><span class="color-indicator" cu-color="selected.color" angle="45"></span> {{selected.color.germanName}}
-			</p>
-		</li>
-	</ul>
-	<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
-		aus.</p>
-
-	<p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
+    <p class="attribution">powered by <a href="http://www.chalkup.de">chalkUp!</a></p>
 </section>
 <section class="route-table">
     <div class="grid" ng-grid="gridOptions" ng-hide="routesLoadError"></div>
 
-	<p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden. Sorry.</p>
+    <p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden.
+        Sorry.</p>
 </section>
