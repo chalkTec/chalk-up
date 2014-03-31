@@ -291,6 +291,14 @@ angular.module('imageMap')
 			$(leafletMarker._icon).addClass('selected');
 		};
 
+		config.panTo = function(map, marker) {
+			var leafletMarker = config.getLeafletMarker(marker);
+			// animate true does not work properly:
+			// - little movements even when zoomed out entirely
+			// - animated panning to a point and then zooming out does not take max bounds into account
+			map.panTo(leafletMarker.getLatLng());
+		};
+
 		config.destroy = function (map) {
 			removeMarkers(map);
 		};
@@ -350,6 +358,7 @@ angular.module('imageMap')
 				imageMapService.onSelectionChange($scope, function (marker) {
 					if (!_.isUndefined(marker)) {
 						mapMarkers.markSelected(marker);
+						mapMarkers.panTo(map, marker);
 					}
 				});
 				imageMapService.onUnselect($scope, function (marker) {
