@@ -265,9 +265,8 @@ angular.module('gymMap')
 							width: '20%'
 						},
 						{
-							field: 'initialGrade',
+							field: 'initialGrade.uiaa',
 							displayName: 'Grad',
-							cellTemplate: '<div class="ngCellText">{{row.entity.type == "boulder" ? row.entity[col.field].readable : row.entity[col.field].grade.uiaa}}</div>',
 							width: '20%'
 						},
 						{
