@@ -219,7 +219,8 @@ angular.module('gymMap')
 					$scope.gridOptions.selectItem(index, true);
 					var grid = $scope.gridOptions.ngGrid;
 					if (doScroll) {
-						$(grid.$viewport).animate({ scrollTop: grid.rowMap[index] * grid.config.rowHeight - 100 }, '300', 'swing');
+						var offset = grid.rowMap[index] * grid.config.rowHeight - (grid.$viewport.height() / 2 - grid.config.rowHeight / 2);
+						$(grid.$viewport).animate({ scrollTop: offset }, '300', 'swing');
 					}
 				}
 
