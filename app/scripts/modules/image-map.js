@@ -301,9 +301,10 @@ angular.module('imageMap')
 			$(leafletMarker._icon).removeClass('selected');
 		};
 
-		config.markSelected = function (marker) {
+		config.markSelected = function (map, marker) {
 			var leafletMarker = config.getLeafletMarker(marker);
 			$(leafletMarker._icon).addClass('selected');
+			map.panTo(leafletMarker.getLatLng(), {animate: true});
 		};
 
 		config.destroy = function (map) {
@@ -360,11 +361,11 @@ angular.module('imageMap')
 				});
 
 				if (imageMapService.hasSelected()) {
-					mapMarkers.markSelected(imageMapService.getSelected());
+					mapMarkers.markSelected(map, imageMapService.getSelected());
 				}
 				imageMapService.onSelectionChange($scope, function (marker) {
 					if (!_.isUndefined(marker)) {
-						mapMarkers.markSelected(marker);
+						mapMarkers.markSelected(map, marker);
 					}
 				});
 				imageMapService.onUnselect($scope, function (marker) {
@@ -394,7 +395,7 @@ angular.module('imageMap')
 							var addedLayerGroup = e.layer;
 
 							if (addedLayerGroup.hasLayer(selectedLeafletMarker)) {
-								mapMarkers.markSelected(imageMapService.getSelected());
+								mapMarkers.markSelected(map, imageMapService.getSelected());
 							}
 						}
 					});
@@ -420,7 +421,7 @@ angular.module('imageMap')
 						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
 						mapMarkers.drawMarkerGroups(map, imageMapService.getImage(), imageMapService.getMarkerGroups());
 						if (imageMapService.hasSelected()) {
-							mapMarkers.markSelected(imageMapService.getSelected());
+							mapMarkers.markSelected(map, imageMapService.getSelected());
 						}
 					});
 				});
