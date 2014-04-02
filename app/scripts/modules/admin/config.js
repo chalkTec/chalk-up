@@ -6,6 +6,6 @@ angular.module('chalkUpAdmin', [
 	'angularMoment',
 	'angulartics',
 	'angulartics.google.analytics',
-	'ngGrid',
-	'gymMap'
+	'routesMap',
+	'routesTable'
 ]);
