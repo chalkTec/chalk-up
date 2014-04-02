@@ -27,7 +27,7 @@
     <p class="attribution">powered by <a href="http://www.chalkup.de">chalkUp!</a></p>
 </section>
 <section class="route-table">
-    <div class="grid" ng-grid="gridOptions" ng-hide="routesLoadError"></div>
+    <div routes-table routes="routes" selected="selected" ng-hide="routesLoadError"></div>
 
     <p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden.
         Sorry.</p>

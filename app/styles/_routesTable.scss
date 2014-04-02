@@ -1,0 +1,42 @@
+*[routes-table] {
+	font-size: 0.9em;
+
+	.ngVerticalBarVisible {
+		width: 0;
+	}
+
+	$header-height: 50px;	// also change in JS!
+	.ngHeaderContainer {
+		background: white;
+
+		.ngHeaderText {
+			height: $header-height;
+			line-height: $header-height;
+			vertical-align: middle;
+			padding: 0 0.5em;
+		}
+	}
+
+	$row-height: 40px;	// also change in JS!
+	.ngRow {
+		transition: background-color 200ms linear;
+
+		&.even {
+			background: #fafafa;
+		}
+		&.odd {
+			background: white;
+		}
+
+		&.selected {
+			background: #dddd33 !important;
+		}
+	}
+
+	.ngCellText {
+		// dont need to set height here, it is set via JS
+		padding: 0 0.5em;
+		line-height: $row-height;
+		vertical-align: middle;
+	}
+}

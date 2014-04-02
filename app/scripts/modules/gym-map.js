@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('gymMap', ['restangular', 'routesMap']);
+angular.module('gymMap', ['restangular', 'routesMap', 'routesTable']);
 
 angular.module('gymMap')
 	.directive('gymMap', function ($rootScope, Restangular, routesMapService, loadingIndicator) {
@@ -38,88 +38,21 @@ angular.module('gymMap')
 					$scope.selected = route;
 				});
 
-				$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
+				$scope.$watch('selected', function(selected, oldSelected) {
+					if(selected === oldSelected) {
+						return;
+					}
 
-
-				routesMapService.onSelectionChange($scope, function (route) {
-					if (_.isUndefined(route)) {
-						$scope.gridOptions.selectAll(false);
+					if(_.isUndefined(selected)) {
+						routesMapService.clearSelection();
 					}
 					else {
-						selectRow(route);
+						routesMapService.select(selected);
 					}
 				});
 
-				var doScroll = true;
 
-				function selectRow(route) {
-					var index = _.findIndex($scope.routes, function (r) {
-						return r === route;
-					});
-
-					$scope.gridOptions.selectItem(index, true);
-					var grid = $scope.gridOptions.ngGrid;
-					if (doScroll) {
-						var offset = grid.rowMap[index] * grid.config.rowHeight - (grid.$viewport.height() / 2 - grid.config.rowHeight / 2);
-						$(grid.$viewport).animate({ scrollTop: offset }, '300', 'swing');
-					}
-				}
-
-
-				// that is a bit a mess: ng-grid uses an array to communicate the currently selected item (due to its ability of multi-selection)
-				var selections = [];
-				$scope.$watchCollection(function () {
-					return selections;
-				}, function () {
-					if (selections.length !== 0) {
-						doScroll = false;
-						routesMapService.select(selections[0]);
-						doScroll = true;
-					}
-				});
-
-				var gradeSort = function(a, b) {
-					return a.value - b.value;
-				};
-
-				$scope.gridOptions = {
-					data: 'routes',
-					multiSelect: false,
-					selectedItems: selections,
-					headerRowHeight: 50, // also set in CSS
-					rowHeight: 40, // also set in CSS
-					columnDefs: [
-						{
-							field: 'number',
-							displayName: 'Nummer',
-							width: '10%'
-						},
-						{
-							field: 'color',
-							displayName: 'Farbe',
-							sortable: false,
-							cellTemplate: '<div class="ngCellText"><span class="color-indicator" cu-color="row.entity[col.field]" angle="45"></span> {{row.entity[col.field].germanName}}</div>',
-							width: '20%'
-						},
-						{
-							field: 'initialGrade',
-							displayName: 'Grad',
-							sortFn: gradeSort,
-							cellFilter: 'grade: "uiaa"',
-							width: '20%'
-						},
-						{
-							field: 'name',
-							displayName: 'Name',
-							width: '30%'
-						},
-						{
-							field: 'dateSet',
-							displayName: 'Datum',
-							cellFilter: 'amDateFormat: "LL"'
-						}
-					]
-				};
+				$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
 			}
 		};
 	});
