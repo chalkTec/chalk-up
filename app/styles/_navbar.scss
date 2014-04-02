@@ -1,0 +1,40 @@
+$navbar-height: 45px;
+
+$navbar-bg-color: $midnight-blue;
+
+nav.bar {
+
+  // POSITION
+  height: $navbar-height;
+
+  // COLORS
+
+  background-color: $navbar-bg-color;
+
+  color: white;
+  a {
+    color: white;
+  }
+
+  // CONTENT
+
+  line-height: $navbar-height;
+  vertical-align: middle;
+
+  > * {
+    height: $navbar-height;
+    line-height: $navbar-height;
+    vertical-align: middle;
+
+    margin: 0;
+  }
+
+  h1 {
+    float: left;
+    font-size: 1.2em;
+    display: block;
+
+    margin-left: 1em;
+  }
+
+}

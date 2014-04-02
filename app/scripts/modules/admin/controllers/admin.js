@@ -2,6 +2,5 @@
 
 angular.module('chalkUpAdmin')
 	.controller('AdminCtrl', function ($scope, $stateParams) {
-		// TODO
-		$scope.test = "ADMIN";
+		$scope.gymId = $stateParams.id;
 	});

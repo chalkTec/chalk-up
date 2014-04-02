@@ -32,7 +32,14 @@
 	}
 }
 
+.beta {
+	@include label($padding: 0.3em, $text-size: 0.5em, $bg: $pomegranate, $radius: 1em);
+	margin-left: 0.5em;
+	vertical-align: super;
+}
 
+
+// GYM
 
 body[state="iframe"] {
 	background-color: rgb(248, 248, 214);
@@ -41,3 +48,14 @@ body[state="iframe"] {
 
 
 @import "gym";
+
+
+
+// ADMIN
+@import "navbar";
+
+body[state="admin"] {
+	*[gym-map] {
+		height: rem-calc(700px);
+	}
+}

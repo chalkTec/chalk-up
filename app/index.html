@@ -31,16 +31,13 @@
 	<!-- build:css({.tmp,app}) styles/main.css -->
 	<link rel="stylesheet" href="styles/main.css">
 	<!-- endbuild -->
-    <!-- build:css({.tmp,app}) styles/admin.css -->
-    <link rel="stylesheet" href="styles/admin.css">
-    <!-- endbuild -->
 </head>
 <body ng-app="chalkUpApp" state="{{$state.current.name}}">
 <!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a
 		href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p><![endif]-->
 
 
-<div ui-view></div>
+<div ui-view class="container"></div>
 
 
 <div id="loading-overlay" ng-show="loading">
@@ -158,6 +155,7 @@
 <script src="scripts/controllers/gym.js"></script>
 <script src="scripts/filter/color-filter.js"></script>
 <script src="scripts/filter/grade-filter.js"></script>
+<script src="scripts/directives/nav-bar.js"></script>
 <script src="scripts/modules/cu-color.js"></script>
 <script src="scripts/modules/image-map.js"></script>
 <script src="scripts/modules/gym-map.js"></script>
