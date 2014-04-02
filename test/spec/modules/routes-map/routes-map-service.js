@@ -1,60 +1,46 @@
 'use strict';
 
-describe('Service: gymMapService', function () {
+describe('Service: routesMapService', function () {
 
 	// load the service's module
-	beforeEach(module('gymMap'));
+	beforeEach(module('routesMap'));
 
 	// instantiate service
 	var service, imageMap, scope;
-	beforeEach(inject(function (gymMapService, imageMapService, $rootScope) {
-		service = gymMapService;
+	beforeEach(inject(function (routesMapService, imageMapService, $rootScope) {
+		service = routesMapService;
 		scope = $rootScope.$new();
 		imageMap = imageMapService;
 	}));
 
 
-	describe('updating the gym', function () {
-		var gym = {
+	describe('updating the plan', function () {
+		var plan = {
 			"id": 2,
-			"name": "Heavens Gate",
-			"created": "2014-01-01T01:01:01Z",
-			"floorPlans": [
-				{
-					"id": 2,
-					"img": {
-						"widthInPx": 1304,
-						"heightInPx": 1393,
-						"url": "http://demo.chalkup.de/images/floorPlans/heavens-gate.png"
-					}
-				}
-			]
+			"img": {
+				"widthInPx": 1304,
+				"heightInPx": 1393,
+				"url": "http://demo.chalkup.de/images/floorPlans/heavens-gate.png"
+			}
 		};
 
 		it('should update the image map', function () {
-			spyOn(service, 'removeBoulders');
 			spyOn(imageMap, 'updateImage');
+			spyOn(service, 'removeRoutes');
 
-			service.updateGym(gym);
+			service.updatePlan(plan);
 
-			var floorPlanImg = gym.floorPlans[0].img;
 			expect(imageMap.updateImage).toHaveBeenCalledWith(jasmine.objectContaining({
-				width: floorPlanImg.widthInPx,
-				height: floorPlanImg.heightInPx,
-				url: floorPlanImg.url
+				width: plan.img.widthInPx,
+				height: plan.img.heightInPx,
+				url: plan.img.url
 			}));
-			expect(service.removeBoulders).toHaveBeenCalled();
+			expect(service.removeRoutes).toHaveBeenCalled();
 		});
 	});
 
-	var boulder = {
+	var route = {
 		"id": 1,
-		"color": {
-			"name": "BLUE",
-			"germanName": "blau",
-			"englishName": "blue",
-			"primary": "rgb(61, 61, 255)"
-		},
 		"location": {
 			"floorPlan": {
 				"id": 1,
@@ -69,16 +55,10 @@ describe('Service: gymMapService', function () {
 		}
 	};
 
-	var boulders = [
-		boulder,
+	var routes = [
+		route,
 		{
 			"id": 2,
-			"color": {
-				"name": "BLUE",
-				"germanName": "blau",
-				"englishName": "blue",
-				"primary": "rgb(61, 61, 255)"
-			},
 			"location": {
 				"floorPlan": {
 					"id": 1,
@@ -94,12 +74,6 @@ describe('Service: gymMapService', function () {
 		},
 		{
 			"id": 3,
-			"color": {
-				"name": "RED",
-				"germanName": "rot",
-				"englishName": "red",
-				"primary": "rgb(255, 0, 0)"
-			},
 			"location": {
 				"floorPlan": {
 					"id": 1,
@@ -115,11 +89,11 @@ describe('Service: gymMapService', function () {
 		}
 	];
 
-	describe('updating the boulders', function () {
+	describe('updating the routes', function () {
 		it('should update the image map markers', function () {
 			spyOn(imageMap, 'updateMarkers');
 
-			service.updateBoulders(boulders);
+			service.updateRoutes(routes);
 
 			expect(imageMap.updateMarkers).toHaveBeenCalled();
 			// retrieve marker groups argument
@@ -144,26 +118,26 @@ describe('Service: gymMapService', function () {
 		});
 	});
 
-	describe('selecting a boulder', function () {
+	describe('selecting a route', function () {
 		beforeEach(function () {
-			service.updateBoulders([boulder]);
+			service.updateRoutes([route]);
 		});
 
 		it('should select the corresponding image marker', function () {
 			spyOn(imageMap, 'select');
 
-			service.select(boulder);
+			service.select(route);
 
 			expect(imageMap.select).toHaveBeenCalledWith(jasmine.objectContaining({
-				id: boulder.id
+				id: route.id
 			}));
 		});
 	});
 
 
-	describe('clearing the boulder selection', function () {
+	describe('clearing the route selection', function () {
 		beforeEach(function () {
-			service.updateBoulders([boulder]);
+			service.updateRoutes([route]);
 		});
 
 		it('should clear the marker selection', function () {
@@ -178,28 +152,28 @@ describe('Service: gymMapService', function () {
 
 	describe('selecting an image marker', function () {
 		beforeEach(function () {
-			service.updateBoulders([boulder]);
+			service.updateRoutes([route]);
 		});
 
-		it('should select the corresponding boulder', function () {
-			var handler = jasmine.createSpy('boulderSelectionHandler');
+		it('should select the corresponding route', function () {
+			var handler = jasmine.createSpy('routeSelectionHandler');
 			service.onSelectionChange(scope, handler);
 
-			var marker = { id: boulder.id };
+			var marker = { id: route.id };
 			imageMap.select(marker);
 
-			expect(handler).toHaveBeenCalledWith(boulder);
+			expect(handler).toHaveBeenCalledWith(route);
 		});
 	});
 
 	describe('clearing the image marker selection', function () {
 		beforeEach(function () {
-			service.updateBoulders([boulder]);
-			service.select(boulder);
+			service.updateRoutes([route]);
+			service.select(route);
 		});
 
 		it('should unselect the selected boulder', function () {
-			var handler = jasmine.createSpy('boulderSelectionHandler');
+			var handler = jasmine.createSpy('routeSelectionHandler');
 			service.onSelectionChange(scope, handler);
 
 			imageMap.clearSelection();
