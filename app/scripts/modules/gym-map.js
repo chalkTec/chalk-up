@@ -1,168 +1,9 @@
 'use strict';
 
-angular.module('gymMap', ['restangular', 'imageMap', 'cuColor']);
-
-
-angular.module('gymMap')
-	.constant('GRADIENT_ANGLE', 45);
+angular.module('gymMap', ['restangular', 'routesMap']);
 
 angular.module('gymMap')
-	.factory('gymMapService', function ($rootScope, imageMapService, cuColorService, GRADIENT_ANGLE) {
-		var config = {};
-
-
-		// GYM
-
-		// the currently displayed gym
-		var _gym;
-
-		config.updateGym = function (gym) {
-			// updating image implicitly removes markers
-			config.removeBoulders();
-
-			_gym = gym;
-
-			var floorPlan = _.first(gym.floorPlans);
-			var image = {
-				width: floorPlan.img.widthInPx,
-				height: floorPlan.img.heightInPx,
-				url: floorPlan.img.url
-			};
-			imageMapService.updateImage(image);
-		};
-
-		config.getGym = function () {
-			return _gym;
-		};
-
-
-		// BOULDERS
-
-		L.BoulderIcon = L.DivIcon.extend({
-			options: {
-				className: 'boulder-icon',
-				iconSize: undefined,    // set with CSS (assignment to undefined is required!)
-				iconAnchor: undefined,   // set with CSS (assignment to undefined is required!)
-				color: { primary: 'black' }
-			},
-			createIcon: function (oldIcon) {
-				var div = L.DivIcon.prototype.createIcon.call(this, oldIcon);
-				var color = this.options.color;
-
-				var css = cuColorService.getCss(color, GRADIENT_ANGLE);
-				$(div).css(css);
-				return div;
-			}
-		});
-
-		L.boulderIcon = function (color) {
-			return new L.BoulderIcon({color: color});
-		};
-
-		function markerForBoulder(boulder) {
-			var l = boulder.location;
-			return {
-				id: boulder.id,
-				x: l.x * l.floorPlan.img.widthInPx,
-				y: l.y * l.floorPlan.img.heightInPx,
-				icon: L.boulderIcon(boulder.color)
-			};
-		}
-
-		function markersForBoulders(boulders) {
-			return _.map(boulders, markerForBoulder);
-		}
-
-		// the currently displayed boulders
-		var _boulders;
-
-		config.removeBoulders = function () {
-			_boulders = undefined;
-
-			imageMapService.removeMarkers();
-		};
-
-
-		var bouldersForMarker;
-
-		function boulderForMarker(marker) {
-			return bouldersForMarker[marker.id];
-		}
-
-		var onImageMarkerSelectHandler;
-		config.updateBoulders = function (boulders) {
-			_boulders = boulders;
-
-			var markers = markersForBoulders(boulders);
-			imageMapService.updateMarkers(markers);
-
-			bouldersForMarker = _.indexBy(boulders, 'id');
-
-			if (!_.isUndefined(onImageMarkerSelectHandler)) {
-				// unregister handler
-				onImageMarkerSelectHandler();
-			}
-			onImageMarkerSelectHandler = imageMapService.onSelectionChange($rootScope, function (marker) {
-				// internally select the boulder (without propagating it to image map)
-				if (_.isUndefined(marker)) {
-					internalSelect(undefined);
-				}
-				else {
-					internalSelect(boulderForMarker(marker));
-				}
-			});
-		};
-
-		config.getBoulders = function () {
-			return _boulders;
-		};
-
-
-		// SELECTED BOULDER
-
-		var SELECTION_EVENT = 'gymMap:select';
-
-		var _selectedBoulder;
-
-		config.clearSelection = function () {
-			imageMapService.clearSelection();
-
-			internalSelect(undefined);
-		};
-
-		function internalSelect(boulder) {
-			_selectedBoulder = boulder;
-			$rootScope.$broadcast(SELECTION_EVENT, {boulder: _selectedBoulder});
-		}
-
-		/* must not be invoked with undefined */
-		config.select = function (boulder) {
-			imageMapService.select(markerForBoulder(boulder));
-
-			internalSelect(boulder);
-		};
-
-		/* installs a handler that is called when the selection changes (to another boulder or to undefined) */
-		config.onSelectionChange = function ($scope, handler) {
-			$scope.$on(SELECTION_EVENT, function (event, args) {
-				handler(args.boulder);
-			});
-		};
-
-		config.hasSelected = function () {
-			return !_.isUndefined(config.getSelected());
-		};
-
-		config.getSelected = function () {
-			return _selectedBoulder;
-		};
-
-		return config;
-	});
-
-
-angular.module('gymMap')
-	.directive('gymMap', function ($rootScope, Restangular, gymMapService, imageMapService, loadingIndicator) {
+	.directive('gymMap', function ($rootScope, Restangular, routesMapService, loadingIndicator) {
 		return {
 			restrict: 'A',
 			templateUrl: '/views/gym-map.html',
@@ -184,23 +25,23 @@ angular.module('gymMap')
 				});
 
 				gymGet.then(function (gym) {
-					gymMapService.updateGym(gym);
+					routesMapService.updatePlan(gym.floorPlans[0]);
 					$scope.gym = gym;
 
 					routesGet.then(function (routes) {
-						gymMapService.updateBoulders(routes);
+						routesMapService.updateRoutes(routes);
 						$scope.routes = routes;
 					});
 				});
 
-				gymMapService.onSelectionChange($scope, function (boulder) {
-					$scope.selected = boulder;
+				routesMapService.onSelectionChange($scope, function (route) {
+					$scope.selected = route;
 				});
 
 				$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
 
 
-				gymMapService.onSelectionChange($scope, function (route) {
+				routesMapService.onSelectionChange($scope, function (route) {
 					if (_.isUndefined(route)) {
 						$scope.gridOptions.selectAll(false);
 					}
@@ -232,7 +73,7 @@ angular.module('gymMap')
 				}, function () {
 					if (selections.length !== 0) {
 						doScroll = false;
-						gymMapService.select(selections[0]);
+						routesMapService.select(selections[0]);
 						doScroll = true;
 					}
 				});
