@@ -165,3 +165,13 @@ angular.module('routesMap')
 		return config;
 
 	});
+
+
+angular.module('routesMap')
+	.directive('routesMap', function () {
+		return {
+			restrict: 'A',
+			template: '<div image-map></div>',
+			replace: true
+		};
+	});
