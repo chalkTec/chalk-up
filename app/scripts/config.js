@@ -1,7 +1,12 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.config(function ($stateProvider, $urlRouterProvider, $httpProvider, RestangularProvider) {
+	.constant('apiEndpoint', 'http://chalk-up-api-staging.herokuapp.com/rest');
+//	.constant('apiEndpoint', 'http://api.chalkup.de/rest');
+
+
+angular.module('chalkUpApp')
+	.config(function ($stateProvider, $urlRouterProvider, $httpProvider, RestangularProvider, apiEndpoint) {
 
 		// For any unmatched url, redirect to /state1
 		$urlRouterProvider.otherwise('/');
@@ -34,7 +39,5 @@ angular.module('chalkUpApp')
 		$httpProvider.defaults.timeout = 10000;
 
 
-		var host = 'http://api.chalkup.de';
-
-		RestangularProvider.setBaseUrl(host + '/rest');
+		RestangularProvider.setBaseUrl(apiEndpoint);
 	});
