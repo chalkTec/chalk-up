@@ -31,6 +31,9 @@
 	<!-- build:css({.tmp,app}) styles/main.css -->
 	<link rel="stylesheet" href="styles/main.css">
 	<!-- endbuild -->
+    <!-- build:css({.tmp,app}) styles/admin.css -->
+    <link rel="stylesheet" href="styles/admin.css">
+    <!-- endbuild -->
 </head>
 <body ng-app="chalkUpApp" state="{{$state.current.name}}">
 <!--[if lt IE 7]><p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a
@@ -158,6 +161,8 @@
 <script src="scripts/modules/cu-color.js"></script>
 <script src="scripts/modules/image-map.js"></script>
 <script src="scripts/modules/gym-map.js"></script>
+<script src="scripts/modules/admin/config.js"></script>
+<script src="scripts/modules/admin/controllers/admin.js"></script>
 <!-- endbuild -->
 </body>
 </html>

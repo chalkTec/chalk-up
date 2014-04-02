@@ -17,6 +17,11 @@ angular.module('chalkUpApp')
 				templateUrl: 'views/gym.html',
 				controller: 'GymCtrl'
 			})
+			.state('admin', {
+				url: '/admin/gym?id',
+				templateUrl: 'views/modules/admin/admin.html',
+				controller: 'AdminCtrl'
+			})
 			.state('iframe', {
 				url: '/iframe',
 				templateUrl: 'views/iframe.html'

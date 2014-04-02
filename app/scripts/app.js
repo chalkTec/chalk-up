@@ -8,7 +8,8 @@ angular.module('chalkUpApp', [
 	'angulartics',
 	'angulartics.google.analytics',
 	'ngGrid',
-	'gymMap'
+	'gymMap',
+	'chalkUpAdmin'
 ]);
 
 angular.module('chalkUpApp')
