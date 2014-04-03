@@ -30,12 +30,7 @@ angular.module('chalkUpApp')
 		});
 
 		routesTableService.onSelectionChange($scope, function(route) {
-			if(_.isUndefined(route)) {
-				routesMapService.clearSelection();
-			}
-			else {
-				routesMapService.select(route);
-			}
+			routesMapService.select(route);
 			$scope.selected = route;
 		});
 

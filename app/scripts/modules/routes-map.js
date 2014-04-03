@@ -108,12 +108,12 @@ angular.module('routesMap')
 				onImageMarkerSelectHandler();
 			}
 			onImageMarkerSelectHandler = imageMapService.onSelectionChange($rootScope, function (marker) {
-				// internally select the boulder (without propagating it to image map)
 				if (_.isUndefined(marker)) {
-					internalSelect(undefined);
+					config.select(undefined);
 				}
 				else {
-					internalSelect(routeForMarker(marker));
+					var route = routeForMarker(marker);
+					config.select(route);
 				}
 			});
 		};
@@ -130,24 +130,26 @@ angular.module('routesMap')
 		var _selectedRoute;
 
 		config.clearSelection = function () {
-			imageMapService.clearSelection();
-
-			internalSelect(undefined);
+			config.select(undefined);
 		};
 
-		function internalSelect(route) {
-			_selectedRoute = route;
-			$rootScope.$broadcast(SELECTION_EVENT, {route: _selectedRoute});
-		}
-
-		/* must not be invoked with undefined */
 		config.select = function (route) {
-			imageMapService.select(markerForRoute(route));
+			if(route === _selectedRoute) {
+				return;
+			}
 
-			internalSelect(route);
+			_selectedRoute = route;
+
+			if(_.isUndefined(route)) {
+				imageMapService.clearSelection();
+			}
+			else {
+				imageMapService.select(markerForRoute(route));
+			}
+			$rootScope.$broadcast(SELECTION_EVENT, {route: _selectedRoute});
 		};
 
-		/* installs a handler that is called when the selection changes (to another boulder or to undefined) */
+		/* installs a handler that is called when the selection changes (to another route or to undefined) */
 		config.onSelectionChange = function ($scope, handler) {
 			$scope.$on(SELECTION_EVENT, function (event, args) {
 				handler(args.route);

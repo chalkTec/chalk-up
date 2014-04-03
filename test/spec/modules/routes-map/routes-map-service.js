@@ -138,6 +138,7 @@ describe('Service: routesMapService', function () {
 	describe('clearing the route selection', function () {
 		beforeEach(function () {
 			service.updateRoutes([route]);
+			service.select(route);
 		});
 
 		it('should clear the marker selection', function () {
