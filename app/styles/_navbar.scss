@@ -4,37 +4,37 @@ $navbar-bg-color: $midnight-blue;
 
 nav.bar {
 
-  // POSITION
-  height: $navbar-height;
+	// POSITION
+	height:$navbar-height;
 
-  // COLORS
+	// COLORS
 
-  background-color: $navbar-bg-color;
+	background-color: $navbar-bg-color;
 
-  color: white;
-  a {
-    color: white;
-  }
+	color: white;
+	a {
+		color: white;
+	}
 
-  // CONTENT
+	// CONTENT
 
-  line-height: $navbar-height;
-  vertical-align: middle;
+	line-height: $navbar-height;
+	vertical-align: middle;
 
-  > * {
-    height: $navbar-height;
-    line-height: $navbar-height;
-    vertical-align: middle;
+	> * {
+		height: $navbar-height;
+		line-height: $navbar-height;
+		vertical-align: middle;
 
-    margin: 0;
-  }
+		margin: 0;
+	}
 
-  h1 {
-    float: left;
-    font-size: 1.2em;
-    display: block;
+	h1 {
+		float: left;
+		font-size: 1.2em;
+		display: block;
 
-    margin-left: 1em;
-  }
+		margin-left: 1em;
+	}
 
 }

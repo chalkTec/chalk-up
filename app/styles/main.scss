@@ -38,6 +38,9 @@
 	vertical-align: super;
 }
 
+*[ui-view] {
+	height: 100%;
+}
 
 // GYM
 
@@ -48,14 +51,3 @@ body[state="iframe"] {
 
 
 @import "gym";
-
-
-
-// ADMIN
-@import "navbar";
-
-body[state="admin"] {
-	*[gym-map] {
-		height: rem-calc(700px);
-	}
-}

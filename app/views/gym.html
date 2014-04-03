@@ -1,34 +1,36 @@
-<section class="plan">
-    <div routes-map ng-show="gym"></div>
-    <p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden.
-        Sorry.</p>
-</section>
-<section class="information-panel">
-    <div class="route-meta" ng-show="selected">
-        <h2>
-            <span class="color-indicator" cu-color="selected.color" angle="45"></span>
-            <span class="number" ng-if="selected.number">{{selected.number}}: </span>
-            <span class="name" ng-if="selected.name">{{selected.name}}</span>
-        </h2>
-        <p class="grade">
-            <span ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</span>
-            <span ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</span>
-        </p>
-        <p class="description" ng-show="selected.description">{{selected.description}}</p>
-        <h2>geschraubt am</h2>
+<div class="gym page">
+	<section class="routes-map">
+	    <div routes-map ng-show="gym"></div>
+	    <p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden.
+	        Sorry.</p>
+	</section>
+	<section class="route-information">
+	    <div class="route-meta" ng-show="selected">
+	        <h2>
+	            <span class="color-indicator" cu-color="selected.color" angle="45"></span>
+	            <span class="number" ng-if="selected.number">{{selected.number}}: </span>
+	            <span class="name" ng-if="selected.name">{{selected.name}}</span>
+	        </h2>
+	        <p class="grade">
+	            <span ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</span>
+	            <span ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</span>
+	        </p>
+	        <p class="description" ng-show="selected.description">{{selected.description}}</p>
+	        <h2>geschraubt am</h2>
 
-        <p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
-    </div>
-    <p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
-        aus.</p>
+	        <p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
+	    </div>
+	    <p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
+	        aus.</p>
 
-    <p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
+	    <p class="feedback"><a ng-click="openFeedbackPanel()">Route fehlt? Feedback?</a></p>
 
-    <p class="attribution">powered by <a href="http://www.chalkup.de">chalkUp!</a></p>
-</section>
-<section class="route-table">
-    <div routes-table routes="routes" selected="selected" ng-hide="routesLoadError"></div>
+	    <p class="attribution">powered by <a href="http://www.chalkup.de">chalkUp!</a></p>
+	</section>
+	<section class="routes-table">
+	    <div routes-table routes="routes" selected="selected" ng-hide="routesLoadError"></div>
 
-    <p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden.
-        Sorry.</p>
-</section>
+	    <p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden.
+	        Sorry.</p>
+	</section>
+</div>
