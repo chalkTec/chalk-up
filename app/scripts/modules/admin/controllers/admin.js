@@ -21,6 +21,8 @@ angular.module('chalkUpAdmin')
 			routesLoad.then(function (routes) {
 				routesMapService.updateRoutes(routes);
 				routesTableService.updateRoutes(routes);
+
+				$scope.routes = routes;
 			});
 		});
 
@@ -29,8 +31,19 @@ angular.module('chalkUpAdmin')
 			$scope.selected = route;
 		});
 
-		routesTableService.onSelectionChange($scope, function(route) {
+		routesTableService.onSelectionChange($scope, function (route) {
 			routesMapService.select(route);
 			$scope.selected = route;
+			$scope.editedRoute = _.cloneDeep(route);
 		});
+
+
+		$scope.deleteRoute = function (route) {
+			gymService.deleteRoute(route);
+
+			_.pull($scope.routes, route);
+
+			routesMapService.updateRoutes($scope.routes);
+			routesTableService.updateRoutes($scope.routes);
+		};
 	});

@@ -8,7 +8,7 @@ angular.module('chalkUpApp')
 angular.module('chalkUpApp')
 	.config(function ($stateProvider, $urlRouterProvider, $httpProvider, RestangularProvider, apiEndpoint) {
 
-		// For any unmatched url, redirect to /state1
+		// For any unmatched url, redirect to /
 		$urlRouterProvider.otherwise('/');
 
 		$stateProvider
@@ -40,4 +40,13 @@ angular.module('chalkUpApp')
 
 
 		RestangularProvider.setBaseUrl(apiEndpoint);
+		// this is done so that DELETE requests also have this header (see https://github.com/mgonto/restangular/issues/159)
+		RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json'});
+		RestangularProvider.addRequestInterceptor(function(element, operation, what, url) {
+			// TODO: remove this as soon as this issue is fixed: https://github.com/restfulapi/restful-api/issues/6
+			if(operation === "remove" || operation === "put") {
+				delete element.id;
+			}
+			return element;
+		});
 	});

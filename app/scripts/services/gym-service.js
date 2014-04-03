@@ -13,6 +13,9 @@ angular.module('chalkUpApp')
 				var routesGet = Restangular.one('gyms', gymId).all('routes').getList();
 				loadingIndicator.waitFor(routesGet);
 				return routesGet;
+			},
+			deleteRoute: function(route) {
+				return route.remove();
 			}
 		};
 	});

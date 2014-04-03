@@ -26,10 +26,10 @@
 
 }
 
-
+// TODO: factor this out
 $top-box-padding: rem-calc(10px);
 $top-box-background: #f5f5f5;
-section.routes-map, section.route-information {
+section.routes-map, section.route-information, section.route-edit {
 	background: $top-box-background;
 	padding: $top-box-padding;
 

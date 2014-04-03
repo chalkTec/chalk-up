@@ -167,7 +167,7 @@ angular.module('routesTable')
 				// NOTIFY OTHERS IF SELECTION CHANGED INTERNALLY
 
 				// that is a bit a mess: ng-grid uses an array to communicate the currently selected item (due to its ability of multi-selection)
-				$scope.$watchCollection('selections', function (selections, oldSelections) {
+				$scope.$watchCollection('selections', function (selections) {
 					if (selections.length !== 0) {
 						doScroll = false;
 						routesTableService.select(selections[0]);
