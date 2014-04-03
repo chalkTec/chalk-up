@@ -1,27 +1,24 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.controller('GymCtrl', function ($scope, $stateParams, Restangular, routesMapService, loadingIndicator, feedbackService) {
+	.controller('GymCtrl', function ($scope, $stateParams, routesMapService, gymService, feedbackService) {
 		$scope.gymId = $stateParams.id;
 
-		var gym = Restangular.one('gyms', $scope.gymId);
-		var gymGet = gym.get();
-		loadingIndicator.waitFor(gymGet);
-		gymGet.catch(function () {
+		var gymLoad = gymService.loadGym($scope.gymId);
+		gymLoad.catch(function () {
 			$scope.gymLoadError = true;
 		});
 
-		var routesGet = gym.all('routes').getList();
-		loadingIndicator.waitFor(routesGet);
-		routesGet.catch(function () {
+		var routesLoad = gymService.loadRoutes($scope.gymId);
+		routesLoad.catch(function () {
 			$scope.routesLoadError = true;
 		});
 
-		gymGet.then(function (gym) {
+		gymLoad.then(function (gym) {
 			routesMapService.updatePlan(gym.floorPlans[0]);
 			$scope.gym = gym;
 
-			routesGet.then(function (routes) {
+			routesLoad.then(function (routes) {
 				routesMapService.updateRoutes(routes);
 				$scope.routes = routes;
 			});
