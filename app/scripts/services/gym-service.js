@@ -15,7 +15,9 @@ angular.module('chalkUpApp')
 				return routesGet;
 			},
 			deleteRoute: function(route) {
-				return route.remove();
+				var routeRemove =  route.remove();
+				loadingIndicator.waitFor(routeRemove);
+				return routeRemove;
 			}
 		};
 	});

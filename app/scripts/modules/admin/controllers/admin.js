@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, gymService, routesMapService, routesTableService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, gymService, routesMapService, routesTableService, errorService) {
 		$scope.gymId = $stateParams.id;
 
 		var gymLoad = gymService.loadGym($scope.gymId);
@@ -39,11 +39,15 @@ angular.module('chalkUpAdmin')
 
 
 		$scope.deleteRoute = function (route) {
-			gymService.deleteRoute(route);
+			gymService.deleteRoute(route)
+				.then(function () {
+					_.pull($scope.routes, route);
 
-			_.pull($scope.routes, route);
-
-			routesMapService.updateRoutes($scope.routes);
-			routesTableService.updateRoutes($scope.routes);
+					routesMapService.updateRoutes($scope.routes);
+					routesTableService.updateRoutes($scope.routes);
+				})
+				.catch(function (error) {
+					errorService.restangularError(error);
+				});
 		};
 	});

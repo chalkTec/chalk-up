@@ -5,6 +5,7 @@ angular.module('chalkUpApp', [
 	'restangular',
 	'angularSpinner',
 	'angularMoment',
+	'mm.foundation',
 	'angulartics',
 	'angulartics.google.analytics',
 	'routesMap',
