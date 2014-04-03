@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.controller('GymCtrl', function ($scope, $stateParams, routesMapService, gymService, feedbackService) {
+	.controller('GymCtrl', function ($scope, $stateParams, routesMapService, routesTableService, gymService, feedbackService) {
 		$scope.gymId = $stateParams.id;
 
 		var gymLoad = gymService.loadGym($scope.gymId);
@@ -20,27 +20,24 @@ angular.module('chalkUpApp')
 
 			routesLoad.then(function (routes) {
 				routesMapService.updateRoutes(routes);
-				$scope.routes = routes;
+				routesTableService.updateRoutes(routes);
 			});
 		});
 
 		routesMapService.onSelectionChange($scope, function (route) {
+			routesTableService.select(route);
 			$scope.selected = route;
 		});
 
-		$scope.$watch('selected', function(selected, oldSelected) {
-			if(selected === oldSelected) {
-				return;
-			}
-
-			if(_.isUndefined(selected)) {
+		routesTableService.onSelectionChange($scope, function(route) {
+			if(_.isUndefined(route)) {
 				routesMapService.clearSelection();
 			}
 			else {
-				routesMapService.select(selected);
+				routesMapService.select(route);
 			}
+			$scope.selected = route;
 		});
-
 
 		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
 	});
