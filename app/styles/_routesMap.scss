@@ -53,3 +53,8 @@ $icon-grow-factor: 1.2;
 	opacity: 1.0;
 	z-index: 1000000 !important;
 }
+
+*[image-map] {
+	// prevent leaflet controls to be shown before e.g. Foundation reveal modal
+	z-index: 0;
+}

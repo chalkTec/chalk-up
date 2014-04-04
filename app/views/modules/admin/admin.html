@@ -1,5 +1,13 @@
 <nav-bar></nav-bar>
 
+<script type="text/ng-template" id="/delete-confirm.html">
+	<p>
+		Lösche eine Route nur, wenn du sie fehlerhaft angelegt hast. Wenn die Route abgeschraubt worden ist, dann
+		<strong>archiviere</strong> sie! Damit bleibt sie in den historischen Auswertungen erhalten.<br/>
+		Du hast keine Möglichkeit, ein Löschen rückgängig zu machen!
+	</p>
+</script>
+
 <div class="page admin">
 	<section class="routes-map">
 		<div routes-map ng-show="gym"></div>
@@ -8,7 +16,9 @@
 	</section>
 	<section class="route-edit">
 		<form name="route" ng-show="editedRoute">
-			<button type="submit" ng-click="deleteRoute(selected)">Löschen</button>
+			<button type="submit" confirm-dialog confirm-action="deleteRoute(selected)"
+			        confirm-message-url="/delete-confirm.html">Löschen
+			</button>
 		</form>
 		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
 			aus.</p>
