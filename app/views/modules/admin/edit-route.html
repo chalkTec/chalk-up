@@ -1,0 +1,35 @@
+<form name="editRoute">
+
+	<label>
+		Name
+		<input type="text" name="name" ng-model="route.name"/>
+	</label>
+
+	<label>
+		Nummer
+		<input type="text" name="number" ng-model="route.number"/>
+	</label>
+
+	<label>
+		Beschreibung
+		<textarea rows="3" name="description" ng-model="route.description"></textarea>
+	</label>
+
+	<label>
+		Farbe
+		<span color-selector colors="gym.colors" selected="route.color"></span>
+	</label>
+
+	<label>
+		Grad
+		<input type="text" name="gradeUiaa" ng-model="route.initialGrade.uiaa"/>
+	</label>
+
+	<label>
+		geschraubt am
+		<input type="date" name="dateSet" ng-model="route.dateSetDate"/>
+	</label>
+
+	<button ng-click="save(route)" class="alert">Speichern</button>
+	<button ng-click="discard()">Änderungen verwerfen</button>
+</form>

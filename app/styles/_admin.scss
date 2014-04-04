@@ -29,3 +29,16 @@
 	}
 
 }
+
+.reveal-modal.edit {
+	textarea {
+		// used in combination with rows attribute
+		height: auto;
+		// restrict manual scaling wider than modal
+		max-width: 100%;
+	}
+
+	button {
+		margin-bottom: 0;
+	}
+}
