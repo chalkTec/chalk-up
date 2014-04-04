@@ -18,4 +18,5 @@ angular.module('chalkUpApp')
 		$rootScope.$state = $state;
 
 		$window.moment.lang('de');
+		$window.moment.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZZ';
 	});
