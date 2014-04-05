@@ -12,7 +12,7 @@ angular.module('chalkUpApp')
 			},
 			controller: function($scope) {
 				$scope.selected = _.find($scope.colors, function(color) {
-					return color.name == $scope.selected.name;
+					return color.name === $scope.selected.name;
 				});
 			}
 		};
