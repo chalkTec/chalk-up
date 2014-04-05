@@ -466,6 +466,11 @@ module.exports = function (grunt) {
 		'buildcontrol:heroku'
 	]);
 
+	grunt.registerTask('check', [
+		'newer:jshint',
+		'test'
+	]);
+
 	grunt.registerTask('default', [
 		'newer:jshint',
 		'test',
