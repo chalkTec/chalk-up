@@ -18,6 +18,8 @@
 		<div ng-show="selected">
 			<button type="submit" ng-click="editRoute(selected)"><i class="fi-pencil"></i></button>
 
+			<button type="submit" ng-click="archiveRoute(selected)"><i class="fi-archive"></i></button>
+
 			<button type="submit" confirm-dialog confirm-action="deleteRoute(selected)"
 			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i></button>
 		</div>

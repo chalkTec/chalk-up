@@ -14,7 +14,24 @@ angular.module('chalkUpApp')
 				loadingIndicator.waitFor(routesGet);
 				return routesGet;
 			},
+			newRoute: function(gym, floorPlan) {
+				var newRoute = {
+					gym: gym,
+					location: {
+						floorPlan: floorPlan
+					}
+				};
+				var routesPost = Restangular.one('gyms', gym.id).all('routes').post(newRoute);
+				loadingIndicator.waitFor(routesPost);
+				return routesPost;
+			},
 			updateRoute: function (route) {
+				var routePut = route.put();
+				loadingIndicator.waitFor(routePut);
+				return routePut;
+			},
+			archiveRoute: function (route, date) {
+				route.end = $window.moment(date).format();
 				var routePut = route.put();
 				loadingIndicator.waitFor(routePut);
 				return routePut;

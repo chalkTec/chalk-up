@@ -74,10 +74,28 @@ angular.module('chalkUpAdmin')
 			});
 		};
 
-		$scope.deleteRoute = function (route) {
-			gymService.deleteRoute(route)
+		$scope.archiveRoute = function (route) {
+			var date = moment().toDate();
+			gymService.archiveRoute(route, date)
+				.then(function (archivedRoute) {
+					_.remove($scope.routes, function(route) {
+						return route.id === archivedRoute.id;
+					});
+
+					routesMapService.updateRoutes($scope.routes);
+					routesTableService.updateRoutes($scope.routes);
+				})
+				.catch(function (error) {
+					errorService.restangularError(error);
+				});
+		};
+
+		$scope.deleteRoute = function (routeToDelete) {
+			gymService.deleteRoute(routeToDelete)
 				.then(function () {
-					_.pull($scope.routes, route);
+					_.remove($scope.routes, function(route) {
+						return route.id === routeToDelete.id;
+					});
 
 					routesMapService.updateRoutes($scope.routes);
 					routesTableService.updateRoutes($scope.routes);
