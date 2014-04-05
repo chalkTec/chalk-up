@@ -1,5 +1,7 @@
 <h1><strong>{{error.status}}</strong> bei HTTP {{error.config.method}} auf {{error.config.url}}</code></h1>
 
+<p><em>{{error.headers('x-chalkup-message')}}</em></p>
+
 <p>
 	<code>
 		{{error.data}}
