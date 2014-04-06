@@ -15,7 +15,9 @@ angular.module('chalkUpAdmin')
 		});
 
 		gymLoad.then(function (gym) {
-			routesMapService.updatePlan(gym.floorPlans[0]);
+			$scope.floorPlan = gym.floorPlans[0];
+
+			routesMapService.updatePlan($scope.floorPlan);
 			$scope.gym = gym;
 
 			routesLoad.then(function (routes) {
@@ -36,14 +38,14 @@ angular.module('chalkUpAdmin')
 			$scope.selected = route;
 		});
 
-		$scope.editRoute = function (route) {
-			var outerScope = $scope;
-			var editModal = $modal.open({
+
+		var openEditModal = function (route, gym) {
+			return $modal.open({
 				templateUrl: '/views/modules/admin/edit-route.html',
 				windowClass: 'small edit',
 				controller: ['$scope', function ($scope) {
-					$scope.gym = outerScope.gym;
-					$scope.route = route.clone();
+					$scope.gym = gym;
+					$scope.route = route;
 					$scope.route.dateSetDate = moment($scope.route.dateSet).toDate();
 
 					$scope.save = function (route) {
@@ -56,6 +58,51 @@ angular.module('chalkUpAdmin')
 					};
 				}]
 			});
+		};
+
+
+		$scope.newRoute = function (gym, floorPlan) {
+			var newRoute = {
+				type: 'sport-route',
+				gym: gym,
+				location: {
+					floorPlan: floorPlan,
+					x: 0,
+					y: 0
+				},
+				color: {
+					name: 'RED'
+				},
+				initialGrade: {
+					uiaa: '12'
+				}
+			};
+			var editModal = openEditModal(newRoute, gym);
+
+			editModal.result.then(function (editedRoute) {
+				gymService.createRoute(gym, editedRoute)
+					.then(function (createdRoute) {
+						$scope.routes.push(createdRoute);
+
+						routesMapService.updateRoutes($scope.routes);
+						routesTableService.updateRoutes($scope.routes);
+
+						routesMapService.select(createdRoute);
+						routesTableService.select(createdRoute);
+						$scope.selected = createdRoute;
+					})
+					.catch(function (error) {
+						errorService.restangularError(error);
+					});
+			});
+			editModal.result.catch(function () {
+				// nothing to do, we just do not create the route
+			});
+		};
+
+		$scope.editRoute = function (route) {
+			// clone the route, so nothing changes until the editing is saved and discard just needs to do nothing
+			var editModal = openEditModal(route.clone(), $scope.gym);
 
 			editModal.result.then(function (editedRoute) {
 				gymService.updateRoute(editedRoute)

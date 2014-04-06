@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.factory('gymService', function (Restangular, loadingIndicator) {
+	.factory('gymService', function ($window, Restangular, loadingIndicator) {
 		return {
 			loadGym: function (id) {
 				var gym = Restangular.one('gyms', id);
@@ -14,14 +14,8 @@ angular.module('chalkUpApp')
 				loadingIndicator.waitFor(routesGet);
 				return routesGet;
 			},
-			newRoute: function(gym, floorPlan) {
-				var newRoute = {
-					gym: gym,
-					location: {
-						floorPlan: floorPlan
-					}
-				};
-				var routesPost = Restangular.one('gyms', gym.id).all('routes').post(newRoute);
+			createRoute: function(gym, route) {
+				var routesPost = Restangular.one('gyms', gym.id).all('routes').post(route);
 				loadingIndicator.waitFor(routesPost);
 				return routesPost;
 			},

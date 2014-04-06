@@ -15,12 +15,15 @@
 			Sorry.</p>
 	</section>
 	<section class="route-edit">
+		<button ng-click="newRoute(gym, floorPlan)"><i class="fi-plus"></i></button>
+
 		<div ng-show="selected">
-			<button type="submit" ng-click="editRoute(selected)"><i class="fi-pencil"></i></button>
 
-			<button type="submit" ng-click="archiveRoute(selected)"><i class="fi-archive"></i></button>
+			<button ng-click="editRoute(selected)"><i class="fi-pencil"></i></button>
 
-			<button type="submit" confirm-dialog confirm-action="deleteRoute(selected)"
+			<button ng-click="archiveRoute(selected)"><i class="fi-archive"></i></button>
+
+			<button confirm-dialog confirm-action="deleteRoute(selected)"
 			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i></button>
 		</div>
 		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
