@@ -15,7 +15,21 @@
 			Sorry.</p>
 	</section>
 	<section class="route-edit">
-		<button ng-click="newRoute(gym, floorPlan)"><i class="fi-plus"></i></button>
+		<div class="route-meta" ng-show="selected">
+			<h2>
+				<span class="color-indicator" cu-color="selected.color" angle="45"></span>
+				<span class="number" ng-if="selected.number">{{selected.number}}: </span>
+				<span class="name" ng-if="selected.name">{{selected.name}}</span>
+			</h2>
+			<p class="grade">
+				<span ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</span>
+				<span ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</span>
+			</p>
+			<p class="description" ng-show="selected.description">{{selected.description}}</p>
+			<h2>geschraubt am</h2>
+
+			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
+		</div>
 
 		<div ng-show="selected">
 
@@ -26,6 +40,11 @@
 			<button confirm-dialog confirm-action="deleteRoute(selected)"
 			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i></button>
 		</div>
+
+		<hr ng-show="selected"/>
+
+		<button ng-click="newRoute(gym, floorPlan)"><i class="fi-plus"></i></button>
+
 		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
 			aus.</p>
 	</section>

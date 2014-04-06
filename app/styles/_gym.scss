@@ -52,23 +52,26 @@ section.routes-map, section.route-information, section.route-edit {
 }
 
 section.route-information {
-	h1 {
-		font-size: 1.5em;
-	}
 
-	h2 {
-		font-size: 1em;
-		font-weight: 600;
-	}
+	.route-meta {
+		h1 {
+			font-size: 1.5em;
+		}
 
-	.number {
-		font-weight: 200;
-	}
+		h2 {
+			font-size: 1em;
+			font-weight: 600;
+		}
 
-	.grade {
-		margin: 0.5em 0.3em;
-		font-size: 2em;
-		font-weight: 200;
+		.number {
+			font-weight: 200;
+		}
+
+		.grade {
+			margin: 0.5em 0.3em;
+			font-size: 2em;
+			font-weight: 200;
+		}
 	}
 
 	.prompt {
