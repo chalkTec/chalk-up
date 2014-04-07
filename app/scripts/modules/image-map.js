@@ -74,7 +74,7 @@ angular.module('imageMap')
 
 		var MARKER_DRAGGABLE_EVENT = 'imageMap:markerDraggable';
 
-		config.setMarkerDraggable = function(marker, draggable) {
+		config.setMarkerDraggable = function (marker, draggable) {
 			$rootScope.$broadcast(MARKER_DRAGGABLE_EVENT, {marker: marker, draggable: draggable});
 		};
 
@@ -91,16 +91,16 @@ angular.module('imageMap')
 
 		var _selectionEnabled = true;
 
-		config.isSelectionEnabled = function() {
+		config.isSelectionEnabled = function () {
 			return _selectionEnabled;
 		};
 
-		config.enableSelection = function() {
+		config.enableSelection = function () {
 			_selectionEnabled = true;
 			$rootScope.$broadcast(SELECTION_ENABLED_CHANGE_EVENT, {selectionEnabled: true});
 		};
 
-		config.disableSelection = function() {
+		config.disableSelection = function () {
 			_selectionEnabled = false;
 			$rootScope.$broadcast(SELECTION_ENABLED_CHANGE_EVENT, {selectionEnabled: false});
 		};
@@ -166,25 +166,96 @@ angular.module('imageMap')
 
 
 angular.module('imageMap')
-	.service('mapProjection', function (imageMapPadding) {
-		this.calculate = function (map, image) {
+	.factory('leafletMap', function ($rootScope, imageMapPadding) {
+		var setZoomClass = function (map) {
+			var $container = $(map.getContainer());
+			for (var i = 0; i < 15; i++) {
+				$container.removeClass('zoom-' + i);
+			}
+
+			$container.addClass('zoom-' + map.getZoom());
+		};
+
+		var clickHandlers = [];
+
+		var config = {};
+
+		config.map = undefined;
+
+		config.init = function (element) {
+			// SETUP MAP
+			config.map = L.map(element, {
+				maxZoom: 3,
+				crs: L.CRS.Simple,
+				attributionControl: false,
+				zoomControl: true
+			});
+			config.map.setView([0, 0], 0);
+
+			config.map.on('click', function () {
+				$rootScope.$apply(function() {
+					_.each(clickHandlers, function(clickHandler) {
+						clickHandler();
+					});
+				});
+			});
+
+
+			// ZOOM CSS CLASS
+
+			setZoomClass(config.map);
+			config.map.on('zoomend', function () {
+				$rootScope.$apply(function () {
+					setZoomClass(config.map);
+				});
+			});
+		};
+
+		config.destroy = function () {
+			config.map.remove();
+			config.map = undefined;
+			clickHandlers = [];
+		};
+
+		config.onResize = function (handler) {
+			config.map.on('resize', function () {
+				$rootScope.$apply(handler);
+			});
+		};
+
+		config.onClick = function (handler) {
+			clickHandlers.push(handler);
+		};
+
+		config.offClick = function(handler) {
+			_.pull(clickHandlers, handler);
+		};
+
+
+		config.resetView = function () {
+			config.map.setView([0, 0], 0, { reset: true });
+			setZoomClass(config.map);
+		};
+
+		config.calculateProjection = function (rectangle) {
+			var map = config.map;
 			var containerWidth = map.getSize().x - imageMapPadding * 2;
 			var containerHeight = map.getSize().y - imageMapPadding * 2;
 			var containerAspectRatio = containerHeight / containerWidth;
 
-			var imageAspectRatio = image.height / image.width;
+			var imageAspectRatio = rectangle.height / rectangle.width;
 
 			var resultingWidth, resultingHeight, xOffset, yOffset;
 			if (containerAspectRatio >= imageAspectRatio) {
 				// image plan is wider, => fit to containerWidth
 				resultingWidth = containerWidth;
-				resultingHeight = image.height * containerWidth / image.width;
+				resultingHeight = rectangle.height * containerWidth / rectangle.width;
 				xOffset = imageMapPadding;
 				yOffset = (containerHeight - resultingHeight) / 2 + imageMapPadding;
 			}
 			else {
 				// image plan is higher, => fit to containerHeight
-				resultingWidth = image.width * containerHeight / image.height;
+				resultingWidth = rectangle.width * containerHeight / rectangle.height;
 				resultingHeight = containerHeight;
 				xOffset = (containerWidth - resultingWidth) / 2 + imageMapPadding;
 				yOffset = imageMapPadding;
@@ -193,7 +264,7 @@ angular.module('imageMap')
 			var southWestCorner = map.containerPointToLatLng([xOffset, resultingHeight + yOffset]);
 			var northEastCorner = map.containerPointToLatLng([xOffset + resultingWidth, yOffset]);
 
-			var scaleFactor = image.width / resultingWidth;
+			var scaleFactor = rectangle.width / resultingWidth;
 
 			return {
 				latLngBounds: L.latLngBounds(southWestCorner, northEastCorner),
@@ -205,48 +276,54 @@ angular.module('imageMap')
 				}
 			};
 		};
+
+		return config;
+
 	});
 
 
 angular.module('imageMap')
-	.factory('mapOverlay', function (mapProjection) {
+	.factory('mapOverlay', function (leafletMap) {
 		var config = {};
 
 		var overlay;
 
-		function removeOverlay(map) {
+		config.projection = undefined;
+
+		function removeOverlay() {
 			if (!_.isUndefined(overlay)) {
-				map.removeLayer(overlay);
+				leafletMap.map.removeLayer(overlay);
 				overlay = undefined;
-				map.setMaxBounds(undefined);
+				config.projection = undefined;
+				leafletMap.map.setMaxBounds(undefined);
 			}
 		}
 
-		function addOverlay(map, image) {
-			var projection = mapProjection.calculate(map, image);
+		function addOverlay(image) {
+			config.projection = leafletMap.calculateProjection(image);
 
 			// add new overlay
-			overlay = L.imageOverlay(image.url, projection.latLngBounds, {
+			overlay = L.imageOverlay(image.url, config.projection.latLngBounds, {
 				noWrap: true
 			});
-			overlay.addTo(map);
-			map.setMaxBounds(projection.latLngBounds);
+			overlay.addTo(leafletMap.map);
+			leafletMap.map.setMaxBounds(config.projection.latLngBounds);
 		}
 
-		config.drawImageOverlay = function (map, image) {
+		config.drawImageOverlay = function (image) {
 			if (_.isUndefined(image)) {
-				removeOverlay(map);
+				removeOverlay();
 				return;
 			}
 
 			// remove old overlay
-			removeOverlay(map);
+			removeOverlay();
 
-			addOverlay(map, image);
+			addOverlay(image);
 		};
 
-		config.destroy = function (map) {
-			removeOverlay(map);
+		config.destroy = function () {
+			removeOverlay();
 		};
 
 		return config;
@@ -254,24 +331,24 @@ angular.module('imageMap')
 
 
 angular.module('imageMap')
-	.factory('mapMarkers', function ($rootScope, mapProjection, imageMapService) {
+	.factory('mapMarkers', function ($rootScope, leafletMap, mapOverlay) {
 		var MyMarker = L.Marker.extend({
-			onAdd: function(map) {
+			onAdd: function (map) {
 				L.Marker.prototype.onAdd.call(this, map);
-				if(this.options.selected) {
+				if (this.options.selected) {
 					$(this._icon).addClass('selected');
 				}
 			},
-			redraw: function() {
+			redraw: function () {
 				var map = this._map;
-				if(map) {
+				if (map) {
 					map.removeLayer(this);
 					map.addLayer(this);
 				}
 			}
 		});
 
-		var myMarker = function(latLng, options) {
+		var myMarker = function (latLng, options) {
 			return new MyMarker(latLng, options);
 		};
 
@@ -285,10 +362,10 @@ angular.module('imageMap')
 			return markerIdToLeafletMarker[imageMapMarker.id];
 		};
 
-		function removeMarkers(map) {
+		function removeMarkers() {
 			if (!_.isUndefined(leafletMarkers)) {
 				_.each(leafletMarkers, function (marker) {
-					map.removeLayer(marker);
+					leafletMap.map.removeLayer(marker);
 				});
 
 				leafletMarkers = undefined;
@@ -296,8 +373,8 @@ angular.module('imageMap')
 			}
 		}
 
-		function imageMapMarkerToLeafletMarker(imageMapMarker, projection, clickable) {
-			var latLng = projection.imagePointToLatLng([imageMapMarker.x, imageMapMarker.y]);
+		function imageMapMarkerToLeafletMarker(imageMapMarker, clickHandler) {
+			var latLng = mapOverlay.projection.imagePointToLatLng([imageMapMarker.x, imageMapMarker.y]);
 			var options = {
 				riseOnHover: true
 			};
@@ -305,44 +382,44 @@ angular.module('imageMap')
 				options.icon = imageMapMarker.icon;
 			}
 
+			var clickable = !_.isUndefined(clickHandler);
 			options.clickable = clickable;
 
 			var marker = myMarker(latLng, options);
 
-			marker.on('click', function () {
-				$rootScope.$apply(function () {
-					imageMapService.select(imageMapMarker);
+			if (clickable) {
+				marker.on('click', function () {
+					$rootScope.$apply(function () {
+						clickHandler(imageMapMarker);
+					});
 				});
-			});
+			}
 
 			return marker;
 		}
 
-		function addMarkers(map, image, markers, clickable) {
-			var projection = mapProjection.calculate(map, image);
-
+		function addMarkers(markers, clickHandler) {
 			markerIdToLeafletMarker = {};
 			leafletMarkers = [];
 			_.each(markers, function (marker) {
-				var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection, clickable);
+				var leafletMarker = imageMapMarkerToLeafletMarker(marker, clickHandler);
 				leafletMarkers.push(leafletMarker);
-				leafletMarker.addTo(map);
+				leafletMarker.addTo(leafletMap.map);
 				markerIdToLeafletMarker[marker.id] = leafletMarker;
 				return leafletMarker;
 			});
 		}
 
-		config.drawMarkers = function (map, image, markers, clickable) {
-			// we need an image to draw markers on it
-			if (_.isUndefined(image) || _.isUndefined(markers)) {
-				removeMarkers(map);
+		config.drawMarkers = function (markers, clickHandler) {
+			if (_.isUndefined(markers)) {
+				removeMarkers();
 				return;
 			}
 
 			// remove old markers
-			removeMarkers(map);
+			removeMarkers();
 
-			addMarkers(map, image, markers, clickable);
+			addMarkers(markers, clickHandler);
 		};
 
 		config.unmarkSelected = function (marker) {
@@ -357,28 +434,29 @@ angular.module('imageMap')
 			leafletMarker.redraw();
 		};
 
-		config.panTo = function(map, marker) {
+		config.panTo = function (marker) {
 			var leafletMarker = getLeafletMarker(marker);
 			// animate true does not work properly:
 			// - little movements even when zoomed out entirely
 			// - animated panning to a point and then zooming out does not take max bounds into account
-			map.panTo(leafletMarker.getLatLng());
+			leafletMap.map.panTo(leafletMarker.getLatLng());
 		};
 
-		config.destroy = function (map) {
-			removeMarkers(map);
+		config.destroy = function () {
+			removeMarkers();
 		};
 
-		config.setMarkersClickable = function(clickable) {
-			_.each(leafletMarkers, function(leafletMarker) {
-				leafletMarker.options.clickable = clickable;
+		config.removeMarkersClickHandlers = function () {
+			_.each(leafletMarkers, function (leafletMarker) {
+				leafletMarker.options.clickable = false;
+				leafletMarker.off('click');
 				leafletMarker.redraw();
 			});
 		};
 
-		config.setMarkerDraggable = function(marker, draggable) {
+		config.setMarkerDraggable = function (marker, draggable) {
 			var leafletMarker = getLeafletMarker(marker);
-			if(draggable) {
+			if (draggable) {
 				leafletMarker.options.clickable = true;
 			}
 			leafletMarker.options.draggable = draggable;
@@ -391,79 +469,55 @@ angular.module('imageMap')
 
 angular.module('imageMap')
 	.directive('imageMap', function ($rootScope, imageMapService) {
-		var map;
 
 		return {
 			restrict: 'A',
 			scope: {},
-			controller: function ($scope, $element, mapOverlay, mapMarkers) {
+			controller: function ($scope, $element, leafletMap, mapOverlay, mapMarkers) {
 				// SETUP MAP
-				map = L.map($element[0], {
-					maxZoom: 3,
-					crs: L.CRS.Simple,
-					attributionControl: false,
-					zoomControl: true
-				});
-				map.setView([0, 0], 0);
-
-
-				// ZOOM CSS CLASS
-
-				var setZoomClass = function () {
-					var $container = $(map.getContainer());
-					for (var i = 0; i < 15; i++) {
-						$container.removeClass('zoom-' + i);
-					}
-
-					$container.addClass('zoom-' + map.getZoom());
-				};
-				setZoomClass();
-				map.on('zoomend', function () {
-					$scope.$apply(setZoomClass);
-				});
+				leafletMap.init($element[0]);
 
 
 				// IMAGE OVERLAY
-				mapOverlay.drawImageOverlay(map, imageMapService.getImage());
+				mapOverlay.drawImageOverlay(imageMapService.getImage());
 
 				imageMapService.onImageUpdate($scope, function (img) {
-					mapOverlay.drawImageOverlay(map, img);
+					mapOverlay.drawImageOverlay(img);
 				});
 
+
+				var selectionClickHandler = function (marker) {
+					imageMapService.select(marker);
+				};
 
 				// MARKERS
-				mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers(), imageMapService.isSelectionEnabled());
+				mapMarkers.drawMarkers(imageMapService.getMarkers(), imageMapService.isSelectionEnabled() ? selectionClickHandler : undefined);
 
 				imageMapService.onMarkersUpdate($scope, function (markers) {
-					mapMarkers.drawMarkers(map, imageMapService.getImage(), markers, imageMapService.isSelectionEnabled());
+					mapMarkers.drawMarkers(markers,  imageMapService.isSelectionEnabled() ? selectionClickHandler : undefined);
 				});
 
 
-				// DRAGGABLE
 
-				imageMapService.onMarkerDraggableChange($scope, function(marker, draggable) {
-					mapMarkers.setMarkerDraggable(marker, draggable);
+				// SELECTOR	(the map is able to select a marker)
+
+				if (imageMapService.isSelectionEnabled()) {
+					leafletMap.onClick(imageMapService.clearSelection);
+				}
+
+				imageMapService.onSelectionEnabledChange($scope, function (selectionEnabled) {
+					if(selectionEnabled) {
+						leafletMap.onClick(imageMapService.clearSelection);
+						mapMarkers.drawMarkers(imageMapService.getMarkers(), selectionClickHandler);
+					}
+					else {
+						leafletMap.offClick(imageMapService.clearSelection);
+						mapMarkers.removeMarkersClickHandlers();
+					}
 				});
 
 
-				// SELECTION ENABLED
-
-				imageMapService.onSelectionEnabledChange($scope, function(selectionEnabled) {
-					mapMarkers.setMarkersClickable(selectionEnabled);
-				});
-
-
-				// SELECT MARKER
-
-				// click handler for each marker is set in mapMarkers.drawMarkers()
-
-				map.on('click', function () {
-					$scope.$apply(function () {
-						if(imageMapService.isSelectionEnabled()) {
-							imageMapService.clearSelection();
-						}
-					});
-				});
+				// SELECTION INDICATION (a selection of a marker is displayed on the map)
 
 				if (imageMapService.hasSelected()) {
 					mapMarkers.markSelected(imageMapService.getSelected());
@@ -471,7 +525,7 @@ angular.module('imageMap')
 				imageMapService.onSelectionChange($scope, function (marker) {
 					if (!_.isUndefined(marker)) {
 						mapMarkers.markSelected(marker);
-						mapMarkers.panTo(map, marker);
+						mapMarkers.panTo(marker);
 					}
 				});
 				imageMapService.onUnselect($scope, function (marker) {
@@ -479,27 +533,30 @@ angular.module('imageMap')
 				});
 
 
+				// DRAGGABLE
+
+				imageMapService.onMarkerDraggableChange($scope, function (marker, draggable) {
+					mapMarkers.setMarkerDraggable(marker, draggable);
+				});
+
+
 				// RESIZE MAP
-				map.on('resize', function () {
-					$scope.$apply(function () {
-						map.setView([0, 0], 0, { reset: true});
-						setZoomClass();
-						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
-						mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers(), imageMapService.isSelectionEnabled());
-						if (imageMapService.hasSelected()) {
-							mapMarkers.markSelected(imageMapService.getSelected());
-						}
-					});
+				leafletMap.onResize(function () {
+					leafletMap.resetView();
+
+					mapOverlay.drawImageOverlay(imageMapService.getImage());
+					mapMarkers.drawMarkers(imageMapService.getMarkers(), imageMapService.isSelectionEnabled() ? selectionClickHandler : undefined);
+					if (imageMapService.hasSelected()) {
+						mapMarkers.markSelected(imageMapService.getSelected());
+					}
 				});
 
 
 				// DESTROY
-
 				$scope.$on('$destroy', function () {
-					mapMarkers.destroy(map);
-					mapOverlay.destroy(map);
-					map.remove();
-					map = undefined;
+					mapMarkers.destroy();
+					mapOverlay.destroy();
+					leafletMap.destroy();
 				});
 			}
 		};
