@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, gymService, routesMapService, routesTableService, errorService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, gymService, routesMapService, routesTableService, errorService) {
 		$scope.gymId = $stateParams.id;
 
 		var gymLoad = gymService.loadGym($scope.gymId);
@@ -46,10 +46,10 @@ angular.module('chalkUpAdmin')
 				controller: ['$scope', function ($scope) {
 					$scope.gym = gym;
 					$scope.route = route;
-					$scope.route.dateSetDate = moment($scope.route.dateSet).toDate();
+					$scope.route.dateSetDate = $window.moment($scope.route.dateSet).toDate();
 
 					$scope.save = function (route) {
-						route.dateSet = moment(route.dateSetDate).format();
+						route.dateSet = $window.moment(route.dateSetDate).format();
 						delete route.dateSetDate;
 						$scope.$close(route);
 					};
@@ -122,7 +122,7 @@ angular.module('chalkUpAdmin')
 		};
 
 		$scope.archiveRoute = function (route) {
-			var date = moment().toDate();
+			var date = $window.moment().toDate();
 			gymService.archiveRoute(route, date)
 				.then(function (archivedRoute) {
 					_.remove($scope.routes, function(route) {

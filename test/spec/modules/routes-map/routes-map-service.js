@@ -16,11 +16,11 @@ describe('Service: routesMapService', function () {
 
 	describe('updating the plan', function () {
 		var plan = {
-			"id": 2,
-			"img": {
-				"widthInPx": 1304,
-				"heightInPx": 1393,
-				"url": "http://demo.chalkup.de/images/floorPlans/heavens-gate.png"
+			'id': 2,
+			'img': {
+				'widthInPx': 1304,
+				'heightInPx': 1393,
+				'url': 'http://demo.chalkup.de/images/floorPlans/heavens-gate.png'
 			}
 		};
 
@@ -40,51 +40,51 @@ describe('Service: routesMapService', function () {
 	});
 
 	var route = {
-		"id": 1,
-		"location": {
-			"floorPlan": {
-				"id": 1,
-				"img": {
-					"widthInPx": 2000,
-					"heightInPx": 1393,
-					"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
+		'id': 1,
+		'location': {
+			'floorPlan': {
+				'id': 1,
+				'img': {
+					'widthInPx': 2000,
+					'heightInPx': 1393,
+					'url': 'http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg'
 				}
 			},
-			"x": 0.1,
-			"y": 0.2
+			'x': 0.1,
+			'y': 0.2
 		}
 	};
 
 	var routes = [
 		route,
 		{
-			"id": 2,
-			"location": {
-				"floorPlan": {
-					"id": 1,
-					"img": {
-						"widthInPx": 2000,
-						"heightInPx": 1393,
-						"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
+			'id': 2,
+			'location': {
+				'floorPlan': {
+					'id': 1,
+					'img': {
+						'widthInPx': 2000,
+						'heightInPx': 1393,
+						'url': 'http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg'
 					}
 				},
-				"x": 0.3,
-				"y": 0.4
+				'x': 0.3,
+				'y': 0.4
 			}
 		},
 		{
-			"id": 3,
-			"location": {
-				"floorPlan": {
-					"id": 1,
-					"img": {
-						"widthInPx": 2000,
-						"heightInPx": 1393,
-						"url": "http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg"
+			'id': 3,
+			'location': {
+				'floorPlan': {
+					'id': 1,
+					'img': {
+						'widthInPx': 2000,
+						'heightInPx': 1393,
+						'url': 'http://demo.chalkup.de/images/floorPlans/boulderwelt-muenchen.jpg'
 					}
 				},
-				"x": 0.5,
-				"y": 0.6
+				'x': 0.5,
+				'y': 0.6
 			}
 		}
 	];

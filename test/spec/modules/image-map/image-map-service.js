@@ -31,8 +31,6 @@ describe('Service: imageMapService', function () {
 		height: '500'
 	};
 
-	var div = angular.element('<div></div>');
-
 	var markers = [
 		{
 			id: 1,
