@@ -67,7 +67,7 @@ angular.module('routesMap')
 			return new L.RouteIcon({color: color});
 		};
 
-		function markerForRoute(route) {
+		function createMarkerForRoute(route) {
 			var l = route.location;
 			return {
 				id: route.id,
@@ -87,40 +87,49 @@ angular.module('routesMap')
 		};
 
 
-		var routesForMarker;
+		var routesForMarkers;
+		var markersForRoutes;
 
 		function routeForMarker(marker) {
-			return routesForMarker[marker.id];
+			return routesForMarkers[marker.id];
 		}
-
-		var onImageMarkerSelectHandler;
+		function markerForRoute(route) {
+			return markersForRoutes[route.id];
+		}
 
 		config.updateRoutes = function (routes) {
 			_routes = routes;
 
-			var markers = _.map(routes, markerForRoute);
+			var markers = _.map(routes, createMarkerForRoute);
 			imageMapService.updateMarkers(markers);
 
-			routesForMarker = _.indexBy(routes, 'id');
-
-			if (!_.isUndefined(onImageMarkerSelectHandler)) {
-				// unregister handler
-				onImageMarkerSelectHandler();
-			}
-			onImageMarkerSelectHandler = imageMapService.onSelectionChange($rootScope, function (marker) {
-				if (_.isUndefined(marker)) {
-					config.select(undefined);
-				}
-				else {
-					var route = routeForMarker(marker);
-					config.select(route);
-				}
-			});
+			routesForMarkers = _.indexBy(routes, 'id');
+			markersForRoutes = _.indexBy(markers, 'id');
 		};
+
+		imageMapService.onSelectionChange($rootScope, function (marker) {
+			if (_.isUndefined(marker)) {
+				config.select(undefined);
+			}
+			else {
+				var route = routeForMarker(marker);
+				config.select(route);
+			}
+		});
 
 		config.getRoutes = function () {
 			return _routes;
 		};
+
+
+		// MOVABLE ROUTES
+
+		imageMapService.onMarkerMoved($rootScope, function(marker) {
+			var route = routeForMarker(marker);
+			var l = route.location;
+			l.x = marker.x / l.floorPlan.img.widthInPx;
+			l.y = marker.y / l.floorPlan.img.heightInPx;
+		});
 
 
 		// SELECTED ROUTE
@@ -129,13 +138,14 @@ angular.module('routesMap')
 
 		var _selectedRoute;
 
-		config.moveRouteEnd = function() {
-			imageMapService.enableSelection();
-		};
-
 		config.moveRouteStart = function(route) {
 			imageMapService.disableSelection();
-			imageMapService.setMarkerDraggable(markerForRoute(route), true);
+			imageMapService.setMarkerMovable(markerForRoute(route), true);
+		};
+
+		config.moveRouteEnd = function(route) {
+			imageMapService.enableSelection();
+			imageMapService.setMarkerMovable(markerForRoute(route), false);
 		};
 
 		config.clearSelection = function () {

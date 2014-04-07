@@ -72,15 +72,27 @@ angular.module('imageMap')
 
 		// DRAGGABLE
 
-		var MARKER_DRAGGABLE_EVENT = 'imageMap:markerDraggable';
+		var MARKER_MOVABLE_EVENT = 'imageMap:markerMovable';
 
-		config.setMarkerDraggable = function (marker, draggable) {
-			$rootScope.$broadcast(MARKER_DRAGGABLE_EVENT, {marker: marker, draggable: draggable});
+		config.setMarkerMovable = function (marker, movable) {
+			$rootScope.$broadcast(MARKER_MOVABLE_EVENT, {marker: marker, movable: movable});
 		};
 
-		config.onMarkerDraggableChange = function ($scope, handler) {
-			$scope.$on(MARKER_DRAGGABLE_EVENT, function (event, args) {
-				handler(args.marker, args.draggable);
+		config.onMarkerMovableChange = function ($scope, handler) {
+			$scope.$on(MARKER_MOVABLE_EVENT, function (event, args) {
+				handler(args.marker, args.movable);
+			});
+		};
+
+		var MARKER_MOVED_EVENT = 'imageMap:markerMoved';
+
+		config.markerMoved = function(marker) {
+			$rootScope.$broadcast(MARKER_MOVED_EVENT, {marker: marker});
+		};
+
+		config.onMarkerMoved = function ($scope, handler) {
+			$scope.$on(MARKER_MOVED_EVENT, function (event, args) {
+				handler(args.marker);
 			});
 		};
 
@@ -454,13 +466,31 @@ angular.module('imageMap')
 			});
 		};
 
-		config.setMarkerDraggable = function (marker, draggable) {
+		config.setMarkerMovable = function (marker, moveHandler) {
 			var leafletMarker = getLeafletMarker(marker);
-			if (draggable) {
-				leafletMarker.options.clickable = true;
-			}
-			leafletMarker.options.draggable = draggable;
+			// marker needs to be clickable in order to be draggable
+			leafletMarker.options.clickable = true;
+			leafletMarker.options.draggable = true;
 			leafletMarker.redraw();
+			leafletMarker.on('dragend', function() {
+				$rootScope.$apply(function () {
+					var oldPosition = L.point(marker.x, marker.y);
+					var newPosition = mapOverlay.projection.latLngToImagePoint(leafletMarker.getLatLng());
+					marker.x = newPosition.x;
+					marker.y = newPosition.y;
+					if(!_.isUndefined(moveHandler)) {
+						moveHandler(marker, newPosition, oldPosition);
+					}
+				});
+			});
+		};
+
+		config.setMarkerUnmovable = function (marker) {
+			var leafletMarker = getLeafletMarker(marker);
+			leafletMarker.options.clickable = leafletMarker.hasEventListeners('click');
+			leafletMarker.options.draggable = false;
+			leafletMarker.redraw();
+			leafletMarker.off('dragend');
 		};
 
 		return config;
@@ -533,10 +563,19 @@ angular.module('imageMap')
 				});
 
 
-				// DRAGGABLE
+				// MARKER MOVING
 
-				imageMapService.onMarkerDraggableChange($scope, function (marker, draggable) {
-					mapMarkers.setMarkerDraggable(marker, draggable);
+				var moveHandler = function(marker) {
+					imageMapService.markerMoved(marker);
+				};
+
+				imageMapService.onMarkerMovableChange($scope, function (marker, movable) {
+					if(movable) {
+						mapMarkers.setMarkerMovable(marker, moveHandler);
+					}
+					else {
+						mapMarkers.setMarkerUnmovable(marker);
+					}
 				});
 
 

@@ -121,10 +121,17 @@ angular.module('chalkUpAdmin')
 			});
 		};
 
+		$scope.movingRoute = undefined;
+
 		$scope.moveRoute = function (route) {
+			$scope.movingRoute = route;
 			routesMapService.moveRouteStart(route);
 		};
 
+		$scope.stopMoveRoute = function () {
+			routesMapService.moveRouteEnd($scope.movingRoute);
+			$scope.movingRoute = undefined;
+		};
 
 		$scope.archiveRoute = function (route) {
 			var date = $window.moment().toDate();
