@@ -33,20 +33,21 @@
 
 		<div ng-show="selected">
 
-			<button ng-click="editRoute(selected)"><i class="fi-pencil"></i></button>
+			<button ng-click="editRoute(selected)"><i class="fi-pencil"></i> ändern</button>
 
-			<button ng-click="archiveRoute(selected)"><i class="fi-archive"></i></button>
+			<button ng-click="archiveRoute(selected)"><i class="fi-archive"></i> archivieren</button>
 
 			<button confirm-dialog confirm-action="deleteRoute(selected)"
-			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i></button>
+			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i> löschen</button>
 		</div>
-
-		<hr ng-show="selected"/>
-
-		<button ng-click="newRoute(gym, floorPlan)"><i class="fi-plus"></i></button>
 
 		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
 			aus.</p>
+
+		<div class="global-actions">
+			<button ng-click="newRoute(gym, floorPlan)"><i class="fi-plus"></i> hinzufügen</button>
+		</div>
+
 	</section>
 	<section class="routes-table">
 		<div routes-table ng-hide="routesLoadError"></div>

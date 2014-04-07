@@ -55,6 +55,20 @@ section.route-edit {
 	.prompt {
 		font-style: italic;
 	}
+
+	.global-actions {
+		position: absolute;
+		bottom: $top-box-padding;
+
+		button {
+			margin-bottom: 0;
+		}
+	}
+
+	button {
+		@include button($padding: $button-sml);
+		font-size: 1rem;
+	}
 }
 
 .reveal-modal.edit {
