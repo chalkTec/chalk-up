@@ -107,6 +107,15 @@ angular.module('routesMap')
 			markersForRoutes = _.indexBy(markers, 'id');
 		};
 
+		config.updateRoute = function(route) {
+			// update marker for route
+			var marker = markerForRoute(route);
+			var newMarker = createMarkerForRoute(route);
+			_.assign(marker, newMarker);
+
+			imageMapService.updateMarker(marker);
+		};
+
 		imageMapService.onSelectionChange($rootScope, function (marker) {
 			if (_.isUndefined(marker)) {
 				config.select(undefined);

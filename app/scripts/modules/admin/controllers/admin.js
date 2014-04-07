@@ -111,6 +111,7 @@ angular.module('chalkUpAdmin')
 							return route.id === updatedRoute.id;
 						});
 						_.assign(oldRoute, updatedRoute);
+						routesMapService.updateRoute(updatedRoute);
 					})
 					.catch(function (error) {
 						errorService.restangularError(error);
@@ -123,15 +124,29 @@ angular.module('chalkUpAdmin')
 
 		$scope.movingRoute = undefined;
 
+		var oldLocation;
 		$scope.moveRoute = function (route) {
 			$scope.movingRoute = route;
+			oldLocation = { x: route.location.x, y: route.location.y };
 			routesMapService.moveRouteStart(route);
 		};
 
-		$scope.stopMoveRoute = function () {
+		$scope.saveLocation = function () {
+			gymService.updateRoute($scope.movingRoute)
+				.catch(function (error) {
+					errorService.restangularError(error);
+				});
 			routesMapService.moveRouteEnd($scope.movingRoute);
 			$scope.movingRoute = undefined;
 		};
+		$scope.discardLocation = function () {
+			routesMapService.moveRouteEnd($scope.movingRoute);
+			$scope.movingRoute.location.x = oldLocation.x;
+			$scope.movingRoute.location.y = oldLocation.y;
+			routesMapService.updateRoute($scope.movingRoute);
+			$scope.movingRoute = undefined;
+		};
+
 
 		$scope.archiveRoute = function (route) {
 			var date = $window.moment().toDate();

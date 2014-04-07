@@ -31,13 +31,10 @@
 			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
 		</div>
 
-		<div ng-show="selected">
-
+		<div ng-show="selected && !movingRoute">
 			<button ng-click="editRoute(selected)"><i class="fi-pencil"></i> ändern</button>
 
 			<button ng-click="moveRoute(selected)"><i class="fi-marker"></i> verschieben</button>
-
-			<button ng-click="stopMoveRoute()"><i class="fi-marker"></i> verschieben Ende</button>
 
 			<button ng-click="archiveRoute(selected)"><i class="fi-archive"></i> archivieren</button>
 
@@ -45,10 +42,15 @@
 			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i> löschen</button>
 		</div>
 
+		<div ng-show="movingRoute">
+			<button ng-click="saveLocation()"><i class="fi-save"></i> speichern</button>
+			<button ng-click="discardLocation()"><i class="fi-x"></i> verwerfen</button>
+		</div>
+
 		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
 			aus.</p>
 
-		<div class="global-actions">
+		<div class="global-actions" ng-show="!movingRoute">
 			<button ng-click="newRoute(gym, floorPlan)"><i class="fi-plus"></i> hinzufügen</button>
 		</div>
 

@@ -70,6 +70,19 @@ angular.module('imageMap')
 		};
 
 
+		var MARKER_UPDATE_EVENT = 'imageMap:markerUpdate';
+
+		config.updateMarker = function(marker) {
+			$rootScope.$broadcast(MARKER_UPDATE_EVENT, {marker: marker});
+		};
+
+		config.onMarkerUpdate = function ($scope, handler) {
+			$scope.$on(MARKER_UPDATE_EVENT, function (event, args) {
+				handler(args.marker);
+			});
+		};
+
+
 		// DRAGGABLE
 
 		var MARKER_MOVABLE_EVENT = 'imageMap:markerMovable';
@@ -493,6 +506,15 @@ angular.module('imageMap')
 			leafletMarker.off('dragend');
 		};
 
+		config.redraw = function(marker) {
+			var leafletMarker = getLeafletMarker(marker);
+			// TODO: implement proper redraw
+			var latLng = mapOverlay.projection.imagePointToLatLng([marker.x, marker.y]);
+			leafletMarker.setLatLng(latLng);
+			leafletMarker.options.icon = marker.icon;
+			leafletMarker.redraw();
+		};
+
 		return config;
 	});
 
@@ -539,6 +561,7 @@ angular.module('imageMap')
 					if(selectionEnabled) {
 						leafletMap.onClick(imageMapService.clearSelection);
 						mapMarkers.drawMarkers(imageMapService.getMarkers(), selectionClickHandler);
+						mapMarkers.markSelected(imageMapService.getSelected());
 					}
 					else {
 						leafletMap.offClick(imageMapService.clearSelection);
@@ -560,6 +583,14 @@ angular.module('imageMap')
 				});
 				imageMapService.onUnselect($scope, function (marker) {
 					mapMarkers.unmarkSelected(marker);
+				});
+
+				// MARKER UPDATE
+				imageMapService.onMarkerUpdate($scope, function(marker) {
+					mapMarkers.redraw(marker);
+					if(imageMapService.getSelected() === marker) {
+						mapMarkers.markSelected(marker);
+					}
 				});
 
 
