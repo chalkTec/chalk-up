@@ -129,6 +129,15 @@ angular.module('routesMap')
 
 		var _selectedRoute;
 
+		config.moveRouteEnd = function() {
+			imageMapService.enableSelection();
+		};
+
+		config.moveRouteStart = function(route) {
+			imageMapService.disableSelection();
+			imageMapService.setMarkerDraggable(markerForRoute(route), true);
+		};
+
 		config.clearSelection = function () {
 			config.select(undefined);
 		};

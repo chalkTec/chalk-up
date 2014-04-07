@@ -70,11 +70,53 @@ angular.module('imageMap')
 		};
 
 
+		// DRAGGABLE
+
+		var MARKER_DRAGGABLE_EVENT = 'imageMap:markerDraggable';
+
+		config.setMarkerDraggable = function(marker, draggable) {
+			$rootScope.$broadcast(MARKER_DRAGGABLE_EVENT, {marker: marker, draggable: draggable});
+		};
+
+		config.onMarkerDraggableChange = function ($scope, handler) {
+			$scope.$on(MARKER_DRAGGABLE_EVENT, function (event, args) {
+				handler(args.marker, args.draggable);
+			});
+		};
+
+
+		// SELECTION ENABLED
+
+		var SELECTION_ENABLED_CHANGE_EVENT = 'imageMap:selectionEnabledChange';
+
+		var _selectionEnabled = true;
+
+		config.isSelectionEnabled = function() {
+			return _selectionEnabled;
+		};
+
+		config.enableSelection = function() {
+			_selectionEnabled = true;
+			$rootScope.$broadcast(SELECTION_ENABLED_CHANGE_EVENT, {selectionEnabled: true});
+		};
+
+		config.disableSelection = function() {
+			_selectionEnabled = false;
+			$rootScope.$broadcast(SELECTION_ENABLED_CHANGE_EVENT, {selectionEnabled: false});
+		};
+
+
+		config.onSelectionEnabledChange = function ($scope, handler) {
+			$scope.$on(SELECTION_ENABLED_CHANGE_EVENT, function (event, args) {
+				handler(args.selectionEnabled);
+			});
+		};
+
+
 		// SELECTED MARKER
 
 		var SELECTION_EVENT = 'imageMap:select';
 		var UNSELECTION_EVENT = 'imageMap:unselect';
-
 
 		var _selectedMarker;
 
@@ -213,13 +255,33 @@ angular.module('imageMap')
 
 angular.module('imageMap')
 	.factory('mapMarkers', function ($rootScope, mapProjection, imageMapService) {
+		var MyMarker = L.Marker.extend({
+			onAdd: function(map) {
+				L.Marker.prototype.onAdd.call(this, map);
+				if(this.options.selected) {
+					$(this._icon).addClass('selected');
+				}
+			},
+			redraw: function() {
+				var map = this._map;
+				if(map) {
+					map.removeLayer(this);
+					map.addLayer(this);
+				}
+			}
+		});
+
+		var myMarker = function(latLng, options) {
+			return new MyMarker(latLng, options);
+		};
+
 		var config = {};
 
 		var markerIdToLeafletMarker;
 
 		var leafletMarkers;
 
-		config.getLeafletMarker = function (imageMapMarker) {
+		var getLeafletMarker = function (imageMapMarker) {
 			return markerIdToLeafletMarker[imageMapMarker.id];
 		};
 
@@ -234,7 +296,7 @@ angular.module('imageMap')
 			}
 		}
 
-		function imageMapMarkerToLeafletMarker(imageMapMarker, projection) {
+		function imageMapMarkerToLeafletMarker(imageMapMarker, projection, clickable) {
 			var latLng = projection.imagePointToLatLng([imageMapMarker.x, imageMapMarker.y]);
 			var options = {
 				riseOnHover: true
@@ -243,7 +305,9 @@ angular.module('imageMap')
 				options.icon = imageMapMarker.icon;
 			}
 
-			var marker = L.marker(latLng, options);
+			options.clickable = clickable;
+
+			var marker = myMarker(latLng, options);
 
 			marker.on('click', function () {
 				$rootScope.$apply(function () {
@@ -254,13 +318,13 @@ angular.module('imageMap')
 			return marker;
 		}
 
-		function addMarkers(map, image, markers) {
+		function addMarkers(map, image, markers, clickable) {
 			var projection = mapProjection.calculate(map, image);
 
 			markerIdToLeafletMarker = {};
 			leafletMarkers = [];
 			_.each(markers, function (marker) {
-				var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection);
+				var leafletMarker = imageMapMarkerToLeafletMarker(marker, projection, clickable);
 				leafletMarkers.push(leafletMarker);
 				leafletMarker.addTo(map);
 				markerIdToLeafletMarker[marker.id] = leafletMarker;
@@ -268,7 +332,7 @@ angular.module('imageMap')
 			});
 		}
 
-		config.drawMarkers = function (map, image, markers) {
+		config.drawMarkers = function (map, image, markers, clickable) {
 			// we need an image to draw markers on it
 			if (_.isUndefined(image) || _.isUndefined(markers)) {
 				removeMarkers(map);
@@ -278,21 +342,23 @@ angular.module('imageMap')
 			// remove old markers
 			removeMarkers(map);
 
-			addMarkers(map, image, markers);
+			addMarkers(map, image, markers, clickable);
 		};
 
 		config.unmarkSelected = function (marker) {
-			var leafletMarker = config.getLeafletMarker(marker);
-			$(leafletMarker._icon).removeClass('selected');
+			var leafletMarker = getLeafletMarker(marker);
+			leafletMarker.options.selected = false;
+			leafletMarker.redraw();
 		};
 
 		config.markSelected = function (marker) {
-			var leafletMarker = config.getLeafletMarker(marker);
-			$(leafletMarker._icon).addClass('selected');
+			var leafletMarker = getLeafletMarker(marker);
+			leafletMarker.options.selected = true;
+			leafletMarker.redraw();
 		};
 
 		config.panTo = function(map, marker) {
-			var leafletMarker = config.getLeafletMarker(marker);
+			var leafletMarker = getLeafletMarker(marker);
 			// animate true does not work properly:
 			// - little movements even when zoomed out entirely
 			// - animated panning to a point and then zooming out does not take max bounds into account
@@ -303,6 +369,21 @@ angular.module('imageMap')
 			removeMarkers(map);
 		};
 
+		config.setMarkersClickable = function(clickable) {
+			_.each(leafletMarkers, function(leafletMarker) {
+				leafletMarker.options.clickable = clickable;
+				leafletMarker.redraw();
+			});
+		};
+
+		config.setMarkerDraggable = function(marker, draggable) {
+			var leafletMarker = getLeafletMarker(marker);
+			if(draggable) {
+				leafletMarker.options.clickable = true;
+			}
+			leafletMarker.options.draggable = draggable;
+			leafletMarker.redraw();
+		};
 
 		return config;
 	});
@@ -326,6 +407,22 @@ angular.module('imageMap')
 				map.setView([0, 0], 0);
 
 
+				// ZOOM CSS CLASS
+
+				var setZoomClass = function () {
+					var $container = $(map.getContainer());
+					for (var i = 0; i < 15; i++) {
+						$container.removeClass('zoom-' + i);
+					}
+
+					$container.addClass('zoom-' + map.getZoom());
+				};
+				setZoomClass();
+				map.on('zoomend', function () {
+					$scope.$apply(setZoomClass);
+				});
+
+
 				// IMAGE OVERLAY
 				mapOverlay.drawImageOverlay(map, imageMapService.getImage());
 
@@ -335,10 +432,24 @@ angular.module('imageMap')
 
 
 				// MARKERS
-				mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers());
+				mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers(), imageMapService.isSelectionEnabled());
 
 				imageMapService.onMarkersUpdate($scope, function (markers) {
-					mapMarkers.drawMarkers(map, imageMapService.getImage(), markers);
+					mapMarkers.drawMarkers(map, imageMapService.getImage(), markers, imageMapService.isSelectionEnabled());
+				});
+
+
+				// DRAGGABLE
+
+				imageMapService.onMarkerDraggableChange($scope, function(marker, draggable) {
+					mapMarkers.setMarkerDraggable(marker, draggable);
+				});
+
+
+				// SELECTION ENABLED
+
+				imageMapService.onSelectionEnabledChange($scope, function(selectionEnabled) {
+					mapMarkers.setMarkersClickable(selectionEnabled);
 				});
 
 
@@ -348,7 +459,9 @@ angular.module('imageMap')
 
 				map.on('click', function () {
 					$scope.$apply(function () {
-						imageMapService.clearSelection();
+						if(imageMapService.isSelectionEnabled()) {
+							imageMapService.clearSelection();
+						}
 					});
 				});
 
@@ -365,31 +478,22 @@ angular.module('imageMap')
 					mapMarkers.unmarkSelected(marker);
 				});
 
-				var setZoomClass = function () {
-					var $container = $(map.getContainer());
-					for (var i = 0; i < 15; i++) {
-						$container.removeClass('zoom-' + i);
-					}
-
-					$container.addClass('zoom-' + map.getZoom());
-				};
-				setZoomClass();
-				map.on('zoomend', function () {
-					$scope.$apply(setZoomClass);
-				});
 
 				// RESIZE MAP
 				map.on('resize', function () {
 					$scope.$apply(function () {
 						map.setView([0, 0], 0, { reset: true});
+						setZoomClass();
 						mapOverlay.drawImageOverlay(map, imageMapService.getImage());
-						mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers());
+						mapMarkers.drawMarkers(map, imageMapService.getImage(), imageMapService.getMarkers(), imageMapService.isSelectionEnabled());
 						if (imageMapService.hasSelected()) {
 							mapMarkers.markSelected(imageMapService.getSelected());
 						}
 					});
 				});
 
+
+				// DESTROY
 
 				$scope.$on('$destroy', function () {
 					mapMarkers.destroy(map);

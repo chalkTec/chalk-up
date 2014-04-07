@@ -121,6 +121,11 @@ angular.module('chalkUpAdmin')
 			});
 		};
 
+		$scope.moveRoute = function (route) {
+			routesMapService.moveRouteStart(route);
+		};
+
+
 		$scope.archiveRoute = function (route) {
 			var date = $window.moment().toDate();
 			gymService.archiveRoute(route, date)
