@@ -10,6 +10,7 @@ angular.module('chalkUpApp', [
 	'angulartics.google.analytics',
 	'routesMap',
 	'routesTable',
+	'navBar',
 	'chalkUpAdmin'
 ]);
 

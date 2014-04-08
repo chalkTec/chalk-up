@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, gymService, routesMapService, routesTableService, errorService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, navBarService, gymService, routesMapService, routesTableService, errorService) {
 		$scope.gymId = $stateParams.id;
 
 		var gymLoad = gymService.loadGym($scope.gymId);
@@ -61,44 +61,51 @@ angular.module('chalkUpAdmin')
 		};
 
 
-		$scope.newRoute = function (gym, floorPlan) {
-			var newRoute = {
-				type: 'sport-route',
-				gym: gym,
-				location: {
-					floorPlan: floorPlan,
-					x: 0,
-					y: 0
-				},
-				color: {
-					name: 'RED'
-				},
-				initialGrade: {
-					uiaa: '12'
-				}
-			};
-			var editModal = openEditModal(newRoute, gym);
 
-			editModal.result.then(function (editedRoute) {
-				gymService.createRoute(gym, editedRoute)
-					.then(function (createdRoute) {
-						$scope.routes.push(createdRoute);
+		navBarService.addButton({
+			icon: 'plus',
+			label: 'Route hinzufügen',
+			action: function () {
+				var gym = $scope.gym;
+				var floorPlan = $scope.floorPlan;
+				var newRoute = {
+					type: 'sport-route',
+					gym: gym,
+					location: {
+						floorPlan: floorPlan,
+						x: 0,
+						y: 0
+					},
+					color: {
+						name: 'RED'
+					},
+					initialGrade: {
+						uiaa: '12'
+					}
+				};
+				var editModal = openEditModal(newRoute, gym);
 
-						routesMapService.updateRoutes($scope.routes);
-						routesTableService.updateRoutes($scope.routes);
+				editModal.result.then(function (editedRoute) {
+					gymService.createRoute(gym, editedRoute)
+						.then(function (createdRoute) {
+							$scope.routes.push(createdRoute);
 
-						routesMapService.select(createdRoute);
-						routesTableService.select(createdRoute);
-						$scope.selected = createdRoute;
-					})
-					.catch(function (error) {
-						errorService.restangularError(error);
-					});
-			});
-			editModal.result.catch(function () {
-				// nothing to do, we just do not create the route
-			});
-		};
+							routesMapService.updateRoutes($scope.routes);
+							routesTableService.updateRoutes($scope.routes);
+
+							routesMapService.select(createdRoute);
+							routesTableService.select(createdRoute);
+							$scope.selected = createdRoute;
+						})
+						.catch(function (error) {
+							errorService.restangularError(error);
+						});
+				});
+				editModal.result.catch(function () {
+					// nothing to do, we just do not create the route
+				});
+			}
+		});
 
 		$scope.editRoute = function (route) {
 			// clone the route, so nothing changes until the editing is saved and discard just needs to do nothing

@@ -37,4 +37,34 @@ nav.bar {
 		margin-left: 1em;
 	}
 
+
+	ul.buttons {
+		float: right;
+
+		li {
+			list-style: none;
+			float: left;
+			display: block;
+		}
+
+		a {
+			display: inline-block;
+			padding: 0 1em;
+
+			&:hover {
+				background-color: lighten($navbar-bg-color, 5%);
+			}
+
+			i[class^="fi-"] {
+				display: inline-block;
+				margin-right: 0.3em;
+				font-size: 1.5em;
+			}
+
+			.button-label {
+				position: relative;
+				top: -0.2em;
+			}
+		}
+	}
 }

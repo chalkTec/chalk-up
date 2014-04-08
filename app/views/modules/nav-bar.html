@@ -1,0 +1,11 @@
+<nav class="bar row">
+    <h1><a ui-sref="start">chalkUp!</a><span class="beta">Alpha</span></h1>
+
+    <ul class="buttons" ng-show="navBar.buttons.length != 0">
+        <li ng-repeat="button in navBar.buttons">
+            <a ng-click="buttonClick(button)">
+	            <i class="fi-{{button.icon}}"></i>
+	            <span class="button-label">{{button.label}}</span></a>
+        </li>
+    </ul>
+</nav>
