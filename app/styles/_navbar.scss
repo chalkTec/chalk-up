@@ -5,7 +5,7 @@ $navbar-bg-color: $midnight-blue;
 nav.bar {
 
 	// POSITION
-	height:$navbar-height;
+	height: $navbar-height;
 
 	// COLORS
 
@@ -18,28 +18,25 @@ nav.bar {
 
 	// CONTENT
 
-	line-height: $navbar-height;
-	vertical-align: middle;
-
-	> * {
+	@mixin navBarElem {
+		display: inline-block;
 		height: $navbar-height;
 		line-height: $navbar-height;
 		vertical-align: middle;
-
-		margin: 0;
 	}
 
 	h1 {
 		float: left;
 		font-size: 1.2em;
-		display: block;
+		@include navBarElem;
 
-		margin-left: 1em;
+		margin: 0 0 0 1em;
 	}
 
 
 	ul.buttons {
 		float: right;
+		margin: 0;
 
 		li {
 			list-style: none;
@@ -48,7 +45,8 @@ nav.bar {
 		}
 
 		a {
-			display: inline-block;
+			@include navBarElem;
+
 			padding: 0 1em;
 
 			&:hover {
