@@ -8,6 +8,7 @@ angular.module('chalkUpApp', [
 	'mm.foundation',
 	'angulartics',
 	'angulartics.google.analytics',
+	'ngCsv',
 	'routesMap',
 	'routesTable',
 	'navBar',

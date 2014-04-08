@@ -100,6 +100,23 @@ angular.module('chalkUpAdmin')
 			});
 		};
 
+		$scope.getRoutesForCsv = function() {
+			return _.map($scope.routes, function(route) {
+				return {
+					name: route.name,
+					number: route.number,
+					grade: route.initialGrade.uiaa,
+					color: route.color.germanName,
+					description: route.description,
+					dateSet: moment(route.dateSet).format('DD.MM.YYYY'),
+					end: route.end ? moment(route.end).format('DD.MM.YYYY') : undefined
+				}
+			});
+		};
+
+		$scope.csvHeader = ['Name', 'Nummer', 'UIAA-Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'abgeschraubt am'];
+		$scope.filename = 'routes-' + moment().format() + '.csv';
+
 		$scope.editRoute = function (route) {
 			// clone the route, so nothing changes until the editing is saved and discard just needs to do nothing
 			var editModal = openEditModal(route.clone(), $scope.gym);

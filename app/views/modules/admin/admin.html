@@ -6,6 +6,14 @@
 				<span class="button-label">Route hinzufügen</span>
 			</a>
 		</li>
+		<li>
+			<div ng-csv="getRoutesForCsv()" csv-header="csvHeader" text-delimiter='"' filename="{{filename}}">
+				<a>
+					<i class="fi-page-export-csv"></i>
+					<span class="button-label">Routen exportieren</span>
+				</a>
+			</div>
+		</li>
 	</ul>
 </nav-bar>
 
@@ -38,11 +46,14 @@
 				<span class="number" ng-if="selected.number">{{selected.number}}: </span>
 				<span class="name" ng-if="selected.name">{{selected.name}}</span>
 			</h2>
+
 			<p class="grade">
 				<span ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</span>
 				<span ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</span>
 			</p>
+
 			<p class="description" ng-show="selected.description">{{selected.description}}</p>
+
 			<h2>geschraubt am</h2>
 
 			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
@@ -54,10 +65,12 @@
 			<button ng-click="moveRoute(selected)"><i class="fi-marker"></i> verschieben</button>
 
 			<button confirm-dialog confirm-action="archiveRoute(selected)" confirm-yes-label="Archivieren"
-			        confirm-message-url="/archive-confirm.html"><i class="fi-archive"></i> archivieren</button>
+			        confirm-message-url="/archive-confirm.html"><i class="fi-archive"></i> archivieren
+			</button>
 
 			<button confirm-dialog confirm-action="deleteRoute(selected)" confirm-yes-label="Löschen!"
-			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i> löschen</button>
+			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i> löschen
+			</button>
 		</div>
 
 		<div ng-show="movingRoute">
