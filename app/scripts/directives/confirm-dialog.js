@@ -8,7 +8,8 @@ angular.module('chalkUpApp')
 			scope: {
 				confirmAction: '&',
 				confirmMessage: '@',
-				confirmMessageUrl: '@'
+				confirmMessageUrl: '@',
+				confirmYesLabel: '@'
 			},
 			controller: function($scope, $modal) {
 				$scope.openConfirm = function() {
@@ -21,6 +22,8 @@ angular.module('chalkUpApp')
 						$scope.confirmAction();
 					});
 				};
+
+				$scope.yesLabel = $scope.confirmYesLabel ? $scope.confirmYesLabel : 'Ja';
 			},
 			link: function(scope, element) {
 				element.bind('click', scope.openConfirm);

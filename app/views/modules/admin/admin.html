@@ -1,5 +1,13 @@
 <nav-bar></nav-bar>
 
+<script type="text/ng-template" id="/archive-confirm.html">
+	<p>
+		Eine archivierte Route wird ab sofort ausgeblendet. Sie verbleibt aber in der Datenbank und somit bleiben
+		historischen Auswertungen erhalten.<br/>
+		Willst du eine archivierte Route wiederherstellen, dann kontaktiere uns!
+	</p>
+</script>
+
 <script type="text/ng-template" id="/delete-confirm.html">
 	<p>
 		Lösche eine Route nur, wenn du sie fehlerhaft angelegt hast. Wenn die Route abgeschraubt worden ist, dann
@@ -36,9 +44,10 @@
 
 			<button ng-click="moveRoute(selected)"><i class="fi-marker"></i> verschieben</button>
 
-			<button ng-click="archiveRoute(selected)"><i class="fi-archive"></i> archivieren</button>
+			<button confirm-dialog confirm-action="archiveRoute(selected)" confirm-yes-label="Archivieren"
+			        confirm-message-url="/archive-confirm.html"><i class="fi-archive"></i> archivieren</button>
 
-			<button confirm-dialog confirm-action="deleteRoute(selected)"
+			<button confirm-dialog confirm-action="deleteRoute(selected)" confirm-yes-label="Löschen!"
 			        confirm-message-url="/delete-confirm.html"><i class="fi-trash"></i> löschen</button>
 		</div>
 

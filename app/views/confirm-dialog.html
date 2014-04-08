@@ -1,4 +1,4 @@
 <p ng-show="confirmMessage">{{confirmMessage}}</p>
 <div ng-show="confirmMessageUrl" ng-include="confirmMessageUrl"></div>
-<button ng-click="$close()" class="alert">Ja</button>
-<button ng-click="$dismiss()">Nein</button>
+<button ng-click="$close()" class="alert">{{yesLabel}}</button>
+<button ng-click="$dismiss()">Abbrechen</button>
