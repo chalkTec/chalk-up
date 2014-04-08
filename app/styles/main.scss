@@ -61,6 +61,33 @@ button i[class^="fi-"] {
 	top: 0.05em;
 }
 
+// GYM & ADMIN
+
+.route-meta {
+	h1 {
+		font-size: 1.5em;
+	}
+
+	h2 {
+		font-size: 1em;
+		font-weight: 600;
+	}
+
+	.number {
+		font-weight: 200;
+	}
+
+	.grade {
+		margin: 0.5em 0.3em;
+		font-size: 2em;
+		font-weight: 200;
+	}
+
+	.description {
+		white-space: pre-wrap;
+	}
+}
+
 
 // GYM
 
