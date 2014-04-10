@@ -123,7 +123,7 @@ angular.module('routesTable')
 							field: 'initialGrade',
 							displayName: 'Grad',
 							sortFn: gradeSort,
-							cellFilter: 'grade: "uiaa"',
+							cellFilter: 'grade: row.entity.type == "boulder" ? "font" : "uiaa"',
 							width: '20%'
 						},
 						{

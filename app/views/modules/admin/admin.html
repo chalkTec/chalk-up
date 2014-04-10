@@ -47,14 +47,14 @@
 				<span class="name" ng-if="selected.name">{{selected.name}}</span>
 			</h2>
 
-			<p class="grade">
-				<span ng-show="selected.type == 'boulder'">{{selected.initialGrade.readable}}</span>
-				<span ng-show="selected.type == 'sport-route'">{{selected.initialGrade.uiaa}}</span>
+			<p class="grade" ng-show="selected.initialGrade">
+				<span ng-if="selected.type == 'boulder'">{{selected.initialGrade | grade:'font'}}</span>
+				<span ng-if="selected.type == 'sport-route'">{{selected.initialGrade | grade:'uiaa'}}</span>
 			</p>
 
 			<p class="description" ng-show="selected.description">{{selected.description}}</p>
 
-			<h2>geschraubt am</h2>
+			<h2 ng-show="selected.dateSet">geschraubt am</h2>
 
 			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
 		</div>
