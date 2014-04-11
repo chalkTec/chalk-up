@@ -1,5 +1,14 @@
 <form name="editRoute">
 
+	<label class="route-type">
+		<input type="radio" name="type" ng-model="route.type" value="sport-route"/>
+		Sportklettertour
+	</label>
+	<label class="route-type">
+		<input type="radio" name="type" ng-model="route.type" value="boulder"/>
+		Boulder
+	</label>
+
 	<label>
 		Name
 		<input type="text" name="name" ng-model="route.name"/>
@@ -20,14 +29,22 @@
 		<span color-selector colors="gym.colors" selected="route.color"></span>
 	</label>
 
-	<label>
-		Grad
+	<label ng-show="route.type == 'sport-route'">
+		Grad (UIAA)
 		<small>
 			(2, 3-, 3, 3+, 4-, 4, 4+, 5-, 5, 5+, 6-, 6, 6+, 7-, 7, 7+, 8-, 8, 8+, 9-, 9, 9+, 10-, 10, 10+, 11-, 11, 11+,
 			12-, 12, 12+)
 		</small>
 		<input type="text" name="gradeUiaa" ng-model="route.initialGrade.uiaa"/>
+	</label>
 
+	<label ng-show="route.type == 'boulder'">
+		Grad (Fontainebleau)
+		<small>
+			(1A, 1B, 1C, 2A, 2B, 2C, 3A, 3B, 3C, 4A, 4B, 4C, 5A, 5B, 5C, 6A, 6A+, 6B, 6B+, 6C, 6C+, 7A, 7A+, 7B, 7B+,
+			7C, 7C+, 8A, 8A+, 8B, 8B+, 8C, 8C+)
+		</small>
+		<input type="text" name="gradeFont" ng-model="route.initialGrade.font"/>
 	</label>
 
 	<label>

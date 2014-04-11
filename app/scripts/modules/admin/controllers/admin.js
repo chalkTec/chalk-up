@@ -100,8 +100,12 @@ angular.module('chalkUpAdmin')
 						// update template to reflect last created route
 						routeTemplate.type = createdRoute.type;
 						routeTemplate.color = createdRoute.color;
-						routeTemplate.initialGrade.uiaa = createdRoute.initialGrade.uiaa;
-						routeTemplate.initialGrade.font = createdRoute.initialGrade.font;
+						if(createdRoute.type === 'sport-route') {
+							routeTemplate.initialGrade.uiaa = createdRoute.initialGrade.uiaa;
+						}
+						if(createdRoute.type === 'boulder') {
+							routeTemplate.initialGrade.font = createdRoute.initialGrade.font;
+						}
 					})
 					.catch(function (error) {
 						errorService.restangularError(error);
@@ -114,19 +118,34 @@ angular.module('chalkUpAdmin')
 
 		$scope.getRoutesForCsv = function() {
 			return _.map($scope.routes, function(route) {
-				return {
+				var exportRoute = {
+					type: undefined,
 					name: route.name,
 					number: route.number,
-					grade: route.initialGrade.uiaa,
+					grade: undefined,
 					color: route.color.germanName,
 					description: route.description,
 					dateSet: $window.moment(route.dateSet).format('DD.MM.YYYY'),
 					end: route.end ? $window.moment(route.end).format('DD.MM.YYYY') : undefined
 				};
+
+				if(route.type === 'sport-route') {
+					exportRoute.type = 'Sportklettertour';
+					exportRoute.grade = route.initialGrade.uiaa;
+				}
+				else if(route.type === 'boulder') {
+					exportRoute.type = 'Boulder';
+					exportRoute.grade = route.initialGrade.font;
+				}
+				else {
+					throw new Error('route type not known');
+				}
+
+				return exportRoute;
 			});
 		};
 
-		$scope.csvHeader = ['Name', 'Nummer', 'UIAA-Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'abgeschraubt am'];
+		$scope.csvHeader = ['Typ', 'Name', 'Nummer', 'Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'abgeschraubt am'];
 		$scope.filename = 'routes-' + $window.moment().format() + '.csv';
 
 		$scope.editRoute = function (route) {

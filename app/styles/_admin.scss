@@ -42,6 +42,11 @@ section.route-edit {
 }
 
 .reveal-modal.edit {
+	label.route-type {
+		display: inline-block;
+		margin-right: 2em;
+	}
+
 	textarea {
 		// used in combination with rows attribute
 		height: auto;
