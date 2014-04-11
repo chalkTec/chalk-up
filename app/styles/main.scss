@@ -65,6 +65,14 @@ button i[class^="fi-"] {
 	top: 0.05em;
 }
 
+// START
+body[state="start"] {
+	h1 {
+		text-align: center;
+		margin: 1em;
+	}
+}
+
 // GYM & ADMIN
 
 .route-meta {
