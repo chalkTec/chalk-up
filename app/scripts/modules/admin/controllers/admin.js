@@ -61,22 +61,26 @@ angular.module('chalkUpAdmin')
 		};
 
 
+		var routeTemplate = {
+			type: 'sport-route',
+			color: {
+				name: 'RED'
+			},
+			location: {
+				x: 0,
+				y: 0
+			},
+			initialGrade: {
+				uiaa: '7+',
+				font: '6c+'
+			}
+		};
+
 		$scope.newRoute = function (gym, floorPlan) {
-			var newRoute = {
-				type: 'sport-route',
-				gym: gym,
-				location: {
-					floorPlan: floorPlan,
-					x: 0,
-					y: 0
-				},
-				color: {
-					name: 'RED'
-				},
-				initialGrade: {
-					uiaa: '12'
-				}
-			};
+			var newRoute = _.cloneDeep(routeTemplate);
+			newRoute.gym = gym;
+			newRoute.location.floorPlan = floorPlan;
+
 			var editModal = openEditModal(newRoute, gym);
 
 			editModal.result.then(function (editedRoute) {
@@ -90,6 +94,12 @@ angular.module('chalkUpAdmin')
 						routesMapService.select(createdRoute);
 						routesTableService.select(createdRoute);
 						$scope.selected = createdRoute;
+
+						// update template to reflect last created route
+						routeTemplate.type = createdRoute.type;
+						routeTemplate.color = createdRoute.color;
+						routeTemplate.initialGrade.uiaa = createdRoute.initialGrade.uiaa;
+						routeTemplate.initialGrade.font = createdRoute.initialGrade.font;
 					})
 					.catch(function (error) {
 						errorService.restangularError(error);
