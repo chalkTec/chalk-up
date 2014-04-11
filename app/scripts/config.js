@@ -1,8 +1,8 @@
 'use strict';
 
 angular.module('chalkUpApp')
-//	.constant('apiEndpoint', 'http://chalk-up-api-staging.herokuapp.com/rest');
-	.constant('apiEndpoint', 'http://api.chalkup.de/rest');
+	.constant('apiEndpoint', 'http://chalk-up-api-staging.herokuapp.com/rest');
+//	.constant('apiEndpoint', 'http://api.chalkup.de/rest');
 
 
 angular.module('chalkUpApp')
