@@ -264,7 +264,8 @@ module.exports = function (grunt) {
 			dist: {
 				options: {
 					collapseWhitespace: true,
-					collapseBooleanAttributes: true,
+					// Florian Rampp: this turns attribute 'selected="selected"' into 'selected', which badly interferes with Angular!
+					collapseBooleanAttributes: false,
 					removeCommentsFromCDATA: true,
 					removeOptionalTags: true
 				},
