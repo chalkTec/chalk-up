@@ -1,7 +1,9 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, gymService, routesMapService, routesTableService, errorService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, feedbackService, gymService, routesMapService, routesTableService, errorService) {
+		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
+
 		$scope.gymId = $stateParams.id;
 
 		var gymLoad = gymService.loadGym($scope.gymId);
