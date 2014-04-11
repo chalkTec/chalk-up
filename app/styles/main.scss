@@ -3,6 +3,10 @@
 @import "settings";
 @import "foundation/scss/foundation";
 
+$fi-path: "/bower_components/foundation-icon-fonts";
+@import "foundation-icon-fonts/foundation-icons";
+
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;

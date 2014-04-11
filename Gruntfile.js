@@ -151,7 +151,7 @@ module.exports = function (grunt) {
 			app: {
 				src: '<%= yeoman.app %>/index.html',
 				ignorePath: '<%= yeoman.app %>/',
-				exclude: ['foundation.css', /jquery-placeholder/]
+				exclude: ['foundation-icons.css', 'foundation.css', /jquery-placeholder/]
 			},
 			// took that from https://github.com/stephenplusplus/grunt-bower-install/issues/35
 			test: {
