@@ -45,6 +45,10 @@ section.route-edit {
 	label.route-type {
 		display: inline-block;
 		margin-right: 2em;
+
+		input[type="radio"] {
+			margin-right: 0.5em;
+		}
 	}
 
 	textarea {
