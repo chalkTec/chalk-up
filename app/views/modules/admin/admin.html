@@ -20,6 +20,11 @@
 				<span class="button-label">Probleme?</span>
 			</a>
 		</li>
+		<li ng-show="user.authenticated">
+			{{ user.first_name }}
+			{{ user.login }}
+			<a href="#" ua-logout>Log Out</a>
+		</li>
 	</ul>
 </nav-bar>
 

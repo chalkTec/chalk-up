@@ -15,23 +15,48 @@ angular.module('chalkUpApp')
 			.state('start', {
 				url: '/',
 				templateUrl: 'views/start.html',
-				controller: 'StartCtrl'
+				controller: 'StartCtrl',
+				data: {
+					public: true
+				}
 			})
 			.state('gym', {
 				url: '/gym?id',
 				templateUrl: 'views/gym.html',
-				controller: 'GymCtrl'
+				controller: 'GymCtrl',
+				data: {
+					public: true
+				}
 			})
 			.state('admin', {
 				url: '/admin/gym?id',
 				templateUrl: 'views/modules/admin/admin.html',
-				controller: 'AdminCtrl'
+				controller: 'AdminCtrl',
+				data: {
+					public: false
+				}
 			})
 			.state('iframe', {
 				url: '/iframe',
-				templateUrl: 'views/iframe.html'
+				templateUrl: 'views/iframe.html',
+				data: {
+					public: true
+				}
+			})
+			.state('signup', {
+				url: '/signup',
+				templateUrl: 'views/signup.html',
+				data: {
+					public: true
+				}
+			})
+			.state('login', {
+				url: '/login',
+				templateUrl: 'views/login.html',
+				data: {
+					login: true
+				}
 			});
-
 
 		// send Cookie along with the CORS AJAX requests
 		$httpProvider.defaults.withCredentials = true;

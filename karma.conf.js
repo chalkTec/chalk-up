@@ -34,6 +34,8 @@ module.exports = function (config) {
 			'app/bower_components/angular-foundation/mm-foundation-tpls.js',
 			'app/bower_components/angular-sanitize/angular-sanitize.js',
 			'app/bower_components/ng-csv/build/ng-csv.min.js',
+			'app/bower_components/userapp/userapp.client.js',
+			'app/bower_components/userapp-angular/angularjs.userapp.js',
 			'app/bower_components/angular-mocks/angular-mocks.js',
 			'app/bower_components/angular-scenario/angular-scenario.js',
 			// endbower
