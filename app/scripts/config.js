@@ -2,6 +2,7 @@
 
 angular.module('chalkUpApp')
 	.constant('apiEndpoint', 'http://chalk-up-api-staging.herokuapp.com/rest');
+//	.constant('apiEndpoint', 'http://localhost:8080/rest');
 //	.constant('apiEndpoint', 'http://api.chalkup.de/rest');
 
 
