@@ -110,29 +110,53 @@ button i[class^="fi-"] {
 
 // GYM & ADMIN
 
+.color-indicator {
+	display: inline-block;
+	width: rem-calc(20px);
+	height: rem-calc(20px);
+	border-radius: 100px;
+	border: 1px solid black;
+
+	position: relative;
+	top: rem-calc(4px);
+
+	margin: 0 0.3em;
+}
+
 .route-meta {
-	h1 {
-		font-size: 1.5em;
+
+	> * {
+		margin-bottom: 0.8em;
 	}
 
-	h2 {
-		font-size: 1em;
-		font-weight: 600;
+	.name {
+		margin-bottom: 1.2em;
 	}
 
-	.number {
-		font-weight: 200;
-	}
-
-	.grade {
-		margin: 0.5em 0.3em;
-		font-size: 2em;
-		font-weight: 200;
+	.set {
+		margin-bottom: 1.2em;
 	}
 
 	.description {
 		white-space: pre-wrap;
+		line-height: 1.5em;
+		max-height: 5 * 1.5em;
+		overflow-y: auto;
 	}
+
+	span.title {
+		display: inline-block;
+		width: 5.7em;
+
+		&:after {
+			content: ':';
+		}
+	}
+
+	> * > *:not(.title) {
+		font-weight: 600;
+	}
+
 }
 
 

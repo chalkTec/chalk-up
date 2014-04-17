@@ -44,22 +44,23 @@
 	</section>
 	<section class="route-edit">
 		<div class="route-meta" ng-show="selected">
-			<h2>
-				<span class="color-indicator" cu-color="selected.color" angle="45"></span>
-				<span class="number" ng-if="selected.number">{{selected.number}}: </span>
-				<span class="name" ng-if="selected.name">{{selected.name}}</span>
-			</h2>
-
-			<p class="grade" ng-show="selected.initialGrade">
+			<div class="name" ng-if="selected.name">
+				<span>{{selected.name}}</span>
+			</div>
+			<div class="number" ng-if="selected.number">
+				<span class="title">Nummer</span>
+				<span>{{selected.number}}</span>
+			</div>
+			<div class="grade" ng-show="selected.initialGrade">
+				<span class="title">Grad</span>
 				<span ng-if="selected.type == 'boulder'">{{selected.initialGrade | grade:'font'}}</span>
 				<span ng-if="selected.type == 'sport-route'">{{selected.initialGrade | grade:'uiaa'}}</span>
-			</p>
-
-			<p class="description" ng-show="selected.description">{{selected.description}}</p>
-
-			<h2 ng-show="selected.dateSet">geschraubt am</h2>
-
-			<p>{{selected.dateSet | amDateFormat: 'LL' }}</p>
+			</div>
+			<div class="set">
+				<span class="title">geschraubt</span>
+				<span>{{selected.dateSet | amDateFormat: 'LL' }}</span>
+			</div>
+			<div class="description" ng-show="selected.description">{{selected.description}}</div>
 		</div>
 
 		<div ng-show="selected && !movingRoute">

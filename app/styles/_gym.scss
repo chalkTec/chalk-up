@@ -38,19 +38,6 @@ section.routes-map, section.route-information, section.route-edit {
 	}
 }
 
-.color-indicator {
-	display: inline-block;
-	width: rem-calc(20px);
-	height: rem-calc(20px);
-	border-radius: 100px;
-	border: 1px solid black;
-
-	position: relative;
-	top: rem-calc(4px);
-
-	margin-right: 0.3em;
-}
-
 section.route-information {
 
 	.prompt {
