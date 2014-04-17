@@ -62,3 +62,7 @@ section.route-edit {
 		margin-bottom: 0;
 	}
 }
+
+.access-denied {
+	@include panel;
+}

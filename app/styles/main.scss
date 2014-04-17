@@ -66,10 +66,45 @@ button i[class^="fi-"] {
 }
 
 // START
-body[state="start"] {
+.page.start {
+	@include grid-row;
+	@include panel;
+
+	ul {
+		margin: 0;
+		list-style: none;
+	}
+
 	h1 {
-		text-align: center;
-		margin: 1em;
+		margin: 1em 0;
+	}
+}
+
+// LOGIN
+
+.page.login {
+	@include grid-row;
+	@include panel;
+}
+
+// ACCESS DENIED
+.page.access-denied {
+	@include grid-row;
+	@include panel;
+}
+
+// START
+.page.start {
+	@include grid-row;
+	@include panel;
+
+	ul {
+		margin: 0;
+		list-style: none;
+	}
+
+	h1 {
+		margin: 1em 0;
 	}
 }
 
@@ -101,7 +136,7 @@ body[state="start"] {
 }
 
 
-// GYM
+// IFRAME
 
 body[state="iframe"] {
 	background-color: rgb(248, 248, 214);
@@ -109,6 +144,8 @@ body[state="iframe"] {
 }
 
 
+
+// GYM
 @import "gym";
 
 

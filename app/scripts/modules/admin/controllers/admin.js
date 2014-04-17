@@ -1,10 +1,22 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, feedbackService, gymService, routesMapService, routesTableService, errorService) {
-		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, $state, user, feedbackService, gymService, routesMapService, routesTableService, errorService) {
+		$scope.gymId = parseInt($stateParams.id);
 
-		$scope.gymId = $stateParams.id;
+		user.getCurrent().then(function(user) {
+			var isAdmin, isRouteSetter, userGymId;
+			/* jshint sub: true */
+			isAdmin = user.permissions['admin'].value;
+			isRouteSetter = user.permissions['route_setter'].value;
+			userGymId = user.properties['gym'].value;
+			/* jshint sub: false */
+
+			var accessDenied = !(isAdmin || (isRouteSetter && $scope.gymId === userGymId));
+			if(accessDenied) {
+				$state.transitionTo('accessDenied');
+			}
+		});
 
 		var gymLoad = gymService.loadGym($scope.gymId);
 		gymLoad.catch(function () {
@@ -40,6 +52,8 @@ angular.module('chalkUpAdmin')
 			$scope.selected = route;
 		});
 
+
+		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
 
 		var openEditModal = function (route, gym) {
 			return $modal.open({

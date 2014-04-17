@@ -1,13 +1,38 @@
-<p>Please log in</p>
+<nav-bar>
+	<ul class="buttons">
+		<li>
+			<a ng-click="openFeedbackPanel()">
+				<i class="fi-mail"></i>
+				<span class="button-label">Probleme?</span>
+			</a>
+		</li>
+	</ul>
+</nav-bar>
 
-<form ua-login>
-	<input name="login" placeholder="Username"><br>
-	<input name="password" placeholder="Password" type="password"><br>
-	<p><button type="submit">Log in</button> or <a href="" ua-oauth-link="google">Log in with Google</a></p>
+<div class="page login">
 
-	<p ng-show="loading"><img src="https://app.userapp.io/img/ajax-loader-transparent.gif"></p>
-	<p ng-show="error">{{ error.message }}</p>
-</form>
+	<form ua-login>
+		<div class="row">
+			<div class="column small-2"><label class="right inline">E-Mail:</label></div>
+			<div class="column small-9"><input name="login" placeholder="E-Mail" type="text"></div>
+		</div>
 
-<p><a href="#/signup">Sign up</a></p>
-<p><a href="#/reset-password">Reset password</a></p>
+		<div class="row">
+			<div class="column small-2"><label class="right inline">Passwort:</label></div>
+			<div class="column small-9"><input name="password" placeholder="Password" type="password"></div>
+		</div>
+
+		<div class="row">
+			<div class="column small-9 small-offset-3">
+				<button type="submit">Anmelden</button>
+				oder <a ua-oauth-link="google">Mit Google anmelden</a></div>
+		</div>
+
+		<div class="row" ng-show="error">
+			<div class="column small-9 small-offset-3">
+				<small class="error">{{ error.message }}</small>
+			</div>
+		</div>
+	</form>
+
+</div>

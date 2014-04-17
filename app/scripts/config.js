@@ -43,18 +43,18 @@ angular.module('chalkUpApp')
 					public: true
 				}
 			})
-			.state('signup', {
-				url: '/signup',
-				templateUrl: 'views/signup.html',
-				data: {
-					public: true
-				}
-			})
 			.state('login', {
 				url: '/login',
 				templateUrl: 'views/login.html',
 				data: {
 					login: true
+				}
+			})
+			.state('accessDenied', {
+				url: '/accessDenied',
+				templateUrl: 'views/accessDenied.html',
+				data: {
+					public: true
 				}
 			});
 

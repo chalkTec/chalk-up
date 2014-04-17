@@ -14,16 +14,17 @@
 				</a>
 			</div>
 		</li>
+		<li ng-show="user.authenticated">
+			<a ng-click="logout()">
+				<i class="fi-power"></i>
+				<span class="button-label">Abmelden</span>
+			</a>
+		</li>
 		<li>
 			<a ng-click="openFeedbackPanel()">
 				<i class="fi-mail"></i>
 				<span class="button-label">Probleme?</span>
 			</a>
-		</li>
-		<li ng-show="user.authenticated">
-			{{ user.first_name }}
-			{{ user.login }}
-			<a href="#" ua-logout>Log Out</a>
 		</li>
 	</ul>
 </nav-bar>
@@ -47,7 +48,8 @@
 <div class="page admin">
 	<section class="routes-map">
 		<div routes-map ng-show="gym"></div>
-		<p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden.
+		<p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen
+			werden.
 			Sorry.</p>
 	</section>
 	<section class="route-edit">
@@ -91,13 +93,15 @@
 			<button ng-click="discardLocation()"><i class="fi-x"></i> verwerfen</button>
 		</div>
 
-		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route
+		<p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine
+			Route
 			aus.</p>
 	</section>
 	<section class="routes-table">
 		<div routes-table ng-hide="routesLoadError"></div>
 
-		<p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen werden.
+		<p class="routes-load-error alert-box warning" ng-show="routesLoadError">Routen konnten nicht geladen
+			werden.
 			Sorry.</p>
 	</section>
 </div>
