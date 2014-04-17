@@ -1,15 +1,6 @@
 <nav-bar>
 	<ul class="buttons">
-		<li>
-			<a ng-click="logout()" ng-show="user.authenticated">
-				<i class="fi-power"></i>
-				<span class="button-label">Abmelden</span>
-			</a>
-			<a ui-sref="login" ng-hide="user.authenticated">
-				<i class="fi-power"></i>
-				<span class="button-label">Anmelden</span>
-			</a>
-		</li>
+		<li log-in-out-button></li>
 		<li>
 			<a ng-click="openFeedbackPanel()">
 				<i class="fi-mail"></i>

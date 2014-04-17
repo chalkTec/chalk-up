@@ -14,12 +14,7 @@
 				</a>
 			</div>
 		</li>
-		<li ng-show="user.authenticated">
-			<a ng-click="logout()">
-				<i class="fi-power"></i>
-				<span class="button-label">Abmelden</span>
-			</a>
-		</li>
+		<li log-in-out-button></li>
 		<li>
 			<a ng-click="openFeedbackPanel()">
 				<i class="fi-mail"></i>
