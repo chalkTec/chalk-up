@@ -63,7 +63,7 @@
 			<div class="description" ng-show="selected.description">{{selected.description}}</div>
 		</div>
 
-		<div ng-show="selected && !movingRoute">
+		<div class="buttons" ng-show="selected && !movingRoute">
 			<button ng-click="editRoute(selected)"><i class="fi-pencil"></i> ändern</button>
 
 			<button ng-click="moveRoute(selected)"><i class="fi-marker"></i> verschieben</button>
