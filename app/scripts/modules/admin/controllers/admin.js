@@ -53,8 +53,6 @@ angular.module('chalkUpAdmin')
 		});
 
 
-		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
-
 		var openEditModal = function (route, gym) {
 			return $modal.open({
 				templateUrl: '/views/modules/admin/edit-route.html',
