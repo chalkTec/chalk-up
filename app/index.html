@@ -118,6 +118,11 @@
 
 <!-- build:js scripts/vendor.js -->
 
+
+<!-- we need to add userapp.client.js separately as it otherwise ends up as
+bower_components/useruserapp.client.js here ?!? -->
+<script src="bower_components/userapp/userapp.client.js"></script>
+
 <!-- bower:js -->
 <script src="bower_components/modernizr/modernizr.js"></script>
 <script src="bower_components/jquery/dist/jquery.js"></script>
@@ -139,7 +144,6 @@
 <script src="bower_components/angular-foundation/mm-foundation-tpls.js"></script>
 <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
 <script src="bower_components/ng-csv/build/ng-csv.min.js"></script>
-<script src="bower_components/userapp/userapp.client.js"></script>
 <script src="bower_components/userapp-angular/angularjs.userapp.js"></script>
 <!-- endbower -->
 

@@ -151,7 +151,9 @@ module.exports = function (grunt) {
 			app: {
 				src: '<%= yeoman.app %>/index.html',
 				ignorePath: '<%= yeoman.app %>/',
-				exclude: ['foundation-icons.css', 'foundation.css', /jquery-placeholder/]
+				// for some reason, without excluding userapp.client.js it ends up as
+				// bower_components/useruserapp.client.js in index.html ?!?
+				exclude: ['foundation-icons.css', 'foundation.css', /jquery-placeholder/, 'userapp.client.js']
 			},
 			// took that from https://github.com/stephenplusplus/grunt-bower-install/issues/35
 			test: {
