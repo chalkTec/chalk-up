@@ -9,7 +9,8 @@
 	<h1>chalkUp! für Hallen</h1>
 	<ul>
 		<li ng-repeat="gym in gyms">
-			<a ui-sref="admin({id: gym.id })">Bearbeite {{gym.name}}</a>
+			<a ui-sref="admin({id: gym.id })" ng-if="gym.name != 'Demo-Halle'">Bearbeite {{gym.name}}</a>
+			<a ng-click="demoGymClick(gym)" ng-if="gym.name == 'Demo-Halle'">Bearbeite {{gym.name}} (als Demo-Benutzer)</a>
 		</li>
 	</ul>
 </div>
