@@ -5,7 +5,7 @@ angular.module('chalkUpApp')
 
 		return {
 			restrict: 'A',
-			template: '<a ng-click="logout()" ng-show="user.authenticated"><i class="fi-power"></i><span class="button-label">Abmelden</span></a>' +
+			template: '<a ng-click="logout()" ng-show="user.authenticated" title="{{user.login}} abmelden"><i class="fi-power"></i><span class="button-label">Abmelden</span></a>' +
 				'<a ui-sref="login" ng-hide="user.authenticated"><i class="fi-arrow-right"></i><span class="button-label">Anmelden</span></a>',
 			scope: {},
 			controller: function($scope, $rootScope, $state, user, UserApp) {
