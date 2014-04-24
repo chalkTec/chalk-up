@@ -1,0 +1,19 @@
+<table ng-table="tableParams">
+	<tr ng-repeat="route in $data" ng-click="select(route)" ng-class="{'selected': selected == route}">
+		<td data-title="'Nummer'" sortable="'numberSortable'">
+			{{route.number}}
+		</td>
+		<td data-title="'Farbe'">
+			<span class="color-indicator" cu-color="route.color" angle="45"></span> {{route.color.germanName}}
+		</td>
+		<td data-title="'Grad'" sortable="'initialGrade.value'">
+			{{route.initialGrade.uiaa}}
+		</td>
+		<td data-title="'Name'" sortable="'name'">
+			{{route.name}}
+		</td>
+		<td data-title="'Datum'" sortable="'dateSet'">
+			{{route.dateSet | amDateFormat:'LL'}}
+		</td>
+	</tr>
+</table>

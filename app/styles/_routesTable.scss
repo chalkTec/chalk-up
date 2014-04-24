@@ -1,42 +1,107 @@
 *[routes-table] {
 	font-size: 0.9em;
 
-	.ngVerticalBarVisible {
-		width: 0;
+	table {
+		width: 100%;
+		display: block;
+		height: 100%;
+
+		margin: 0;
 	}
 
-	$header-height: 50px;	// also change in JS!
-	.ngHeaderContainer {
+	thead {
 		background: white;
+		display: block;
+		width: calc(100% - 16px);
+		// TODO: how to adjust thead height
 
-		.ngHeaderText {
-			height: $header-height;
-			line-height: $header-height;
-			vertical-align: middle;
-			padding: 0 0.5em;
+		tr {
+			display: block;
+		}
+
+		th {
+			display: inline-block;
+
+			// move sort indicators next to title
+			&.sortable div {
+				display: inline;
+				&:after, &:before {
+					right: 0;
+				}
+			}
+		}
+
+	}
+
+	th, td {
+		display: inline-block;
+
+		&:nth-of-type(1) {
+			width: 12%;
+		}
+
+		&:nth-of-type(2) {
+			width: 20%;
+		}
+
+		&:nth-of-type(3) {
+			width: 10%;
+		}
+
+		&:nth-of-type(4) {
+			width: 30%;
+		}
+
+		&:nth-of-type(5) {
+			width: 28%;
 		}
 	}
 
-	$row-height: 40px;	// also change in JS!
-	.ngRow {
-		transition: background-color 200ms linear;
+	// for some reason setting the width on the last td screws up the layout by a few pixels
+	td:last-of-type {
+		width: auto;
+	}
 
-		&.even {
-			background: #fafafa;
-		}
-		&.odd {
-			background: white;
-		}
+	tbody {
+		display: block;
+		// TODO: the header is 36px, how to adjust that?
+		height: calc(100% - 36px);
+		overflow-y: auto;
+		width: 100%;
 
-		&.selected {
-			background: #dddd33 !important;
+		tr {
+			display: block;
+			width: 100%;
+
+			td {
+				display: block;
+				float: left;
+			}
+			@include clearfix;
+
+			cursor: pointer;
+
+			transition: background-color 200ms linear;
+
+			&:nth-of-type(even) {
+				background: white;
+			}
+			&:nth-of-type(odd) {
+				background: #f9f9f9;
+			}
+
+			&.selected {
+				background: #dddd33 !important;
+			}
 		}
 	}
 
-	.ngCellText {
-		// dont need to set height here, it is set via JS
-		padding: 0 0.5em;
-		line-height: $row-height;
-		vertical-align: middle;
+	tfoot {
+		display: none;
 	}
+
+	th {
+		text-align: left;
+	}
+
 }

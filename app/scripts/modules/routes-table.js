@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('routesTable', ['ngGrid', 'cuColor']);
+angular.module('routesTable', ['ngTable', 'cuColor']);
 
 
 angular.module('routesTable')
@@ -50,7 +50,7 @@ angular.module('routesTable')
 		};
 
 		function internalSelect(route) {
-			if(route !== _selectedRoute) {
+			if (route !== _selectedRoute) {
 				_selectedRoute = route;
 				$rootScope.$broadcast(SELECTION_EVENT, {route: _selectedRoute});
 			}
@@ -84,99 +84,80 @@ angular.module('routesTable')
 	.directive('routesTable', function () {
 		return {
 			restrict: 'A',
-			template: '<div ng-grid="gridOptions" style="height: 100%;"></div>',
+			templateUrl: '/views/routes-table.html',
 			scope: {
 			},
-			controller: function ($scope, routesTableService) {
-				routesTableService.onRoutesUpdate($scope, function(routes) {
-					$scope.routes = routes;
+			controller: function ($scope, $filter, routesTableService, ngTableParams) {
+				function pad(n, width, z) {
+					z = z || '0';
+					n = n + '';
+					return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+				}
+
+				routesTableService.onRoutesUpdate($scope, function (routes) {
+					// fix sorting of number
+					_.each(routes, function(route) {
+						var numberThanAnything = /(\d*)(.*)/;
+						var result = numberThanAnything.exec(route.number);
+						route.numberSortable = pad(result[1], 5) + result[2];
+					});
+
+					$scope.tableParams = new ngTableParams({
+						page: 1,            // show first page
+						count: 10,           // count per page
+						sorting: {
+							numberSortable: 'asc'
+						}
+					}, {
+						// the following two parameters hide pagination
+						counts: [],
+						total: routes.length,
+						getData: function ($defer, params) {
+							// use build-in angular filter
+							var orderedData = params.sorting() ?
+								$filter('orderBy')(routes, params.orderBy()) :
+								routes;
+
+							$defer.resolve(orderedData);
+						}
+					});
 				});
 
-
-				// DEFINE NG-GRID OPTIONS
-				var gradeSort = function(a, b) {
-					return a.value - b.value;
-				};
-
-				$scope.selections = [];
-
-				$scope.gridOptions = {
-					data: 'routes',
-					multiSelect: false,
-					selectedItems: $scope.selections,
-					headerRowHeight: 50, // also set in CSS
-					rowHeight: 40, // also set in CSS
-					columnDefs: [
-						{
-							field: 'number',
-							displayName: 'Nummer',
-							width: '10%'
-						},
-						{
-							field: 'color',
-							displayName: 'Farbe',
-							sortable: false,
-							cellTemplate: '<div class="ngCellText"><span class="color-indicator" cu-color="row.entity[col.field]" angle="45"></span> {{row.entity[col.field].germanName}}</div>',
-							width: '20%'
-						},
-						{
-							field: 'initialGrade',
-							displayName: 'Grad',
-							sortFn: gradeSort,
-							cellFilter: 'grade: row.entity.type == "boulder" ? "font" : "uiaa"',
-							width: '20%'
-						},
-						{
-							field: 'name',
-							displayName: 'Name',
-							width: '30%'
-						},
-						{
-							field: 'dateSet',
-							displayName: 'Datum',
-							cellFilter: 'amDateFormat: "LL"'
-						}
-					]
-				};
 
 				// SELECT ROW IF SELECTION CHANGED EXTERNALLY
-				routesTableService.onSelectionChange($scope, function(route) {
-					if (_.isUndefined(route)) {
-						$scope.gridOptions.selectAll(false);
-					}
-					else {
-						selectRouteRow(route);
-					}
+				routesTableService.onSelectionChange($scope, function (route) {
+					$scope.selected = route;
+					selectRouteRow(route);
 				});
 
+				$scope.selected = undefined;
+
+				// NOTIFY OTHERS IF SELECTION CHANGED INTERNALLY
 				var doScroll = true;
 
+				$scope.select = function(route) {
+					doScroll = false;
+					routesTableService.select(route);
+					doScroll = true;
+					$scope.selected = route;
+				};
+
+				// TODO
+				var rowHeight = 42;
+				var tbodyHeight = 284;
+
 				function selectRouteRow(route) {
-					var index = _.findIndex($scope.routes, function (r) {
+					var index = _.findIndex($scope.tableParams.data, function (r) {
 						return r === route;
 					});
 
-					$scope.gridOptions.selectItem(index, true);
-					var grid = $scope.gridOptions.ngGrid;
 					if (doScroll) {
-						var offset = grid.rowMap[index] * grid.config.rowHeight - (grid.$viewport.height() / 2 - grid.config.rowHeight / 2);
-						$(grid.$viewport).animate({ scrollTop: offset }, '300', 'swing');
+						var offset = index * rowHeight - (tbodyHeight / 2 - rowHeight / 2);
+						$('tbody').animate({ scrollTop: offset }, '300', 'swing');
 					}
 				}
 
-				// NOTIFY OTHERS IF SELECTION CHANGED INTERNALLY
 
-				// that is a bit a mess: ng-grid uses an array to communicate the currently selected item (due to its ability of multi-selection)
-				$scope.$watchCollection('selections', function (selections) {
-					if (selections.length !== 0) {
-						doScroll = false;
-						routesTableService.select(selections[0]);
-						doScroll = true;
-					}
-					else {
-						routesTableService.clearSelection();
-					}
-				});
 			}
 		};
 	});
