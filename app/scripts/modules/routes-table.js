@@ -87,7 +87,7 @@ angular.module('routesTable')
 			templateUrl: '/views/routes-table.html',
 			scope: {
 			},
-			controller: function ($scope, $filter, routesTableService, ngTableParams) {
+			controller: function ($scope, $filter, $window, routesTableService, ngTableParams) {
 				function pad(n, width, z) {
 					z = z || '0';
 					n = n + '';
@@ -96,10 +96,17 @@ angular.module('routesTable')
 
 				routesTableService.onRoutesUpdate($scope, function (routes) {
 					// fix sorting of number
-					_.each(routes, function(route) {
+					_.each(routes, function (route) {
 						var numberThanAnything = /(\d*)(.*)/;
 						var result = numberThanAnything.exec(route.number);
 						route.numberSortable = pad(result[1], 5) + result[2];
+					});
+
+					// add 'new' property
+					_.each(routes, function (route) {
+						if ($window.moment().diff($window.moment(route.dateSet), 'days', true) < 60) {
+							route.new = true;
+						}
 					});
 
 					$scope.tableParams = new ngTableParams({
@@ -135,7 +142,7 @@ angular.module('routesTable')
 				// NOTIFY OTHERS IF SELECTION CHANGED INTERNALLY
 				var doScroll = true;
 
-				$scope.select = function(route) {
+				$scope.select = function (route) {
 					doScroll = false;
 					routesTableService.select(route);
 					doScroll = true;

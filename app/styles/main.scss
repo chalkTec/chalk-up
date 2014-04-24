@@ -65,6 +65,12 @@ button i[class^="fi-"] {
 	top: 0.05em;
 }
 
+
+.new-label {
+	@include label($padding: rem-calc(2px 5px 5px 5px), $radius: 100px);
+	margin-left: 1em;
+}
+
 // START
 .page.start {
 	@include grid-row;
