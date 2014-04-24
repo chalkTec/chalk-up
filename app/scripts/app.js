@@ -17,11 +17,16 @@ angular.module('chalkUpApp', [
 ]);
 
 angular.module('chalkUpApp')
-	.run(function ($window, $rootScope, $state, apiEndpoint, user) {
+	.factory('moment', function($window) {
+		return $window.moment;
+	});
+
+angular.module('chalkUpApp')
+	.run(function ($rootScope, moment, $state, apiEndpoint, user) {
 		$rootScope.$state = $state;
 
-		$window.moment.lang('de');
-		$window.moment.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZZ';
+		moment.lang('de');
+		moment.defaultFormat = 'YYYY-MM-DDTHH:mm:ssZZ';
 
 		$rootScope.apiEndpoint = apiEndpoint;
 

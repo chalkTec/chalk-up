@@ -87,7 +87,7 @@ angular.module('routesTable')
 			templateUrl: '/views/routes-table.html',
 			scope: {
 			},
-			controller: function ($scope, $filter, $window, routesTableService, ngTableParams) {
+			controller: function ($scope, $filter, moment, routesTableService, ngTableParams) {
 				function pad(n, width, z) {
 					z = z || '0';
 					n = n + '';
@@ -104,7 +104,7 @@ angular.module('routesTable')
 
 					// add 'new' property
 					_.each(routes, function (route) {
-						if ($window.moment().diff($window.moment(route.dateSet), 'days', true) < 60) {
+						if (moment().diff(moment(route.dateSet), 'days', true) < 60) {
 							route.new = true;
 						}
 					});

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $window, $state, user, feedbackService, gymService, routesMapService, routesTableService, errorService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $state, moment, user, feedbackService, gymService, routesMapService, routesTableService, errorService) {
 		$scope.gymId = parseInt($stateParams.id);
 
 		user.getCurrent().then(function(user) {
@@ -59,10 +59,10 @@ angular.module('chalkUpAdmin')
 						controller: ['$scope', function ($scope) {
 							$scope.gym = gym;
 							$scope.route = route;
-							$scope.route.dateSetDate = $window.moment($scope.route.dateSet).toDate();
+							$scope.route.dateSetDate = moment($scope.route.dateSet).toDate();
 
 							$scope.save = function (route) {
-								route.dateSet = $window.moment(route.dateSetDate).format();
+								route.dateSet = moment(route.dateSetDate).format();
 								delete route.dateSetDate;
 								$scope.$close(route);
 							};
@@ -136,8 +136,8 @@ angular.module('chalkUpAdmin')
 							grade: undefined,
 							color: route.color.germanName,
 							description: route.description,
-							dateSet: $window.moment(route.dateSet).format('DD.MM.YYYY'),
-							end: route.end ? $window.moment(route.end).format('DD.MM.YYYY') : undefined
+							dateSet: moment(route.dateSet).format('DD.MM.YYYY'),
+							end: route.end ? moment(route.end).format('DD.MM.YYYY') : undefined
 						};
 
 						if(route.type === 'sport-route') {
@@ -157,7 +157,7 @@ angular.module('chalkUpAdmin')
 				};
 
 				$scope.csvHeader = ['Typ', 'Name', 'Nummer', 'Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'abgeschraubt am'];
-				$scope.filename = 'routes-' + $window.moment().format() + '.csv';
+				$scope.filename = 'routes-' + moment().format() + '.csv';
 
 				$scope.editRoute = function (route) {
 					// clone the route, so nothing changes until the editing is saved and discard just needs to do nothing
@@ -208,7 +208,7 @@ angular.module('chalkUpAdmin')
 
 
 				$scope.archiveRoute = function (route) {
-					var date = $window.moment().toDate();
+					var date = moment().toDate();
 					gymService.archiveRoute(route, date)
 						.then(function (archivedRoute) {
 							_.remove($scope.routes, function(route) {

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.factory('gymService', function ($window, Restangular, loadingIndicator, user) {
+	.factory('gymService', function (moment, Restangular, loadingIndicator, user) {
 		return {
 			loadGym: function (id) {
 				var gym = Restangular.one('gyms', id);
@@ -25,7 +25,7 @@ angular.module('chalkUpApp')
 				return routePut;
 			},
 			archiveRoute: function (route, date) {
-				route.end = $window.moment(date).format();
+				route.end = moment(date).format();
 				var routePut = route.put(undefined, {'X-Auth-Token': user.token()});
 				loadingIndicator.waitFor(routePut);
 				return routePut;
