@@ -68,11 +68,4 @@ angular.module('chalkUpApp')
 		RestangularProvider.setBaseUrl(apiEndpoint);
 		// this is done so that DELETE requests also have this header (see https://github.com/mgonto/restangular/issues/159)
 		RestangularProvider.setDefaultHeaders({'Content-Type': 'application/json'});
-		RestangularProvider.addRequestInterceptor(function(element, operation) {
-			// TODO: remove this as soon as this issue is fixed: https://github.com/restfulapi/restful-api/issues/6
-			if(operation === 'remove' || operation === 'put') {
-				delete element.id;
-			}
-			return element;
-		});
 	});
