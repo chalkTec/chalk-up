@@ -22,7 +22,7 @@ angular.module('chalkUpApp')
 	});
 
 angular.module('chalkUpApp')
-	.run(function ($rootScope, moment, $state, apiEndpoint, user) {
+	.run(function ($rootScope, moment, $state, apiEndpoint, user, loginInterceptor) {
 		$rootScope.$state = $state;
 
 		moment.lang('de');
@@ -34,5 +34,13 @@ angular.module('chalkUpApp')
 		user.onAccessDenied(function (user, event) {
 			event.preventDefault();
 			$state.transitionTo('accessDenied');
+		});
+		user.onAuthenticationRequired(function (event, toState, params) {
+			event.preventDefault();
+			loginInterceptor.stateAfterLogin(toState.name, params);
+			$state.go('login');
+		});
+		$rootScope.$on('user.login', function() {
+			loginInterceptor.go();
 		});
 	});
