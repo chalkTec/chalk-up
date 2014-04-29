@@ -17,14 +17,8 @@ angular.module('chalkUpApp')
 				};
 
 				$scope.logout = function() {
-					// TODO: replace that by user.logout(function() { $state.transitionTo('start'); });
-					// as soon as https://github.com/userapp-io/userapp-angular/pull/2 is merged
-
-					UserApp.User.logout(function() {
-						user.reset();
-						$rootScope.$broadcast('user.logout');
-
-						$state.transitionTo('start');
+					user.logout(function() {
+						$state.go('start');
 					});
 				};
 			}
