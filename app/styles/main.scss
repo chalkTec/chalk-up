@@ -99,6 +99,13 @@ button i[class^="fi-"] {
 	@include panel;
 }
 
+// SIGNUP
+
+.page.signup {
+	@include grid-row;
+	@include panel;
+}
+
 // START
 .page.start {
 	@include grid-row;

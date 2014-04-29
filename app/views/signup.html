@@ -1,0 +1,37 @@
+<nav-bar>
+	<ul class="buttons">
+		<li feedback-button></li>
+	</ul>
+</nav-bar>
+
+<div class="page signup">
+	<form ua-signup novalidate name="signup">
+		<div class="row">
+			<div class="column small-2"><label class="right inline">E-Mail:</label></div>
+			<div class="column small-9"><input name="login" ua-is-email placeholder="E-Mail" type="email"></div>
+		</div>
+
+		<div class="row">
+			<div class="column small-2"><label class="right inline">Passwort:</label></div>
+			<div class="column small-9"><input name="password" placeholder="Password" type="password"></div>
+		</div>
+
+		<div class="row">
+			<div class="column small-2"><label class="right inline">Nickname:</label></div>
+			<div class="column small-9"><input name="properties.nickname" placeholder="Nickname" type="text"></div>
+		</div>
+
+		<div class="row">
+			<div class="column small-9 small-offset-3">
+				<button type="submit">Registrieren</button>
+			</div>
+		</div>
+
+		<div class="row" ng-show="error">
+			<div class="column small-9 small-offset-3">
+				<small class="error">{{ error.message }}</small>
+			</div>
+		</div>
+	</form>
+
+</div>
