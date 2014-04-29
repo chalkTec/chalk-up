@@ -17,7 +17,7 @@ angular.module('chalkUpApp', [
 ]);
 
 angular.module('chalkUpApp')
-	.factory('moment', function($window) {
+	.factory('moment', function ($window) {
 		return $window.moment;
 	});
 
@@ -31,4 +31,8 @@ angular.module('chalkUpApp')
 		$rootScope.apiEndpoint = apiEndpoint;
 
 		user.init({ appId: '534e382ac8f18' });
+		user.onAccessDenied(function (user, event) {
+			event.preventDefault();
+			$state.transitionTo('accessDenied');
+		});
 	});

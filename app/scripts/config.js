@@ -34,7 +34,18 @@ angular.module('chalkUpApp')
 				templateUrl: 'views/modules/admin/admin.html',
 				controller: 'AdminCtrl',
 				data: {
-					public: false
+					public: false,
+					authCheck: function (user, params) {
+						var idParam = parseInt(params.id);
+						var isAdmin, isRouteSetter, userGymId;
+						/* jshint sub: true */
+						isAdmin = user.permissions['admin'].value;
+						isRouteSetter = user.permissions['route_setter'].value;
+						userGymId = parseInt(user.properties['gym'].value);
+						/* jshint sub: false */
+
+						return isAdmin || (isRouteSetter && idParam === userGymId);
+					}
 				}
 			})
 			.state('iframe', {
