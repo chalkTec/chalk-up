@@ -16,14 +16,17 @@
 			<div class="column small-9"><input name="password" placeholder="Password" type="password"></div>
 		</div>
 
-		<div class="row">
-			<div class="column small-2"><label class="right inline">Nickname:</label></div>
-			<div class="column small-9"><input name="properties.nickname" placeholder="Nickname" type="text"></div>
-		</div>
+		<!--<div class="row">-->
+			<!--<div class="column small-2"><label class="right inline">Nickname:</label></div>-->
+			<!--<div class="column small-9"><input name="properties.nickname" placeholder="Nickname" type="text"></div>-->
+		<!--</div>-->
 
 		<div class="row">
-			<div class="column small-9 small-offset-3">
+			<div class="column small-9 small-offset-3 buttons">
 				<button type="submit">Registrieren</button>
+				<span>oder registriere dich mit:</span>
+				<a ua-oauth-link="facebook" ua-oauth-redirect-uri="{{oauthRedirectUri}}"><i class="fi-social-facebook"></i></a>
+				<a ua-oauth-link="google" ua-oauth-redirect-uri="{{oauthRedirectUri}}"><i class="fi-social-google-plus"></i></a>
 			</div>
 		</div>
 

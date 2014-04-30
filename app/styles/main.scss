@@ -86,25 +86,42 @@ button i[class^="fi-"] {
 	}
 }
 
-// LOGIN
-
-.page.login {
-	@include grid-row;
-	@include panel;
-}
-
 // ACCESS DENIED
 .page.access-denied {
 	@include grid-row;
 	@include panel;
 }
 
-// SIGNUP
+// LOGIN, SIGNUP
 
-.page.signup {
+.page.signup, .page.login {
 	@include grid-row;
 	@include panel;
+
+	.buttons {
+		display: flex;
+		align-items: center;
+		> * {
+
+		}
+		button {
+			margin: 0 3rem 0 0;
+		}
+
+
+		i.fi-social-facebook {
+			margin-left: 1rem;
+			font-size: 3rem;
+			color: #3B5998;
+		}
+		i.fi-social-google-plus {
+			margin-left: 1rem;
+			font-size: 3rem;
+			color: #D34836;
+		}
+	}
 }
+
 
 // START
 .page.start {

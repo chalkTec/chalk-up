@@ -66,6 +66,7 @@ angular.module('chalkUpApp')
 			.state('signup', {
 				url: '/signup',
 				templateUrl: 'views/signup.html',
+				controller: 'SignupCtrl',
 				data: {
 					public: true
 				}
