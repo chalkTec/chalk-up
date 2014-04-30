@@ -31,12 +31,10 @@ angular.module('chalkUpApp')
 		$rootScope.apiEndpoint = apiEndpoint;
 
 		user.init({ appId: '534e382ac8f18' });
-		user.onAccessDenied(function (user, event) {
-			event.preventDefault();
+		user.onAccessDenied(function () {
 			$state.transitionTo('accessDenied');
 		});
-		user.onAuthenticationRequired(function (event, toState, params) {
-			event.preventDefault();
+		user.onAuthenticationRequired(function (toState, params) {
 			loginInterceptor.stateAfterLogin(toState.name, params);
 			$state.go('login');
 		});
