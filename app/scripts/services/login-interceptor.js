@@ -3,8 +3,8 @@
 angular.module('chalkUpApp')
 	.factory('loginInterceptor', function ($state) {
 
-		var nextState = undefined;
-		var nextParams = undefined;
+		var nextState;
+		var nextParams;
 
 		return {
 			stateAfterLogin: function(state, params) {

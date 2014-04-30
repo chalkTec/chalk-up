@@ -12,7 +12,7 @@ angular.module('chalkUpApp')
 				$scope.user = user.current;
 
 				$scope.login = function() {
-					loginInterceptor.stateAfterLogin($state.$current.name, $state.params)
+					loginInterceptor.stateAfterLogin($state.$current.name, $state.params);
 					$state.go('login');
 				};
 
