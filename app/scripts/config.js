@@ -58,6 +58,7 @@ angular.module('chalkUpApp')
 			.state('login', {
 				url: '/login',
 				templateUrl: 'views/login.html',
+				controller: 'LoginCtrl',
 				data: {
 					login: true
 				}

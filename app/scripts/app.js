@@ -38,7 +38,4 @@ angular.module('chalkUpApp')
 			loginInterceptor.stateAfterLogin(toState.name, params);
 			$state.go('login');
 		});
-		$rootScope.$on('user.login', function() {
-			loginInterceptor.go();
-		});
 	});

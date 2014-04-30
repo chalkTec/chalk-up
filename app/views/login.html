@@ -6,15 +6,15 @@
 
 <div class="page login">
 
-	<form ua-login>
+	<form ng-submit="login()">
 		<div class="row">
 			<div class="column small-2"><label class="right inline">E-Mail:</label></div>
-			<div class="column small-9"><input name="login" placeholder="E-Mail" type="text"></div>
+			<div class="column small-9"><input name="login" ng-model="credentials.login" placeholder="E-Mail" type="text"></div>
 		</div>
 
 		<div class="row">
 			<div class="column small-2"><label class="right inline">Passwort:</label></div>
-			<div class="column small-9"><input name="password" placeholder="Password" type="password"></div>
+			<div class="column small-9"><input name="password" ng-model="credentials.password" placeholder="Password" type="password"></div>
 		</div>
 
 		<div class="row">
