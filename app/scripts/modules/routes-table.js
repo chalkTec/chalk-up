@@ -94,6 +94,29 @@ angular.module('routesTable')
 					return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
 				}
 
+				var allRoutes;
+
+				$scope.tableParams = new ngTableParams({
+					page: 1,            // show first page
+					count: 10,           // count per page
+					sorting: {
+						numberSortable: 'asc'
+					}
+				}, {
+					// the following two parameters hide pagination
+					counts: [],
+					total: 1,
+					getData: function ($defer, params) {
+						// use build-in angular filter
+						var orderedData = params.sorting() ?
+							$filter('orderBy')(allRoutes, params.orderBy()) :
+							allRoutes;
+
+						$defer.resolve(orderedData);
+					}
+				});
+
+
 				routesTableService.onRoutesUpdate($scope, function (routes) {
 					// fix sorting of number
 					_.each(routes, function (route) {
@@ -109,25 +132,9 @@ angular.module('routesTable')
 						}
 					});
 
-					$scope.tableParams = new ngTableParams({
-						page: 1,            // show first page
-						count: 10,           // count per page
-						sorting: {
-							numberSortable: 'asc'
-						}
-					}, {
-						// the following two parameters hide pagination
-						counts: [],
-						total: routes.length,
-						getData: function ($defer, params) {
-							// use build-in angular filter
-							var orderedData = params.sorting() ?
-								$filter('orderBy')(routes, params.orderBy()) :
-								routes;
+					allRoutes = routes;
 
-							$defer.resolve(orderedData);
-						}
-					});
+					$scope.tableParams.reload();
 				});
 
 
