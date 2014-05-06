@@ -53,13 +53,16 @@
 	</label>
 
 	<label>
-		geschraubt von {{route.setters | json}}
-		<div ng-repeat="setter in route.setters">
-			<input type="text" typeahead="routeSetter.nickname for routeSetter in gym.routeSetters | filter:{nickname:$viewValue}"
-			       typeahead-editable="true" class="route-setter" ng-model="route.setters[$index].nickname"/>
-			<a ng-click="removeSetter($index)" class="remove-setter"><i class="fi-minus"></i></a>
-		</div>
-		<a ng-click="addSetter()" class="add-setter"><i class="fi-plus"></i></a>
+		geschraubt von
+		<tags-input class="route-setters"
+				    ng-model="route.setters"
+		            display-property="nickname"
+		            replace-spaces-with-dashes="false"
+		            add-from-autocomplete-only="false"
+					on-tag-added="replaceIfKnownSetter($tag)"
+					min-length="1" placeholder="Füge einen Schrauber hinzu">
+			<auto-complete min-length="0" source="setters($query)"></auto-complete>
+		</tags-input>
 	</label>
 
 	<button ng-click="save(route)" class="alert">Speichern</button>

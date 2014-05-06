@@ -1,18 +1,32 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('EditModalCtrl', function ($scope, $q, loadingIndicator, gymService, gym, route) {
+	.controller('EditModalCtrl', function ($scope, $q, $filter, loadingIndicator, gymService, gym, route) {
 		$scope.gym = gym;
 		$scope.route = route;
 		// date
 		$scope.route.dateSetDate = moment(route.dateSet).toDate();
 
-		// route setters
-		$scope.removeSetter = function(index) {
-			route.setters.splice(index, 1);
+
+		$scope.setters = function(typed) {
+			var setters = $filter('filter')(gym.routeSetters, { nickname: typed });
+			return $q.when(setters);
 		};
-		$scope.addSetter = function() {
-			route.setters.push({});
+
+		$scope.replaceIfKnownSetter = function(setter) {
+			function equalNickname(routeSetter) {
+				return setter.nickname === routeSetter.nickname
+			}
+
+			if(!setter.id) {
+				// no setter was selected from the auto-complete
+				if(_(gym.routeSetters).any(equalNickname)) {
+					// but setter with the same nickname exists
+					// => replace the setter in the list with the known route setter
+					var index = _(route.setters).indexOf(setter);
+					route.setters[index] = _(gym.routeSetters).find(equalNickname);
+				}
+			}
 		};
 
 		$scope.save = function (route) {

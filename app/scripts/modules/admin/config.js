@@ -6,6 +6,7 @@ angular.module('chalkUpAdmin', [
 	'angularMoment',
 	'angulartics',
 	'angulartics.google.analytics',
+	'ngTagsInput',
 	'routesMap',
 	'routesTable'
 ]);
