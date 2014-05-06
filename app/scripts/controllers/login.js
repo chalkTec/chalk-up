@@ -27,6 +27,5 @@ angular.module('chalkUpApp')
 				.catch(function (error) {
 					$scope.error = error;
 				});
-		}
-
+		};
 	});

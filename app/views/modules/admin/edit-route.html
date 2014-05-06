@@ -52,6 +52,16 @@
 		<input type="date" name="dateSet" ng-model="route.dateSetDate"/>
 	</label>
 
+	<label>
+		geschraubt von {{route.setters | json}}
+		<div ng-repeat="setter in route.setters">
+			<input type="text" typeahead="routeSetter.nickname for routeSetter in gym.routeSetters | filter:{nickname:$viewValue}"
+			       typeahead-editable="true" class="route-setter" ng-model="route.setters[$index].nickname"/>
+			<a ng-click="removeSetter($index)" class="remove-setter"><i class="fi-minus"></i></a>
+		</div>
+		<a ng-click="addSetter()" class="add-setter"><i class="fi-plus"></i></a>
+	</label>
+
 	<button ng-click="save(route)" class="alert">Speichern</button>
 	<button ng-click="discard()">Änderungen verwerfen</button>
 </form>

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, $state, moment, user, feedbackService, gymService, routesMapService, routesTableService, errorService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, moment, gymService, routesMapService, routesTableService, errorService) {
 		$scope.gymId = parseInt($stateParams.id);
 
 		var gymLoad = gymService.loadGym($scope.gymId);
@@ -43,20 +43,11 @@ angular.module('chalkUpAdmin')
 			return $modal.open({
 				templateUrl: '/views/modules/admin/edit-route.html',
 				windowClass: 'small edit',
-				controller: ['$scope', function ($scope) {
-					$scope.gym = gym;
-					$scope.route = route;
-					$scope.route.dateSetDate = moment($scope.route.dateSet).toDate();
-
-					$scope.save = function (route) {
-						route.dateSet = moment(route.dateSetDate).format();
-						delete route.dateSetDate;
-						$scope.$close(route);
-					};
-					$scope.discard = function () {
-						$scope.$dismiss();
-					};
-				}]
+				controller: 'EditModalCtrl',
+				resolve: {
+					gym: function() { return gym },
+					route: function() { return  route }
+				}
 			});
 		};
 
@@ -73,7 +64,8 @@ angular.module('chalkUpAdmin')
 			initialGrade: {
 				uiaa: '7+',
 				font: '6c+'
-			}
+			},
+			setters: []
 		};
 
 		$scope.newRoute = function (gym, floorPlan) {
@@ -98,6 +90,7 @@ angular.module('chalkUpAdmin')
 						// update template to reflect last created route
 						routeTemplate.type = createdRoute.type;
 						routeTemplate.color = createdRoute.color;
+						routeTemplate.setters = createdRoute.setters;
 						if (createdRoute.type === 'sport-route') {
 							routeTemplate.initialGrade.uiaa = createdRoute.initialGrade.uiaa;
 						}

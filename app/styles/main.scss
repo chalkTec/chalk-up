@@ -18,6 +18,11 @@ $fi-path: "/bower_components/foundation-icon-fonts";
 	display: none !important;
 }
 
+input.ng-invalid.ng-dirty {
+	border-color: $alert-color;
+}
+
+
 // LOADING OVERLAY
 #loading-overlay {
 	position: absolute;

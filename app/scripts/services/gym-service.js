@@ -34,6 +34,11 @@ angular.module('chalkUpApp')
 				var routeRemove = route.remove(undefined, {'X-Auth-Token': user.token()});
 				loadingIndicator.waitFor(routeRemove);
 				return routeRemove;
+			},
+			createRouteSetter: function(gym, routeSetter) {
+				var routeSettersPost = Restangular.one('gyms', gym.id).all('routeSetters').post(routeSetter, undefined, {'X-Auth-Token': user.token()});
+				loadingIndicator.waitFor(routeSettersPost);
+				return routeSettersPost;
 			}
 		};
 	});

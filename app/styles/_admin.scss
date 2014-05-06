@@ -73,6 +73,34 @@ section.route-edit {
 	button {
 		margin-bottom: 0;
 	}
+
+
+	input.route-setter {
+		display: inline-block;
+		width: 90%;
+	}
+
+	$button-height: rem-calc(30px);
+	.remove-setter {
+		float: right;
+	}
+
+	.remove-setter, .add-setter {
+		display: inline-block;
+
+		font-size: 1.2em;
+		line-height: $button-height;
+		text-align: center;
+		vertical-align: middle;
+
+		border-radius: 1000px;
+
+		width: $button-height;
+		height: $button-height;
+
+		background-color: $primary-color;
+		color: white;
+	}
 }
 
 .access-denied {
