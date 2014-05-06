@@ -60,6 +60,10 @@
 				<span class="title">geschraubt</span>
 				<span>{{selected.dateSet | amDateFormat: 'LL' }}</span>
 			</div>
+			<div class="route-setters" ng-show="selected.setters">
+				<span class="title">von</span>
+				<span>{{selected.setters | routeSettersNickname}}</span>
+			</div>
 			<div class="description" ng-show="selected.description">{{selected.description}}</div>
 		</div>
 
