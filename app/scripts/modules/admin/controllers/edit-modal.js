@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('EditModalCtrl', function ($scope, $q, $filter, loadingIndicator, gymService, gym, route) {
+	.controller('EditModalCtrl', function ($scope, $q, $filter, moment, loadingIndicator, gymService, gym, route) {
 		$scope.gym = gym;
 		$scope.route = route;
 		// date
@@ -15,7 +15,7 @@ angular.module('chalkUpAdmin')
 
 		$scope.replaceIfKnownSetter = function(setter) {
 			function equalNickname(routeSetter) {
-				return setter.nickname === routeSetter.nickname
+				return setter.nickname === routeSetter.nickname;
 			}
 
 			if(!setter.id) {

@@ -96,7 +96,9 @@ angular.module('routesTable')
 
 				var allRoutes;
 
+				/*jshint newcap: false */
 				$scope.tableParams = new ngTableParams({
+					/*jshint newcap: true */
 					page: 1,            // show first page
 					count: 10,           // count per page
 					sorting: {

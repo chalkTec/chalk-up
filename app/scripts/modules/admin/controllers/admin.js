@@ -45,8 +45,8 @@ angular.module('chalkUpAdmin')
 				windowClass: 'small edit',
 				controller: 'EditModalCtrl',
 				resolve: {
-					gym: function() { return gym },
-					route: function() { return  route }
+					gym: function() { return gym; },
+					route: function() { return  route; }
 				}
 			});
 		};
