@@ -132,6 +132,7 @@ angular.module('chalkUpAdmin')
 					color: route.color.germanName,
 					description: route.description,
 					dateSet: moment(route.dateSet).format('DD.MM.YYYY'),
+					setters: _(route.setters).pluck('nickname').join(', '),
 					end: route.end ? moment(route.end).format('DD.MM.YYYY') : undefined
 				};
 
@@ -151,7 +152,7 @@ angular.module('chalkUpAdmin')
 			});
 		};
 
-		$scope.csvHeader = ['Typ', 'Name', 'Nummer', 'Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'abgeschraubt am'];
+		$scope.csvHeader = ['Typ', 'Name', 'Nummer', 'Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'von', 'abgeschraubt am'];
 		$scope.filename = 'routes-' + moment().format() + '.csv';
 
 		$scope.trackExportCsv = function() {

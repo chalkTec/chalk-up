@@ -57,7 +57,7 @@ angular.module('tracking')
 				};
 				return function (category, action, label, value) {
 					$analytics.eventTrack(action, { category: category, label: label, value: value, field: field });
-				}
+				};
 			},
 			event: function () {
 				var field = {
@@ -66,7 +66,7 @@ angular.module('tracking')
 				};
 				return function (category, action, label, value) {
 					$analytics.eventTrack(action, { category: category, label: label, value: value, field: field });
-				}
+				};
 			}
 		};
 	});
