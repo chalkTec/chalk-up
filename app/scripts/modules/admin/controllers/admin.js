@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('chalkUpAdmin')
-	.controller('AdminCtrl', function ($scope, $stateParams, $modal, moment, gymService, routesMapService, routesTableService, errorService) {
+	.controller('AdminCtrl', function ($scope, $stateParams, $modal, moment, trackingService, gymService, routesMapService, routesTableService, errorService) {
 		$scope.gymId = parseInt($stateParams.id);
+		var track = trackingService.gymEvent($scope.gymId);
 
 		var gymLoad = gymService.loadGym($scope.gymId);
 		gymLoad.catch(function () {
@@ -29,6 +30,12 @@ angular.module('chalkUpAdmin')
 		});
 
 		routesMapService.onSelectionChange($scope, function (route) {
+			if(_.isUndefined(route)) {
+				track('route_selection', 'unselect');
+			}
+			else {
+				track('route_selection', 'select', route.type);
+			}
 			routesTableService.select(route);
 			$scope.selected = route;
 		});
@@ -38,6 +45,9 @@ angular.module('chalkUpAdmin')
 			$scope.selected = route;
 		});
 
+		routesTableService.onSortingChange($scope, function(sorting) {
+			track('routes_table', 'sort', _(sorting).keys().first());
+		});
 
 		var openEditModal = function (route, gym) {
 			return $modal.open({
@@ -69,6 +79,8 @@ angular.module('chalkUpAdmin')
 		};
 
 		$scope.newRoute = function (gym, floorPlan) {
+			track('new_route', 'start');
+
 			var newRoute = _.cloneDeep(routeTemplate);
 			newRoute.gym = gym;
 			newRoute.location.floorPlan = floorPlan;
@@ -76,6 +88,8 @@ angular.module('chalkUpAdmin')
 			var editModal = openEditModal(newRoute, gym);
 
 			editModal.result.then(function (editedRoute) {
+				track('new_route', 'save', editedRoute.type);
+
 				gymService.createRoute(gym, editedRoute)
 					.then(function (createdRoute) {
 						$scope.routes.push(createdRoute);
@@ -103,6 +117,7 @@ angular.module('chalkUpAdmin')
 					});
 			});
 			editModal.result.catch(function () {
+				track('new_route', 'discard');
 				// nothing to do, we just do not create the route
 			});
 		};
@@ -139,11 +154,19 @@ angular.module('chalkUpAdmin')
 		$scope.csvHeader = ['Typ', 'Name', 'Nummer', 'Grad', 'Farbe', 'Beschreibung', 'geschraubt am', 'abgeschraubt am'];
 		$scope.filename = 'routes-' + moment().format() + '.csv';
 
+		$scope.trackExportCsv = function() {
+			track('export_routes', 'click');
+		};
+
 		$scope.editRoute = function (route) {
+			track('edit_route', 'start');
+
 			// clone the route, so nothing changes until the editing is saved and discard just needs to do nothing
 			var editModal = openEditModal(route.clone(), $scope.gym);
 
 			editModal.result.then(function (editedRoute) {
+				track('edit_route', 'save', editedRoute.type);
+
 				gymService.updateRoute(editedRoute)
 					.then(function (updatedRoute) {
 						var oldRoute = _.find($scope.routes, function (route) {
@@ -157,6 +180,7 @@ angular.module('chalkUpAdmin')
 					});
 			});
 			editModal.result.catch(function () {
+				track('edit_route', 'discard');
 				// nothing to do, we just do not merge the route
 			});
 		};
@@ -165,12 +189,16 @@ angular.module('chalkUpAdmin')
 
 		var oldLocation;
 		$scope.moveRoute = function (route) {
+			track('move_route', 'start');
+
 			$scope.movingRoute = route;
 			oldLocation = { x: route.location.x, y: route.location.y };
 			routesMapService.moveRouteStart(route);
 		};
 
 		$scope.saveLocation = function () {
+			track('move_route', 'save', $scope.movingRoute.type);
+
 			gymService.updateRoute($scope.movingRoute)
 				.catch(function (error) {
 					errorService.restangularError(error);
@@ -179,6 +207,8 @@ angular.module('chalkUpAdmin')
 			$scope.movingRoute = undefined;
 		};
 		$scope.discardLocation = function () {
+			track('move_route', 'discard');
+
 			routesMapService.moveRouteEnd($scope.movingRoute);
 			$scope.movingRoute.location.x = oldLocation.x;
 			$scope.movingRoute.location.y = oldLocation.y;
@@ -188,6 +218,8 @@ angular.module('chalkUpAdmin')
 
 
 		$scope.archiveRoute = function (route) {
+			track('archive_route', 'confirm', route.type);
+
 			var date = moment().toDate();
 			gymService.archiveRoute(route, date)
 				.then(function (archivedRoute) {
@@ -203,7 +235,14 @@ angular.module('chalkUpAdmin')
 				});
 		};
 
+		$scope.cancelArchiveRoute = function(route) {
+			track('archive_route', 'cancel', route.type);
+		};
+
+
 		$scope.deleteRoute = function (routeToDelete) {
+			track('delete_route', 'confirm', routeToDelete.type);
+
 			gymService.deleteRoute(routeToDelete)
 				.then(function () {
 					_.remove($scope.routes, function (route) {
@@ -216,5 +255,9 @@ angular.module('chalkUpAdmin')
 				.catch(function (error) {
 					errorService.restangularError(error);
 				});
+		};
+
+		$scope.cancelDeleteRoute = function(route) {
+			track('delete_route', 'cancel', route.type);
 		};
 	});

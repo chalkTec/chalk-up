@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.service('loadingIndicator', function LoadingIndicator($rootScope) {
+	.service('loadingIndicator', function ($rootScope) {
 		var waitQueue = [];
 
 		function removeFromQueue(promise) {

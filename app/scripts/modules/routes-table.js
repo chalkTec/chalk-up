@@ -75,8 +75,22 @@ angular.module('routesTable')
 			return _selectedRoute;
 		};
 
-		return config;
 
+		// SORTING
+		var SORTING_EVENT = 'routesTable:sort';
+
+		config.sort = function (sorting) {
+			$rootScope.$broadcast(SORTING_EVENT, {sorting: sorting});
+		};
+
+		/* installs a handler that is called when the sorting changes */
+		config.onSortingChange = function ($scope, handler) {
+			$scope.$on(SORTING_EVENT, function (event, args) {
+				handler(args.sorting);
+			});
+		};
+
+		return config;
 	});
 
 
@@ -118,6 +132,11 @@ angular.module('routesTable')
 					}
 				});
 
+				$scope.$watch('tableParams.$params.sorting', function(sorting, previousSorting) {
+					if(sorting !== previousSorting) {
+						routesTableService.sort(sorting);
+					}
+				}, true);
 
 				routesTableService.onRoutesUpdate($scope, function (routes) {
 					// fix sorting of number

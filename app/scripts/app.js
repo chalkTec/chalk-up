@@ -6,12 +6,11 @@ angular.module('chalkUpApp', [
 	'angularSpinner',
 	'angularMoment',
 	'mm.foundation',
-	'angulartics',
-	'angulartics.google.analytics',
 	'ngCsv',
 	'UserApp',
 	'routesMap',
 	'routesTable',
+	'tracking',
 	'navBar',
 	'chalkUpAdmin'
 ]);
