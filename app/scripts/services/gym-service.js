@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.factory('gymService', function (moment, Restangular, loadingIndicator, user) {
+	.factory('gymService', function ($q, moment, Restangular, loadingIndicator, user) {
 		function pad(n, width, z) {
 			z = z || '0';
 			n = n + '';
@@ -72,6 +72,25 @@ angular.module('chalkUpApp')
 				loadingIndicator.waitFor(routeRemove);
 				transformRouteWhenReturned(routeRemove);
 				return routeRemove;
+			},
+			rateRoute: function(route, rating) {
+				var headers = {};
+				if(user.status().authenticated) {
+					headers['X-Auth-Token'] =  user.token();
+				}
+				var ratingsPost = Restangular.one('routes', route.id).all('ratings').post({ value: rating}, undefined, headers);
+				loadingIndicator.waitFor(ratingsPost);
+
+				var routeUpdate = $q.defer();
+				ratingsPost.then(function() {
+					var routeGet = route.get();
+					loadingIndicator.waitFor(routeGet);
+
+					routeGet.then(function(route) {
+						routeUpdate.resolve(route);
+					});
+				});
+				return routeUpdate.promise;
 			},
 			createRouteSetter: function(gym, routeSetter) {
 				var routeSettersPost = Restangular.one('gyms', gym.id).all('routeSetters').post(routeSetter, undefined, {'X-Auth-Token': user.token()});

@@ -159,14 +159,12 @@ button i[class^="fi-"] {
 }
 
 .route-rating {
-	&.not-rated {
-		.fi-star.filled, .fi-star.unfilled {
-			color: $concrete;
-		}
-	}
-
 	.fi-star.filled {
 		color: $sun-flower;
+	}
+
+	&.not-rated .fi-star.unfilled {
+		color: $concrete;
 	}
 	.fi-star.unfilled {
 		color: $asbestos;

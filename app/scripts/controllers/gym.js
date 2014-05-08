@@ -45,5 +45,14 @@ angular.module('chalkUpApp')
 			track('routes_table', 'sort', _(sorting).keys().first());
 		});
 
+
+		$scope.rate = function(rating) {
+			var routeUpdate = gymService.rateRoute($scope.selected, rating);
+			routeUpdate.then(function(route) {
+				$scope.selected.ratings = route.ratings;
+				$scope.selected.ratings.rated = true;
+			});
+		};
+
 		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
 	});
