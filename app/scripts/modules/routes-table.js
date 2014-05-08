@@ -102,12 +102,6 @@ angular.module('routesTable')
 			scope: {
 			},
 			controller: function ($scope, $filter, moment, routesTableService, ngTableParams) {
-				function pad(n, width, z) {
-					z = z || '0';
-					n = n + '';
-					return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
-				}
-
 				var allRoutes;
 
 				/*jshint newcap: false */
@@ -139,20 +133,6 @@ angular.module('routesTable')
 				}, true);
 
 				routesTableService.onRoutesUpdate($scope, function (routes) {
-					// fix sorting of number
-					_.each(routes, function (route) {
-						var numberThanAnything = /(\d*)(.*)/;
-						var result = numberThanAnything.exec(route.number);
-						route.numberSortable = pad(result[1], 5) + result[2];
-					});
-
-					// add 'new' property
-					_.each(routes, function (route) {
-						if (moment().diff(moment(route.dateSet), 'days', true) < 60) {
-							route.new = true;
-						}
-					});
-
 					allRoutes = routes;
 
 					$scope.tableParams.reload();

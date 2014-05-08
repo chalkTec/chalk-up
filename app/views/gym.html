@@ -26,6 +26,11 @@
 			    <span class="title">von</span>
 			    <span>{{selected.setters | routeSettersNickname}}</span>
 		    </div>
+		    <div class="rating">
+			    <span class="title">Bewertung</span>
+			    <span route-rating="selected.ratings"></span>
+			    <span class="average-number" ng-show="selected.ratings.count != 0">({{selected.ratings.average | number:1}})</span>
+		    </div>
 		    <div class="description" ng-show="selected.description">{{selected.description}}</div>
 	    </div>
 	    <p class="prompt" ng-hide="selected">Wähle entweder auf dem Grundriss links oder in der Tabelle unten eine Route

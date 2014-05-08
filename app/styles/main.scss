@@ -158,6 +158,21 @@ button i[class^="fi-"] {
 	margin: 0 0.3em;
 }
 
+.route-rating {
+	&.not-rated {
+		.fi-star.filled, .fi-star.unfilled {
+			color: $concrete;
+		}
+	}
+
+	.fi-star.filled {
+		color: $sun-flower;
+	}
+	.fi-star.unfilled {
+		color: $asbestos;
+	}
+}
+
 .route-meta {
 
 	> * {
@@ -168,8 +183,10 @@ button i[class^="fi-"] {
 		margin-bottom: 1.2em;
 	}
 
-	.route-setters {
-		margin-bottom: 1.2em;
+	.rating {
+		.average-number {
+			font-weight: normal;
+		}
 	}
 
 	.description {
@@ -177,6 +194,7 @@ button i[class^="fi-"] {
 		line-height: 1.5em;
 		max-height: 5 * 1.5em;
 		overflow-y: auto;
+		margin-top: 1.2em;
 	}
 
 	span.title {

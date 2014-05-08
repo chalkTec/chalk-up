@@ -12,6 +12,9 @@
 		<td data-title="'Name'" sortable="'name'">
 			{{route.name}}
 		</td>
+		<td data-title="'Bewertung'" sortable="'ratings.average'">
+			<span route-rating="route.ratings"></span>
+		</td>
 		<td data-title="'Datum'" sortable="'dateSet'">
 			{{route.dateSet | amDateFormat:'LL'}}
 			<span class="new-label" ng-show="route.new">neu</span>
