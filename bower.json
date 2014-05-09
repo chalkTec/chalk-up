@@ -19,7 +19,7 @@
 		"foundation-icon-fonts": "*",
 		"ng-csv": "~0.0.7",
 		"ng-table": "~0.3.2",
-		"userapp-angular": "git://github.com/jack-kerouac/userapp-angular#ff1140788e732951dff533d4b3893beee53a2a19",
+		"userapp-angular": "git://github.com/userapp-io/userapp-angular#28be638c4acefccdaeb58b5ecc2a47165f6e37ef",
 		"ng-tags-input": "~2.0.1"
 	},
 	"devDependencies": {

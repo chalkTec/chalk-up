@@ -37,4 +37,8 @@ angular.module('chalkUpApp')
 			loginInterceptor.stateAfterLogin(toState.name, params);
 			$state.go('login');
 		});
+		user.onAuthenticationSuccess(function() {
+			// prevent redirecting to default route after login
+			return false;
+		});
 	});
