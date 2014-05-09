@@ -52,6 +52,7 @@ angular.module('chalkUpApp')
 				$scope.selected.ratings = route.ratings;
 				$scope.selected.ratings.rated = true;
 			});
+			track('routes_rating', 'rate', '', rating);
 		};
 
 		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;
