@@ -1,7 +1,20 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.directive('routeRating', function () {
+	.directive('routeRating', function ($filter) {
+
+		function title(routeRating, readOnly) {
+			if(_.isUndefined(routeRating)) {
+				return '';
+			}
+			if(readOnly) {
+				var avg = routeRating.average;
+				return avg ? $filter('number')(avg, 1) + ' Sterne' : 'keine Stimmen';
+			}
+			else {
+				return 'stimme ab!';
+			}
+		}
 
 		return {
 			restrict: 'A',
@@ -11,8 +24,10 @@ angular.module('chalkUpApp')
 				readonly: '=',
 				onRate: '&'
 			},
-			controller: function ($scope, $filter) {
+			controller: function ($scope) {
 				$scope.$watch('routeRating', function(routeRating) {
+					$scope.mouseOverText = title(routeRating, $scope.readonly);
+
 					if(!_.isUndefined(routeRating)) {
 						$scope.value = routeRating.average;
 					}
@@ -23,16 +38,15 @@ angular.module('chalkUpApp')
 
 
 				$scope.$watch('readonly', function(readonly) {
+					$scope.mouseOverText = title($scope.routeRating, readonly);
+
 					if(!readonly) {
 						$scope.rate = function(rating) {
 							$scope.onRate({rating: rating});
 						};
-						$scope.mouseOverText = 'stimme ab!';
 					}
 					else {
 						$scope.rate = function() {};
-						var avg = $scope.routeRating.average;
-						$scope.mouseOverText = avg ? $filter('number')(avg, 1) + ' Sterne' : 'keine Stimmen';
 					}
 				});
 			}
