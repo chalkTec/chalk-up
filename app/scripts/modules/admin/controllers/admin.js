@@ -201,6 +201,14 @@ angular.module('chalkUpAdmin')
 			track('move_route', 'save', $scope.movingRoute.type);
 
 			gymService.updateRoute($scope.movingRoute)
+				.then(function (updatedRoute) {
+					// also merge updated route since position/version changed
+					var oldRoute = _.find($scope.routes, function (route) {
+						return route.id === updatedRoute.id;
+					});
+					_.assign(oldRoute, updatedRoute);
+					routesMapService.updateRoute(updatedRoute);
+				})
 				.catch(function (error) {
 					errorService.restangularError(error);
 				});
