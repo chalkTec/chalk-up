@@ -101,7 +101,7 @@ angular.module('routesTable')
 			templateUrl: '/views/routes-table.html',
 			scope: {
 			},
-			controller: function ($scope, $filter, moment, routesTableService, ngTableParams) {
+			controller: function ($scope, $filter, $timeout, moment, routesTableService, ngTableParams) {
 				var allRoutes;
 
 				/*jshint newcap: false */
@@ -129,6 +129,9 @@ angular.module('routesTable')
 				$scope.$watch('tableParams.$params.sorting', function(sorting, previousSorting) {
 					if(sorting !== previousSorting) {
 						routesTableService.sort(sorting);
+						$timeout(function() {
+							scrollToRoute($scope.selected);
+						});
 					}
 				}, true);
 
@@ -142,7 +145,7 @@ angular.module('routesTable')
 				// SELECT ROW IF SELECTION CHANGED EXTERNALLY
 				routesTableService.onSelectionChange($scope, function (route) {
 					$scope.selected = route;
-					selectRouteRow(route);
+					scrollToRoute(route);
 				});
 
 				$scope.selected = undefined;
@@ -161,7 +164,7 @@ angular.module('routesTable')
 				var rowHeight = 42;
 				var tbodyHeight = 284;
 
-				function selectRouteRow(route) {
+				function scrollToRoute(route) {
 					var index = _.findIndex($scope.tableParams.data, function (r) {
 						return r === route;
 					});
@@ -171,8 +174,6 @@ angular.module('routesTable')
 						$('tbody').animate({ scrollTop: offset }, '300', 'swing');
 					}
 				}
-
-
 			}
 		};
 	});
