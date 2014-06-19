@@ -130,7 +130,7 @@ angular.module('routesTable')
 					if(sorting !== previousSorting) {
 						routesTableService.sort(sorting);
 						$timeout(function() {
-							scrollToRoute($scope.selected);
+							scrollToRow(0);
 						});
 					}
 				}, true);
@@ -170,9 +170,13 @@ angular.module('routesTable')
 					});
 
 					if (doScroll) {
-						var offset = index * rowHeight - (tbodyHeight / 2 - rowHeight / 2);
-						$('tbody').animate({ scrollTop: offset }, '300', 'swing');
+						scrollToRow(index);
 					}
+				}
+
+				function scrollToRow(row) {
+					var offset = row * rowHeight - (tbodyHeight / 2 - rowHeight / 2);
+					$('tbody').animate({ scrollTop: offset }, '300', 'swing');
 				}
 			}
 		};
