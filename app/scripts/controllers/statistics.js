@@ -2,7 +2,6 @@
 
 angular.module('chalkUpApp')
 	.controller('StatisticsCtrl', function ($scope, routes) {
-		// TODO: correct buckets!
 		var buckets = {
 			limits: {
 				'2': [0.000, 0.032],
@@ -37,8 +36,6 @@ angular.module('chalkUpApp')
 		var data = _(routeBuckets).pairs().map(function(e) {
 			return [parseInt(e[0]), e[1]];
 		}).valueOf();
-
-		console.log($scope.myData);
 
 		$scope.myData = [{data: data, valueLabels: {
 			show: true,
