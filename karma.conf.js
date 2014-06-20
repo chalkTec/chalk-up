@@ -37,6 +37,8 @@ module.exports = function (config) {
 			'app/bower_components/userapp/userapp.client.js',
 			'app/bower_components/userapp-angular/angularjs.userapp.js',
 			'app/bower_components/ng-tags-input/ng-tags-input.min.js',
+			'app/bower_components/flot/jquery.flot.js',
+			'app/bower_components/angular-flot/angular-flot.js',
 			'app/bower_components/angular-mocks/angular-mocks.js',
 			'app/bower_components/angular-scenario/angular-scenario.js',
 			// endbower

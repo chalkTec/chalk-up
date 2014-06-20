@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('chalkUpApp')
-	.controller('GymCtrl', function ($scope, $stateParams, trackingService, routesMapService, routesTableService, gymService, feedbackService) {
+	.controller('GymCtrl', function ($scope, $stateParams, $modal, trackingService, routesMapService, routesTableService, gymService, feedbackService) {
 		$scope.gymId = $stateParams.id;
 		var track = trackingService.gymEvent($scope.gymId);
 
@@ -20,6 +20,7 @@ angular.module('chalkUpApp')
 			$scope.gym = gym;
 
 			routesLoad.then(function (routes) {
+				$scope.routes = routes;
 				routesMapService.updateRoutes(routes);
 				routesTableService.updateRoutes(routes);
 			});
@@ -53,6 +54,18 @@ angular.module('chalkUpApp')
 				$scope.selected.ratings.rated = true;
 			});
 			track('routes_rating', 'rate', '', rating);
+		};
+
+
+		$scope.openStatistics = function() {
+			return $modal.open({
+				templateUrl: '/views/statistics.html',
+				windowClass: 'small statistics',
+				controller: 'StatisticsCtrl',
+				resolve: {
+					routes: function() { return $scope.routes; }
+				}
+			});
 		};
 
 		$scope.openFeedbackPanel = feedbackService.openFeedbackPanel;

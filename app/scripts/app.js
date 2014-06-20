@@ -12,6 +12,7 @@ angular.module('chalkUpApp', [
 	'routesTable',
 	'tracking',
 	'navBar',
+	'angular-flot',
 	'chalkUpAdmin'
 ]);
 

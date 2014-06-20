@@ -1,8 +1,18 @@
+$top-box-padding: rem-calc(10px);
+
 .page.gym {
 	height: 100%;
 
 	$plan-width: 75%;
 	$plan-height: 60%;
+	$gym-info-height: 4.2em;
+
+	section.gym-information {
+		width: calc(100% - #{$plan-width} - 2 * #{$top-box-padding});
+		margin: 0 $top-box-padding;
+		height: $gym-info-height;
+	}
+
 	section.routes-map {
 		width: $plan-width;
 		height: $plan-height;
@@ -12,7 +22,7 @@
 	}
 	section.route-information {
 		width: 100% - $plan-width;
-		height: $plan-height;
+		height: calc(#{$plan-height} - #{$gym-info-height});
 	}
 	section.routes-table {
 		width: 100%;
@@ -27,7 +37,6 @@
 }
 
 // TODO: factor this out
-$top-box-padding: rem-calc(10px);
 $top-box-background: #f5f5f5;
 section.routes-map, section.route-information, section.route-edit {
 	background: $top-box-background;
@@ -38,7 +47,20 @@ section.routes-map, section.route-information, section.route-edit {
 	}
 }
 
+section.gym-information {
+	padding: 0 $top-box-padding;
+
+	background: $silver;
+	border-radius: 0 0 0.75em 0.75em;
+
+	h1 {
+		font-size: 1.2em;
+		font-weight: bold;
+	}
+}
+
 section.route-information {
+	padding-top: 2 * $top-box-padding;
 
 	.prompt {
 		font-style: italic;

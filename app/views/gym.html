@@ -4,6 +4,10 @@
 	    <p class="gym-load-error alert-box warning" ng-show="gymLoadError">Halle {{gymId}} konnte nicht geladen werden.
 	        Sorry.</p>
 	</section>
+	<section class="gym-information">
+		<h1>{{gym.name}}</h1>
+		<p><a ng-click="openStatistics()">{{routes.length}} Kletterrouten</a></p>
+	</section>
 	<section class="route-information">
 	    <div class="route-meta" ng-show="selected">
 		    <div class="name" ng-if="selected.name">
